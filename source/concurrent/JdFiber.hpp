@@ -178,7 +178,7 @@ class JdFibers
 		
 		if (controller->m_state == c_jdFiber::exited)
 		{
-			 // get it out of restart loop
+			 // get fiber out of restart loop
 			if (AtHome ())
 				controller->Run ();
 			else
@@ -193,7 +193,6 @@ class JdFibers
 		
 //		cout << "free: " << (voidptr_t) stack << endl;
 //		free (stack);
-		
 		
 		return c_jdNoErr;
 	}
