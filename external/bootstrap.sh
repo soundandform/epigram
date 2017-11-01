@@ -1,15 +1,16 @@
 #!/bin/bash
 
-BOOST=boost_1_65_1.tar.gz
-curl -L -O https://dl.bintray.com/boostorg/release/1.65.1/source/$BOOST
-tar -zxvf $BOOST
+BOOST=boost_1_65_1
+BOOST_TAR=$BOOST.tar.gz
+
+curl -L -O https://dl.bintray.com/boostorg/release/1.65.1/source/$BOOST_TAR
+tar -zxf $BOOST_TAR
+rm $BOOST_TAR
 mv $BOOST boost
-rm $BOOST
 echo "/*" > boost/.gitignore
 
 mkdir ../lib 
 echo "/*" > ../lib/.gitignore
-
 
 cd boost
 ./bootstrap.sh
