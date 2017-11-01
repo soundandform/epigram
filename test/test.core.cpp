@@ -2,6 +2,16 @@
 
 #include "doctest.hpp"
 
+#include "Epigram.hpp"
+
+test_("Epigram")
+{
+	Epigram e;
+	
+	e ["string"] = 1234.678;
+	f64 value = e ["string"];									expect (value == 1234.678)
+}
+
 
 #include "JdTypeId.hpp"
 
@@ -21,69 +31,6 @@ test_ ("JdAssert")
 	catch (JdResult & r) { msg = "failure"; }					expect (msg == "failure")
 }
 
-//#include "JdFiber.hpp"
-//
-//namespace ctx = boost::context::detail;
-////namespace ctx = boost::context;
-//
-//ctx::fcontext_t f1, f2;
-//
-//ctx::fcontext_t home;
-//
-//void Fiber (ctx::transfer_t i)
-//{
-//	home = i.fctx;
-//
-//	cout << "f1: " << i.fctx << endl;
-//
-//	cout << "hi I'm a fiber?\n";
-//	cout << i.data << endl;
-//
-//	ctx::jump_fcontext (f2, nullptr);
-//
-//	cout << "uhg\n";
-//}
-//
-//void Fiber2 (ctx::transfer_t i)
-//{
-//	cout << "f2: " << i.fctx << endl;
-//
-////	cout << i.data << endl;
-//
-//	ctx::jump_fcontext (home, nullptr);
-//
-//	cout << "2 is dead\n";
-//}
-//
-//test ("boost fcontext")
-//{
-//	cout << sizeof (ctx::fcontext_t) << endl;
-//
-//	auto stack = (u8 *) malloc (32768) + 32768;
-//	auto stack2 = (u8 *) malloc (32768) + 32768;
-//
-//	cout << "stack: " << (voidptr_t) stack << ", " << (voidptr_t) stack2 << endl;
-//
-//	f1 = ctx::make_fcontext (stack, 32768, Fiber);
-//	f2 = ctx::make_fcontext (stack2, 32768, Fiber2);
-//
-//	cout << (u8*) stack - (u8*) f1  << endl;
-//
-//	cout << f1 << ", " << f2 << endl;
-//
-//	u32 hi;
-//
-//	cout << & hi << endl;
-//
-//	ctx::transfer_t t = ctx::jump_fcontext (f1, (void *) 6666);
-//
-//	cout << "t.fctx: " << t.fctx << endl;
-//
-//	cout << "returned\n";
-//
-////	ctx::jump_fcontext (f1, (void *) 6666);
-////	ctx::jump_fcontext (f1, (void *) 6666);
-//}
 
 #include "JdFiber.hpp"
 
@@ -93,9 +40,7 @@ class MyFiber : public IIJdFiber
 	virtual i64					RunFiber			()
 	{
 		cout << "FIBER: " << fibers ()->GetName () << endl;
-		
-		fibers()->Yield (m_myFriend);
-
+		fibers()->YieldTo (m_myFriend);
 		cout << "EXIT : " << fibers ()->GetName () << endl;
 
 		return 0;
@@ -123,7 +68,6 @@ class PersistentFiber : public IIJdFiber
 		while (true)
 		{
 			cout << value << " i'm still here: " << fibers ()->GetName () << endl;
-			
 			value += 1.234;
 			
 			fibers()->Yield ();
@@ -143,7 +87,7 @@ test_ ("JdFiberV2")
 	{
 		JdResult result;
 		JdFibers fibers;
-		if (0)
+		if (1)
 		{
 			
 			auto fiber = fibers.CreateFiber <MyFiber> (32768, & result, "fiber1");

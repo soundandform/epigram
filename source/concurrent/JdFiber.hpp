@@ -5,9 +5,10 @@
 //  Copyright (c) 2012 Steven Massey. All rights reserved.
 //
 
-#ifndef _JdFiber_h
+#ifndef __JdFiber_hpp__
 
 #include <boost/context/all.hpp>
+#include <list>
 
 #include "JdAssert.hpp"
 
@@ -16,11 +17,12 @@ d_jdForwardInterface (IJdFiber);
 
 d_jdInterface (IJdFiberControl)
 {
-	virtual string				GetName			() = 0;
-	virtual bool				IsRunnable		() = 0;
-	virtual JdResult			Run				() = 0;
-	virtual void				Yield			(IJdFiber i_toFiber = nullptr) = 0;
-	virtual JdResult			Terminate		() = 0;
+	virtual string				GetName				() = 0;
+	virtual bool				IsRunnable			() = 0;
+	virtual JdResult			Run					() = 0;
+	virtual void				Yield				(IJdFiber i_toFiber = nullptr) = 0;
+	virtual void				YieldTo				(IJdFiber i_toFiber) = 0;
+	virtual JdResult			Terminate			() = 0;
 };
 
 class JdFibers;
@@ -106,10 +108,16 @@ class JdFibers
 	{
 	}
 	
+	virtual 					~ JdFibers				()
+	{
+		for (auto i : m_stacks)
+			free (i.stack);
+	}
+	
 	template <typename T>
 	T *							CreateFiber				(size_t i_stackSize, JdResult * o_result, stringRef_t i_fiberName = "")
 	{
-		d_jdAssert (i_stackSize >= 8192, "stack is too small"); // 8192 might even be too small. termination throw seems to cash a stack overflow @ 4kB
+		d_jdAssert (i_stackSize >= 8192, "stack is too small"); // 8192 might even be too small. termination throw seems to cause a stack overflow @ 4kB
 		
 		i_stackSize = (i_stackSize + 4095) & ~4095;
 		
@@ -123,7 +131,9 @@ class JdFibers
 		size_t objectsSize = controllerSize + sizeOfT;
 		d_jdAssert (i_stackSize > objectsSize, "fiber stack not large enough");
 		
-		auto stack = (u8 *) malloc (i_stackSize);
+		auto stack = CreateStack (i_stackSize);
+//		auto stack = (u8 *) malloc (i_stackSize);
+		
 //		cout << "stack: " << (voidptr_t) stack << endl;
 
 		// create IJdFiber
@@ -135,6 +145,7 @@ class JdFibers
 		// create FiberController
 		ptr -= controllerSize;
 		auto fc = new (ptr) FiberController (this, stack, fiber, i_fiberName);
+		fc->m_stackSize = i_stackSize;
 		
 		stack += i_stackSize;
 		stack -= objectsSize;
@@ -168,7 +179,6 @@ class JdFibers
 		if (controller->m_state == c_jdFiber::exited)
 		{
 			 // get it out of restart loop
-			
 			if (AtHome ())
 				controller->Run ();
 			else
@@ -176,12 +186,14 @@ class JdFibers
 		}
 		
 		auto stack = controller->m_stack;
-		
+		m_stacks.push_back ({ stack, controller->m_stackSize });
+
 		i_fiber->~IIJdFiber ();
 		controller->~FiberController ();
 		
 //		cout << "free: " << (voidptr_t) stack << endl;
-		free (stack);
+//		free (stack);
+		
 		
 		return c_jdNoErr;
 	}
@@ -223,16 +235,21 @@ class JdFibers
 			if (m_state >= c_jdFiber::initialized)
 			{
 				boost_ctx::transfer_t from = boost_ctx::jump_fcontext (m_context, this);
-				m_home->ReturningHome (from.fctx);
+				m_home->ComingHome (from.fctx);
 				
 				return m_result;
 			}
 			else return d_jdError2 ("invalid fiber state");
 		}
 
+		virtual void			YieldTo					(IJdFiber i_yieldTo)
+		{
+			Yield (i_yieldTo);
+		}
+		
 		virtual void			Yield					(IJdFiber i_yieldTo)
 		{
-			u8 stack; cout << "freestack: " << & stack - (u8*) m_stack << endl;
+//			u8 stack; cout << "freestack: " << & stack - (u8*) m_stack << endl;
 			
 			d_jdAssert (m_state == c_jdFiber::running, "fiber can't yield; aint't runin");
 		
@@ -267,25 +284,18 @@ class JdFibers
 			return c_jdNoErr;
 		}
 		
-//		virtual void			YieldTo					(IJdFiber i_fiber)
-//		{
-//			d_jdAssert (m_state == c_jdFiber::running, "fiber can't yield; aint't runin");
-//
-//			ctx::transfer_t transfer = ctx::jump_fcontext (m_transferredFrom->m_context, nullptr);
-//			m_home->MakeTransfer (this, transfer.fctx);
-//		}
 
 		void *					m_stack					= nullptr;
+		size_t					m_stackSize				= 0;
 		JdFibers *				m_home					= nullptr;
 		boost_ctx::fcontext_t	m_context				= nullptr;
 		IJdFiber				m_implementation		= nullptr;
 		string					m_name;
 		EJdFiberStatus			m_state 				= e_jdFiber_invalid;
-		
 		FiberController *		m_transferredFrom		= nullptr;
-
 		JdResult				m_result;
 	};
+	
 	
 	static void FiberRunner (boost_ctx::transfer_t i)
 	{
@@ -301,7 +311,7 @@ class JdFibers
 				if (result == 0)
 					f->m_state = c_jdFiber::exited;
 
-				f->m_home->ReturnHome (nullptr);
+				f->m_home->ReturnHome (f);
 			}
 		}
 		catch (JdFiberTerminate & _exit)
@@ -313,32 +323,29 @@ class JdFibers
 		{
 			f->m_state = c_jdFiber::aborted;
 		}
-		
-//		if (f->m_state == c_jdFiber::terminated or c_jdFiber::aborted)
-//			f->m_home->ReturnHome (nullptr);
 
 		if (f->m_state == c_jdFiber::exited)
 			f->m_state = c_jdFiber::finished;
 
 //		cout << "really exited\n";
 		
-		f->m_home->ReturnHome (nullptr);
+		f->m_home->ReturnHome (f);
 	}
 
-	void 					ReturningHome				(boost_ctx::fcontext_t i_previousContext)
+	void 					ComingHome					(boost_ctx::fcontext_t i_previousContext)
 	{
 		MakeTransfer (& m_homeFiber, i_previousContext);
 	}
 
-	void 					ReturnHome					(boost_ctx::fcontext_t i_previousContext)
+	void 					ReturnHome					(FiberController * i_fromFiber)
 	{
-		if (m_homeFiber.m_context)
+//		cout << "RETURN HOME\n";
+		
+		auto homeContext = m_homeFiber.m_context;
+		if (homeContext)
 		{
-			boost_ctx::transfer_t from = boost_ctx::jump_fcontext (m_homeFiber.m_context, nullptr);
-			
-			cout << "XxXxxxx\n";
-			
-			MakeTransfer (& m_homeFiber, from.fctx);
+			boost_ctx::transfer_t from = boost_ctx::jump_fcontext (homeContext, nullptr);
+			MakeTransfer (i_fromFiber, from.fctx);
 		}
 	}
 
@@ -352,7 +359,7 @@ class JdFibers
 	{
 		m_activeFiber->m_context = i_previousContext;
 
-		cout << m_activeFiber->GetName () << " (" << m_activeFiber->m_context << ")" << " --> " << i_newFiber->GetName () << " (" << i_newFiber->m_context << ")" << endl;
+//		cout << m_activeFiber->GetName () << " (" << m_activeFiber->m_context << ")" << " --> " << i_newFiber->GetName () << " (" << i_newFiber->m_context << ")" << endl;
 
 		i_newFiber->m_transferredFrom = m_activeFiber;
 
@@ -374,11 +381,34 @@ class JdFibers
 			m_activeFiber->Yield (i_terminatingFiber->m_implementation);
 	}
 	
-	FiberController							m_homeFiber;
-	FiberController *						m_activeFiber			= & m_homeFiber;
+	u8 *					CreateStack				(size_t i_stackSize)
+	{
+		auto i = m_stacks.begin (), e = m_stacks.end ();
+		while (i != e)
+		{
+			if (i->size == i_stackSize)
+			{
+				auto stack = i->stack;
+				m_stacks.erase (i);
+				return (u8 *) stack;
+			}
+			++i;
+		}
+		
+		return (u8 *) malloc (i_stackSize);
+	}
+	
+	FiberController					m_homeFiber;
+	FiberController *				m_activeFiber			= & m_homeFiber;
 
-//	list <FiberRecord>						m_freeFibers;
+	struct StackRecord
+	{
+		void *		stack;
+		size_t		size;
+	};
+	
+	list <StackRecord>				m_stacks;
 };
 
-#define _JdFiber_h
+#define __JdFiber_hpp__
 #endif
