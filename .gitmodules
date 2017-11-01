@@ -1,3 +1,6 @@
 [submodule "external/cityhash"]
 	path = external/cityhash
 	url = https://github.com/google/cityhash.git
+[submodule "external/doctest"]
+	path = external/doctest
+	url = https://github.com/onqtam/doctest.git
