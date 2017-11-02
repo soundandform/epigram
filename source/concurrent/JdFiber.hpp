@@ -48,6 +48,12 @@ d_jdInterface (IJdFiber)
 		return m_controller->IsRunnable ();
 	}
 
+	void						Yield				()
+	{
+		m_controller->Yield ();
+	}
+
+	
 	protected:
 	
 	virtual i64					RunFiber			() = 0;
@@ -76,7 +82,7 @@ enum EJdFiberStatus
 	// runnable states:
 	e_jdFiber_initialized,
 	e_jdFiber_paused,
-	e_jdFiber_exited,
+	e_jdFiber_exiting,
 	e_jdFiber_terminating
 };
 
@@ -88,7 +94,7 @@ namespace c_jdFiber
 				paused				= e_jdFiber_paused,
 				running				= e_jdFiber_running,
 				terminating			= e_jdFiber_terminating,
-				exited				= e_jdFiber_exited,
+				exiting				= e_jdFiber_exiting,
 				finished			= e_jdFiber_finished,
 				terminated			= e_jdFiber_terminated,
 				aborted				= e_jdFiber_aborted;
@@ -115,7 +121,7 @@ class JdFibers
 	}
 	
 	template <typename T>
-	T *							CreateFiber				(size_t i_stackSize, JdResult * o_result, stringRef_t i_fiberName = "")
+	T *							CreateFiber				(size_t i_stackSize, JdResult * o_result = nullptr, stringRef_t i_fiberName = "")
 	{
 		d_jdAssert (i_stackSize >= 8192, "stack is too small"); // 8192 might even be too small. termination throw seems to cause a stack overflow @ 4kB
 		
@@ -176,7 +182,7 @@ class JdFibers
 			else return d_jdError2 ("can't release active fiber without i_forceQuit");
 		}
 		
-		if (controller->m_state == c_jdFiber::exited)
+		if (controller->m_state == c_jdFiber::exiting)
 		{
 			 // get it out of restart loop
 			if (AtHome ())
@@ -309,7 +315,7 @@ class JdFibers
 				i64 result = f->m_implementation->RunFiber ();
 
 				if (result == 0)
-					f->m_state = c_jdFiber::exited;
+					f->m_state = c_jdFiber::exiting;
 
 				f->m_home->ReturnHome (f);
 			}
@@ -324,7 +330,7 @@ class JdFibers
 			f->m_state = c_jdFiber::aborted;
 		}
 
-		if (f->m_state == c_jdFiber::exited)
+		if (f->m_state == c_jdFiber::exiting)
 			f->m_state = c_jdFiber::finished;
 
 //		cout << "really exited\n";
