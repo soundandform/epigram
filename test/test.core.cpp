@@ -1,6 +1,21 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include "doctest.hpp"
+<<<<<<< HEAD
+=======
+
+#include "Epigram.hpp"
+
+test_("Epigram")
+{
+	Epigram e;
+	
+	e ["string"] = 1234.678;
+	f64 value = e ["string"];									expect (value == 1234.678)
+}
+
+
+>>>>>>> 7bcc6e7ca9bcba4c10d17b2007548c581cc20fd8
 #include "JdTypeId.hpp"
 
 test_("TypeId")
@@ -19,6 +34,7 @@ test_ ("JdAssert")
 	catch (JdResult & r) { msg = "failure"; }					expect (msg == "failure")
 }
 
+<<<<<<< HEAD
 #include "Epigram.hpp"
 
 test_ ("Epigram")
@@ -95,6 +111,8 @@ test_ ("Epigram")
 ////	ctx::jump_fcontext (f1, (void *) 6666);
 ////	ctx::jump_fcontext (f1, (void *) 6666);
 //}
+=======
+>>>>>>> 7bcc6e7ca9bcba4c10d17b2007548c581cc20fd8
 
 #include "JdFiber.hpp"
 
@@ -104,9 +122,7 @@ class MyFiber : public IIJdFiber
 	virtual i64					RunFiber			()
 	{
 		cout << "FIBER: " << fibers ()->GetName () << endl;
-		
-		fibers()->Yield (m_myFriend);
-
+		fibers()->YieldTo (m_myFriend);
 		cout << "EXIT : " << fibers ()->GetName () << endl;
 
 		return 0;
@@ -134,7 +150,6 @@ class PersistentFiber : public IIJdFiber
 		while (true)
 		{
 			cout << value << " i'm still here: " << fibers ()->GetName () << endl;
-			
 			value += 1.234;
 			
 			fibers()->Yield ();
@@ -154,7 +169,7 @@ test_ ("JdFiberV2")
 	{
 		JdResult result;
 		JdFibers fibers;
-		if (0)
+		if (1)
 		{
 			auto fiber = fibers.CreateFiber <MyFiber> (32768, & result, "fiber1");
 			auto fiber2 = fibers.CreateFiber <MyFiber> (32768, & result, "fiber2");
