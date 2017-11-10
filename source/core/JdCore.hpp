@@ -1,0 +1,340 @@
+//
+//  JdCore.hpp
+//  Jigidesign
+//
+//  Created by Steven Massey on 8/3/11.
+//  Copyright 2011-2012 Epigram Software, LLC. All rights reserved.
+//
+
+#include "JdNucleus.hpp"
+
+#pragma GCC diagnostic ignored "-Wconversion"
+
+#ifndef Jigidesign_JdCore_h
+#define Jigidesign_JdCore_h
+
+#ifndef d_objC
+#	define d_objC(STUFF) STUFF
+#endif
+
+
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
+#include <set>
+
+#include <type_traits>
+
+
+namespace Jd
+{
+	u32		Pow2CeilLog2		(u32 i_value);
+	u32		RoundUpToAPowerOf2 	(u32 i_value);
+	u32		CeilLog2 			(u32 i_value);
+
+	template <typename V>
+	V AlignTo (u32 i_boundary, V i_value)
+	{
+		V aligner = i_boundary - 1;
+		return (i_value + aligner) & ~aligner;
+	}
+	
+	template <typename T>
+	T Align64 (T i_value)
+	{
+		return (i_value + 7) & ~7;
+	}
+	
+	inline u32 WordAlign (u32 i_word)
+	{
+		return (i_word + 3) & ~3;
+	}
+	
+	inline size_t NativeAlign (size_t i_toAlign)
+	{
+#		if defined (__LP64__)
+			return (i_toAlign + 7) & ~7;
+#		else
+			return (i_toAlign + 3) & ~3;
+#		endif
+	}
+	
+	template <typename T, u32 t_length>
+	u32 SizeOfArray (const T (&) [t_length])
+	{
+		return t_length;
+	}
+	
+	template <typename T>
+	std::string ToString (const T &i_value)
+	{
+		std::ostringstream oss;
+		oss << i_value;
+		return oss.str();
+	}
+	
+	
+	const char c_epilogInsertToken = '@';
+	
+	struct SSPrintFHelper
+	{
+		template <typename T>
+		static void Stream (std::ostringstream & o_oss, const T & i_value)
+		{
+			o_oss << i_value;
+		}
+		
+		static void Stream (std::ostringstream & o_oss, const bool & i_value)
+		{
+			o_oss << (i_value ? "true" : "false");
+		}
+	};
+	
+	
+	void SSPrintF (std::ostringstream & o_oss, cstr_t i_format);
+	
+	template <typename T, typename... Args>
+	void SSPrintF (std::ostringstream & o_oss, cstr_t i_format, T i_value, Args... i_args)
+	{
+		while (* i_format)
+		{
+			if (* i_format == c_epilogInsertToken)
+			{
+				if (*(i_format + 1) == c_epilogInsertToken)
+				{
+					++i_format;
+				}
+				else
+				{
+					SSPrintFHelper::Stream (o_oss, i_value);
+					SSPrintF (o_oss, i_format + 1, i_args ...); // call even when *s == 0 to detect extra arguments
+					return;
+				}
+			}
+			
+			o_oss << *i_format++;
+		}
+		
+		throw std::logic_error ("extra arguments provided to SSPrintF");
+	}
+	
+	template <typename T, typename... Args>
+	std::string SPrintF (cstr_t i_format, T i_value, Args... i_args)
+	{
+		std::ostringstream oss;
+		SSPrintF (oss, i_format, i_value, i_args...);
+		return oss.str ();
+	}
+	
+	string SPrintF (cstr_t i_format);
+}
+
+
+
+#define debug(OUTPUT) std::cout << OUTPUT << endl
+
+#define d_jdBitConst(CAT,VAR,BIT) namespace c_jd##CAT { const u32 VAR = (1 << BIT); }
+
+#define d_trueFalse(TRUE,FALSE) const bool TRUE = true; const bool FALSE = false;
+
+#define d_jdTrueFalse(NAMESPACE,TRUE,FALSE) namespace c_jd##NAMESPACE { const bool TRUE = true, FALSE = false; }
+
+#include "JdFlatString.hpp"
+
+class JdFormatter
+{
+	public:
+	JdFormatter (bool i_maxPrecision = true)
+	{
+		// FIX: kill this. was just using this for sqlite: which should switch to "bind" method input
+		if (i_maxPrecision)
+			oss.precision (numeric_limits <f64>::max_digits10);
+	}
+
+		template <typename T>
+		JdFormatter& operator << (const T & i_value)
+		{
+			Reset();
+			oss << i_value;
+			return *this;
+		}
+		
+		template <typename T>
+		JdFormatter& operator , (const T & i_value)
+		{
+			oss << i_value;
+			return *this;
+		}
+
+		template <typename T>
+		JdFormatter& operator += (const T & i_value)
+		{
+			oss << i_value;
+			return *this;
+		}
+
+/*
+		template <typename T>
+		JdFormatter& operator * (const T & i_value)
+		{
+//			cout << "plus: " << i_value << endl;
+			oss << i_value;
+			return *this;
+		}
+*/	
+		cstr_t CString () const
+		{
+			formatted = oss.str();
+			return formatted.c_str();
+		}
+	
+		operator std::string () const
+		{
+			return oss.str();
+		}
+		
+		operator cstr_t () const 
+		{
+			return CString();
+		}
+		
+	/*
+		const char* operator () () const
+		{
+			return CString();
+		}
+	*/	
+		void Reset ()
+		{
+			oss.clear();
+			oss.str("");
+			formatted.clear();
+		}
+	
+		size_t		GetLength () const
+		{
+			return oss.tellp();
+		}
+		
+	public:
+		mutable std::ostringstream	oss;
+		mutable std::string			formatted;
+};
+
+std::ostream& operator << (std::ostream &output, const JdFormatter &i_string);
+
+
+
+//
+//namespace std
+//{
+//	template <>
+//    struct hash <JdString64>
+//    {
+//        size_t operator () (const JdString64 & i_string) const
+//        {
+//			return CityHash64 (i_string, i_string.Length ());
+//        }
+//    };
+//};
+
+
+template <typename T>
+struct JdEnum
+{
+	
+	operator T & ()
+	{
+		return m_value;
+	}
+	
+	const operator T () const
+	{
+		return m_value;
+	}
+
+	/*
+	template <typename C>
+	const operator C () const
+	{
+		return static_cast <C> (m_value);
+	}
+	 */
+	
+	protected:
+	T	m_value = 0;
+};
+
+
+#define d_baseEnum(TYPE, CATEGORY, ...) struct EJd##CATEGORY : public JdEnum <TYPE>, public JdSerialize::Unversioned <EJd##CATEGORY> { \
+				enum { null = 0, __VA_ARGS__}; \
+				EJd##CATEGORY () { } \
+				d_jdSerialize(m_value); \
+				template <typename C> EJd##CATEGORY (const C & i_value) { m_value = i_value; } \
+				operator std::string () const { return Jd::ToString (*this); } \
+				}; typedef EJd##CATEGORY c_jd##CATEGORY;
+
+
+#define d_enumStrings(CATEGORY, ...) inline std::ostream & operator << (std::ostream & output, const EJd##CATEGORY & i_enum) { \
+										u32 i = i_enum; \
+										cstr_t c_names [] = { "null", __VA_ARGS__ }; \
+										output << ((i < Jd::SizeOfArray (c_names)) ? c_names [i] : "undefined"); \
+										return output; }
+
+#define d_enumStr(E) #E
+
+#define d_enum1Args(CAT)						enum needs a category base and at least one enum
+
+#define d_enum2Args(TYPE,CAT)					enum needs a category base and at least one enum
+
+#define d_enum3Args(TYPE,CAT,E0)				d_baseEnum		(TYPE, CAT, E0) \
+												d_enumStrings	(CAT, d_enumStr(E0))
+
+#define d_enum4Args(TYPE,CAT,E0,E1)				d_baseEnum		(TYPE, CAT, E0, E1) \
+												d_enumStrings	(CAT, d_enumStr(E0), d_enumStr(E1))
+	
+#define d_enum5Args(TYPE,CAT,E0,E1,E2)			d_baseEnum		(TYPE, CAT, E0, E1, E2) \
+												d_enumStrings	(CAT, d_enumStr(E0), d_enumStr(E1), d_enumStr(E2))
+
+#define d_enum6Args(TYPE,CAT,E0,E1,E2,E3)		d_baseEnum		(TYPE, CAT, E0, E1, E2, E3) \
+												d_enumStrings	(CAT, d_enumStr(E0), d_enumStr(E1), d_enumStr(E2), d_enumStr(E3))
+	
+#define d_enum7Args(TYPE,CAT,E0,E1,E2,E3,E4)	d_baseEnum		(TYPE, CAT, E0, E1, E2, E3, E4) \
+												d_enumStrings	(CAT, d_enumStr(E0), d_enumStr(E1), d_enumStr(E2), d_enumStr(E3), d_enumStr(E4))
+
+#define d_enum8Args(TYPE,CAT,E0,E1,E2,E3,E4,E5)	d_baseEnum		(TYPE, CAT, E0, E1, E2, E3, E4, E5) \
+												d_enumStrings	(CAT, d_enumStr(E0), d_enumStr(E1), d_enumStr(E2), d_enumStr(E3), d_enumStr(E4), d_enumStr(E5))
+
+
+	
+#define d_enumMacroChooser(...)	d_get8thArg(__VA_ARGS__, d_enum8Args, d_enum7Args, d_enum6Args, d_enum5Args, d_enum4Args, d_enum3Args, d_enum2Args, d_enum1Args, )
+#define d_jdEnumT(...)			d_enumMacroChooser(__VA_ARGS__)(__VA_ARGS__)
+
+#define d_jdEnum(...)			d_jdEnumT (u32, __VA_ARGS__)
+
+
+#define d_jdConst(TYPE,NAMESPACE,NAME_VALUE) namespace c_jd##NAMESPACE { const TYPE NAME_VALUE; }
+
+
+
+// d_jdInterface (IMyInterface) helps create an interface (struct) named "IIMyInterface" and typedefs a ptr to that interface as "IMyInterface"
+// This eliminates 10,000 superfluous asterisks in the code
+#define d_jdForwardInterface(IFACE) struct I##IFACE; typedef I##IFACE * IFACE;
+#define d_jdInterface(IFACE) d_jdForwardInterface (IFACE) struct I##IFACE
+
+
+
+
+struct JdPreconditions
+{
+	static JdPreconditions precoditions;
+	
+	JdPreconditions ();
+};
+
+
+#endif
+
+
+
