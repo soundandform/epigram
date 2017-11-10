@@ -76,7 +76,7 @@ namespace c_jdTypeId
 	
 				unknown				=	0xff,
 	
-				typeMask			=	0x3f;		// 6 bits: includes isPointer
+				typeMask			=	0x1f | isPointer;		// 5 LS bits + isPointer
 }
 
 

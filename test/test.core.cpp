@@ -3,13 +3,6 @@
 #include "doctest.hpp"
 #include "Epigram.hpp"
 
-test_("Epigram")
-{
-	Epigram e;
-	
-	e ["string"] = 1234.678;
-	f64 value = e ["string"];									expect (value == 1234.678)
-}
 
 
 #include "JdTypeId.hpp"
