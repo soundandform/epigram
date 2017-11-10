@@ -1,9 +1,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include "doctest.hpp"
-<<<<<<< HEAD
-=======
-
 #include "Epigram.hpp"
 
 test_("Epigram")
@@ -15,7 +12,6 @@ test_("Epigram")
 }
 
 
->>>>>>> 7bcc6e7ca9bcba4c10d17b2007548c581cc20fd8
 #include "JdTypeId.hpp"
 
 test_("TypeId")
@@ -34,7 +30,6 @@ test_ ("JdAssert")
 	catch (JdResult & r) { msg = "failure"; }					expect (msg == "failure")
 }
 
-<<<<<<< HEAD
 #include "Epigram.hpp"
 
 test_ ("Epigram")
@@ -47,72 +42,6 @@ test_ ("Epigram")
 	e.dump ();
 }
 
-
-//#include "JdFiber.hpp"
-//
-//namespace ctx = boost::context::detail;
-////namespace ctx = boost::context;
-//
-//ctx::fcontext_t f1, f2;
-//
-//ctx::fcontext_t home;
-//
-//void Fiber (ctx::transfer_t i)
-//{
-//	home = i.fctx;
-//
-//	cout << "f1: " << i.fctx << endl;
-//
-//	cout << "hi I'm a fiber?\n";
-//	cout << i.data << endl;
-//
-//	ctx::jump_fcontext (f2, nullptr);
-//
-//	cout << "uhg\n";
-//}
-//
-//void Fiber2 (ctx::transfer_t i)
-//{
-//	cout << "f2: " << i.fctx << endl;
-//
-////	cout << i.data << endl;
-//
-//	ctx::jump_fcontext (home, nullptr);
-//
-//	cout << "2 is dead\n";
-//}
-//
-//test ("boost fcontext")
-//{
-//	cout << sizeof (ctx::fcontext_t) << endl;
-//
-//	auto stack = (u8 *) malloc (32768) + 32768;
-//	auto stack2 = (u8 *) malloc (32768) + 32768;
-//
-//	cout << "stack: " << (voidptr_t) stack << ", " << (voidptr_t) stack2 << endl;
-//
-//	f1 = ctx::make_fcontext (stack, 32768, Fiber);
-//	f2 = ctx::make_fcontext (stack2, 32768, Fiber2);
-//
-//	cout << (u8*) stack - (u8*) f1  << endl;
-//
-//	cout << f1 << ", " << f2 << endl;
-//
-//	u32 hi;
-//
-//	cout << & hi << endl;
-//
-//	ctx::transfer_t t = ctx::jump_fcontext (f1, (void *) 6666);
-//
-//	cout << "t.fctx: " << t.fctx << endl;
-//
-//	cout << "returned\n";
-//
-////	ctx::jump_fcontext (f1, (void *) 6666);
-////	ctx::jump_fcontext (f1, (void *) 6666);
-//}
-=======
->>>>>>> 7bcc6e7ca9bcba4c10d17b2007548c581cc20fd8
 
 #include "JdFiber.hpp"
 

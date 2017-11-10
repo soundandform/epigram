@@ -9,14 +9,6 @@
 /* Begin PBXBuildFile section */
 		B583D0941FA97E85007C07F0 /* test.core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B583D0931FA97E85007C07F0 /* test.core.cpp */; };
 		B583D0B61FA97E8F007C07F0 /* JdFiber.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B583D0971FA97E8F007C07F0 /* JdFiber.cpp */; };
-		B583D0B71FA97E8F007C07F0 /* JdAssert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B583D09A1FA97E8F007C07F0 /* JdAssert.cpp */; };
-		B583D0B81FA97E8F007C07F0 /* JdConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B583D09C1FA97E8F007C07F0 /* JdConfig.cpp */; };
-		B583D0B91FA97E8F007C07F0 /* JdCoreL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B583D09E1FA97E8F007C07F0 /* JdCoreL2.cpp */; };
-		B583D0BA1FA97E8F007C07F0 /* EpigramDump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B583D0A81FA97E8F007C07F0 /* EpigramDump.cpp */; };
-		B583D0BB1FA97E8F007C07F0 /* JdUUID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B583D0AD1FA97E8F007C07F0 /* JdUUID.cpp */; };
-		B583D0BC1FA97E8F007C07F0 /* JdStdStringUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B583D0B01FA97E8F007C07F0 /* JdStdStringUtils.cpp */; };
-		B583D0BD1FA97E8F007C07F0 /* JdTypeId.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B583D0B21FA97E8F007C07F0 /* JdTypeId.cpp */; };
-		B583D0BE1FA97E8F007C07F0 /* JdUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B583D0B41FA97E8F007C07F0 /* JdUtils.cpp */; };
 		B583D0C11FA97F0D007C07F0 /* libboost_context-clang-darwin42-mt-1_65_1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B583D0C01FA97F0D007C07F0 /* libboost_context-clang-darwin42-mt-1_65_1.a */; };
 		B583D0C31FA97F20007C07F0 /* city.o in Frameworks */ = {isa = PBXBuildFile; fileRef = B583D0C21FA97F20007C07F0 /* city.o */; };
 /* End PBXBuildFile section */
@@ -36,33 +28,8 @@
 /* Begin PBXFileReference section */
 		B583D0921FA97E85007C07F0 /* doctest.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = doctest.hpp; path = ../../test/doctest.hpp; sourceTree = "<group>"; };
 		B583D0931FA97E85007C07F0 /* test.core.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test.core.cpp; path = ../../test/test.core.cpp; sourceTree = "<group>"; };
-		B583D0971FA97E8F007C07F0 /* JdFiber.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdFiber.cpp; sourceTree = "<group>"; };
-		B583D0981FA97E8F007C07F0 /* JdFiber.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdFiber.hpp; sourceTree = "<group>"; };
-		B583D09A1FA97E8F007C07F0 /* JdAssert.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdAssert.cpp; sourceTree = "<group>"; };
-		B583D09B1FA97E8F007C07F0 /* JdAssert.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdAssert.hpp; sourceTree = "<group>"; };
-		B583D09C1FA97E8F007C07F0 /* JdConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdConfig.cpp; sourceTree = "<group>"; };
-		B583D09D1FA97E8F007C07F0 /* JdConfig.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdConfig.hpp; sourceTree = "<group>"; };
-		B583D09E1FA97E8F007C07F0 /* JdCoreL2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdCoreL2.cpp; sourceTree = "<group>"; };
-		B583D09F1FA97E8F007C07F0 /* JdCoreL2.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdCoreL2.hpp; sourceTree = "<group>"; };
-		B583D0A01FA97E8F007C07F0 /* JdEnum.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdEnum.hpp; sourceTree = "<group>"; };
-		B583D0A11FA97E8F007C07F0 /* JdFlatString.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdFlatString.hpp; sourceTree = "<group>"; };
-		B583D0A21FA97E8F007C07F0 /* JdNucleus.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdNucleus.hpp; sourceTree = "<group>"; };
-		B583D0A31FA97E8F007C07F0 /* JdResult.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdResult.hpp; sourceTree = "<group>"; };
-		B583D0A51FA97E8F007C07F0 /* EpArgs.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EpArgs.hpp; sourceTree = "<group>"; };
-		B583D0A61FA97E8F007C07F0 /* EpAttribute.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EpAttribute.hpp; sourceTree = "<group>"; };
-		B583D0A71FA97E8F007C07F0 /* Epigram.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Epigram.hpp; sourceTree = "<group>"; };
-		B583D0A81FA97E8F007C07F0 /* EpigramDump.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EpigramDump.cpp; sourceTree = "<group>"; };
-		B583D0A91FA97E8F007C07F0 /* EpigramDump.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EpigramDump.hpp; sourceTree = "<group>"; };
-		B583D0AA1FA97E8F007C07F0 /* EpSerializationRaw.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EpSerializationRaw.hpp; sourceTree = "<group>"; };
-		B583D0AB1FA97E8F007C07F0 /* IEpigram.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = IEpigram.hpp; sourceTree = "<group>"; };
-		B583D0AD1FA97E8F007C07F0 /* JdUUID.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdUUID.cpp; sourceTree = "<group>"; };
-		B583D0AE1FA97E8F007C07F0 /* JdUUID.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdUUID.hpp; sourceTree = "<group>"; };
-		B583D0B01FA97E8F007C07F0 /* JdStdStringUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdStdStringUtils.cpp; sourceTree = "<group>"; };
-		B583D0B11FA97E8F007C07F0 /* JdStdStringUtils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdStdStringUtils.hpp; sourceTree = "<group>"; };
-		B583D0B21FA97E8F007C07F0 /* JdTypeId.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdTypeId.cpp; sourceTree = "<group>"; };
-		B583D0B31FA97E8F007C07F0 /* JdTypeId.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdTypeId.hpp; sourceTree = "<group>"; };
-		B583D0B41FA97E8F007C07F0 /* JdUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdUtils.cpp; sourceTree = "<group>"; };
-		B583D0B51FA97E8F007C07F0 /* JdUtils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdUtils.hpp; sourceTree = "<group>"; };
+		B583D0971FA97E8F007C07F0 /* JdFiber.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JdFiber.cpp; path = ../../source/JdFiber.cpp; sourceTree = SOURCE_ROOT; };
+		B583D0981FA97E8F007C07F0 /* JdFiber.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JdFiber.hpp; path = ../../source/JdFiber.hpp; sourceTree = SOURCE_ROOT; };
 		B583D0C01FA97F0D007C07F0 /* libboost_context-clang-darwin42-mt-1_65_1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_context-clang-darwin42-mt-1_65_1.a"; path = "../../lib/libboost_context-clang-darwin42-mt-1_65_1.a"; sourceTree = "<group>"; };
 		B583D0C21FA97F20007C07F0 /* city.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = city.o; path = ../../external/cityhash/src/city.o; sourceTree = "<group>"; };
 		B584EF391FA97E2E00A8B431 /* epitest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = epitest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -84,77 +51,12 @@
 		B583D0951FA97E8F007C07F0 /* source */ = {
 			isa = PBXGroup;
 			children = (
-				B583D0961FA97E8F007C07F0 /* concurrent */,
-				B583D0991FA97E8F007C07F0 /* core */,
-				B583D0A41FA97E8F007C07F0 /* serialization */,
-				B583D0AC1FA97E8F007C07F0 /* twiddle */,
-				B583D0AF1FA97E8F007C07F0 /* utils */,
-			);
-			name = source;
-			path = ../../source;
-			sourceTree = "<group>";
-		};
-		B583D0961FA97E8F007C07F0 /* concurrent */ = {
-			isa = PBXGroup;
-			children = (
 				B583D0971FA97E8F007C07F0 /* JdFiber.cpp */,
 				B583D0981FA97E8F007C07F0 /* JdFiber.hpp */,
 			);
-			path = concurrent;
-			sourceTree = "<group>";
-		};
-		B583D0991FA97E8F007C07F0 /* core */ = {
-			isa = PBXGroup;
-			children = (
-				B583D09A1FA97E8F007C07F0 /* JdAssert.cpp */,
-				B583D09B1FA97E8F007C07F0 /* JdAssert.hpp */,
-				B583D09C1FA97E8F007C07F0 /* JdConfig.cpp */,
-				B583D09D1FA97E8F007C07F0 /* JdConfig.hpp */,
-				B583D09E1FA97E8F007C07F0 /* JdCoreL2.cpp */,
-				B583D09F1FA97E8F007C07F0 /* JdCoreL2.hpp */,
-				B583D0A01FA97E8F007C07F0 /* JdEnum.hpp */,
-				B583D0A11FA97E8F007C07F0 /* JdFlatString.hpp */,
-				B583D0A21FA97E8F007C07F0 /* JdNucleus.hpp */,
-				B583D0A31FA97E8F007C07F0 /* JdResult.hpp */,
-			);
-			path = core;
-			sourceTree = "<group>";
-		};
-		B583D0A41FA97E8F007C07F0 /* serialization */ = {
-			isa = PBXGroup;
-			children = (
-				B583D0A51FA97E8F007C07F0 /* EpArgs.hpp */,
-				B583D0A61FA97E8F007C07F0 /* EpAttribute.hpp */,
-				B583D0A71FA97E8F007C07F0 /* Epigram.hpp */,
-				B583D0A81FA97E8F007C07F0 /* EpigramDump.cpp */,
-				B583D0A91FA97E8F007C07F0 /* EpigramDump.hpp */,
-				B583D0AA1FA97E8F007C07F0 /* EpSerializationRaw.hpp */,
-				B583D0AB1FA97E8F007C07F0 /* IEpigram.hpp */,
-			);
-			path = serialization;
-			sourceTree = "<group>";
-		};
-		B583D0AC1FA97E8F007C07F0 /* twiddle */ = {
-			isa = PBXGroup;
-			children = (
-				B583D0AD1FA97E8F007C07F0 /* JdUUID.cpp */,
-				B583D0AE1FA97E8F007C07F0 /* JdUUID.hpp */,
-			);
-			path = twiddle;
-			sourceTree = "<group>";
-		};
-		B583D0AF1FA97E8F007C07F0 /* utils */ = {
-			isa = PBXGroup;
-			children = (
-				B583D0B01FA97E8F007C07F0 /* JdStdStringUtils.cpp */,
-				B583D0B11FA97E8F007C07F0 /* JdStdStringUtils.hpp */,
-				B583D0B21FA97E8F007C07F0 /* JdTypeId.cpp */,
-				B583D0B31FA97E8F007C07F0 /* JdTypeId.hpp */,
-				B583D0B41FA97E8F007C07F0 /* JdUtils.cpp */,
-				B583D0B51FA97E8F007C07F0 /* JdUtils.hpp */,
-			);
-			path = utils;
-			sourceTree = "<group>";
+			name = source;
+			path = ../../source;
+			sourceTree = SOURCE_ROOT;
 		};
 		B583D0BF1FA97F0D007C07F0 /* Frameworks */ = {
 			isa = PBXGroup;
@@ -241,16 +143,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B583D0B71FA97E8F007C07F0 /* JdAssert.cpp in Sources */,
-				B583D0B91FA97E8F007C07F0 /* JdCoreL2.cpp in Sources */,
-				B583D0B81FA97E8F007C07F0 /* JdConfig.cpp in Sources */,
-				B583D0BE1FA97E8F007C07F0 /* JdUtils.cpp in Sources */,
-				B583D0BD1FA97E8F007C07F0 /* JdTypeId.cpp in Sources */,
-				B583D0BA1FA97E8F007C07F0 /* EpigramDump.cpp in Sources */,
 				B583D0B61FA97E8F007C07F0 /* JdFiber.cpp in Sources */,
 				B583D0941FA97E85007C07F0 /* test.core.cpp in Sources */,
-				B583D0BC1FA97E8F007C07F0 /* JdStdStringUtils.cpp in Sources */,
-				B583D0BB1FA97E8F007C07F0 /* JdUUID.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
