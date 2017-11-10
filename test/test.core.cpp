@@ -1,8 +1,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include "doctest.hpp"
-
-
 #include "JdTypeId.hpp"
 
 test_("TypeId")
@@ -20,6 +18,19 @@ test_ ("JdAssert")
 	try { d_jdThrow ("failure"); }
 	catch (JdResult & r) { msg = "failure"; }					expect (msg == "failure")
 }
+
+#include "Epigram.hpp"
+
+test_ ("Epigram")
+{
+	Epigram e;
+	
+	e ["value"] = 1234.567;
+	f64 v = e ["value"];										expect (v == 1234.567)
+
+	e.dump ();
+}
+
 
 //#include "JdFiber.hpp"
 //
@@ -145,7 +156,6 @@ test_ ("JdFiberV2")
 		JdFibers fibers;
 		if (0)
 		{
-			
 			auto fiber = fibers.CreateFiber <MyFiber> (32768, & result, "fiber1");
 			auto fiber2 = fibers.CreateFiber <MyFiber> (32768, & result, "fiber2");
 			
