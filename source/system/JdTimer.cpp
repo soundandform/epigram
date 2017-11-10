@@ -33,13 +33,13 @@ u64 JdTimer::GetSeconds ()
 
 u64 JdTimer::GetMilliseconds ()
 {
-	return m_timer.elapsed ().wall * 1000000;
+	return m_timer.elapsed ().wall / 1000000;
 }
 
 
 u64 JdTimer::GetMicroseconds ()
 {
-	return m_timer.elapsed ().wall * 1000;
+	return m_timer.elapsed ().wall / 1000;
 }
 
 u64 JdTimer::GetNanoseconds ()
@@ -54,12 +54,8 @@ f64 JdTimer::GetTimeInSeconds ()
 }
 
 
-namespace Jd {
-
-//	u64 GetTimestamp ()
-//	{
-//	}
-	
+namespace Jd
+{
 	u64 GetMicroseconds ()
 	{
 		return s_jdTimer.GetMicroseconds ();

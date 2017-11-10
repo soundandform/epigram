@@ -10,12 +10,14 @@
 #include "Epigram.hpp"
 
 #include "JdStopwatch.hpp"
+#include "JdTimer.hpp"
 
 test_suite (Timers)
 {
 	doctest (Basic)
 	{
-		f64 seconds = Jd::MeasureTime ([] { sleep (1); }); 		expect (seconds > 1.) expect (seconds < 1.01)
+		f64 seconds = Jd::MeasureTime ([] { sleep (1); }); 			expect (seconds > 1.) expect (seconds < 1.01)
+		u64 us = Jd::GetMicroseconds ();							expect (us > 1000000);
 	}
 }
 
