@@ -9,7 +9,7 @@
 #ifndef Jigidesign_JdCycles_h
 #define Jigidesign_JdCycles_h
 
-//#include <iomanip>
+#include <iomanip>
 
 #include <boost/timer/timer.hpp>
 #include "JdNucleus.hpp"

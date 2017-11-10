@@ -18,6 +18,10 @@
 		B53878301FB54F040071B682 /* EpigramDump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B538782E1FB54F040071B682 /* EpigramDump.cpp */; };
 		B53878331FB54F3A0071B682 /* JdUUID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878321FB54F3A0071B682 /* JdUUID.cpp */; };
 		B562BD771FB55D9500FDE277 /* test.epigram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B562BD761FB55D9500FDE277 /* test.epigram.cpp */; };
+		B580E2401FB64C8B00DD177B /* JdTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B580E23D1FB64C8B00DD177B /* JdTimer.cpp */; };
+		B580E2431FB64CF100DD177B /* libboost_timer-clang-darwin42-mt-1_65_1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2411FB64CF100DD177B /* libboost_timer-clang-darwin42-mt-1_65_1.a */; };
+		B580E2441FB64CF100DD177B /* libboost_chrono-clang-darwin42-mt-1_65_1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2421FB64CF100DD177B /* libboost_chrono-clang-darwin42-mt-1_65_1.a */; };
+		B580E2461FB64D0B00DD177B /* libboost_system-clang-darwin42-mt-1_65_1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2451FB64D0A00DD177B /* libboost_system-clang-darwin42-mt-1_65_1.a */; };
 		B583D0941FA97E85007C07F0 /* test.core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B583D0931FA97E85007C07F0 /* test.core.cpp */; };
 		B583D0C11FA97F0D007C07F0 /* libboost_context-clang-darwin42-mt-1_65_1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B583D0C01FA97F0D007C07F0 /* libboost_context-clang-darwin42-mt-1_65_1.a */; };
 		B583D0C31FA97F20007C07F0 /* city.o in Frameworks */ = {isa = PBXBuildFile; fileRef = B583D0C21FA97F20007C07F0 /* city.o */; };
@@ -65,6 +69,12 @@
 		B53878311FB54F2C0071B682 /* JdUUID.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = JdUUID.hpp; path = hash/JdUUID.hpp; sourceTree = "<group>"; };
 		B53878321FB54F3A0071B682 /* JdUUID.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JdUUID.cpp; path = hash/JdUUID.cpp; sourceTree = "<group>"; };
 		B562BD761FB55D9500FDE277 /* test.epigram.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = test.epigram.cpp; path = ../../test/test.epigram.cpp; sourceTree = "<group>"; };
+		B580E23D1FB64C8B00DD177B /* JdTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JdTimer.cpp; path = system/JdTimer.cpp; sourceTree = "<group>"; };
+		B580E23E1FB64C8B00DD177B /* JdTimer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JdTimer.hpp; path = system/JdTimer.hpp; sourceTree = "<group>"; };
+		B580E23F1FB64C8B00DD177B /* JdStopwatch.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JdStopwatch.hpp; path = system/JdStopwatch.hpp; sourceTree = "<group>"; };
+		B580E2411FB64CF100DD177B /* libboost_timer-clang-darwin42-mt-1_65_1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_timer-clang-darwin42-mt-1_65_1.a"; path = "../../lib/libboost_timer-clang-darwin42-mt-1_65_1.a"; sourceTree = "<group>"; };
+		B580E2421FB64CF100DD177B /* libboost_chrono-clang-darwin42-mt-1_65_1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_chrono-clang-darwin42-mt-1_65_1.a"; path = "../../lib/libboost_chrono-clang-darwin42-mt-1_65_1.a"; sourceTree = "<group>"; };
+		B580E2451FB64D0A00DD177B /* libboost_system-clang-darwin42-mt-1_65_1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_system-clang-darwin42-mt-1_65_1.a"; path = "../../lib/libboost_system-clang-darwin42-mt-1_65_1.a"; sourceTree = "<group>"; };
 		B583D0921FA97E85007C07F0 /* doctest.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = doctest.hpp; path = ../../test/doctest.hpp; sourceTree = "<group>"; };
 		B583D0931FA97E85007C07F0 /* test.core.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test.core.cpp; path = ../../test/test.core.cpp; sourceTree = "<group>"; };
 		B583D0C01FA97F0D007C07F0 /* libboost_context-clang-darwin42-mt-1_65_1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_context-clang-darwin42-mt-1_65_1.a"; path = "../../lib/libboost_context-clang-darwin42-mt-1_65_1.a"; sourceTree = "<group>"; };
@@ -78,7 +88,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				B583D0C31FA97F20007C07F0 /* city.o in Frameworks */,
+				B580E2461FB64D0B00DD177B /* libboost_system-clang-darwin42-mt-1_65_1.a in Frameworks */,
 				B583D0C11FA97F0D007C07F0 /* libboost_context-clang-darwin42-mt-1_65_1.a in Frameworks */,
+				B580E2431FB64CF100DD177B /* libboost_timer-clang-darwin42-mt-1_65_1.a in Frameworks */,
+				B580E2441FB64CF100DD177B /* libboost_chrono-clang-darwin42-mt-1_65_1.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,6 +101,9 @@
 		B583D0951FA97E8F007C07F0 /* source */ = {
 			isa = PBXGroup;
 			children = (
+				B580E23F1FB64C8B00DD177B /* JdStopwatch.hpp */,
+				B580E23D1FB64C8B00DD177B /* JdTimer.cpp */,
+				B580E23E1FB64C8B00DD177B /* JdTimer.hpp */,
 				B53878321FB54F3A0071B682 /* JdUUID.cpp */,
 				B53878311FB54F2C0071B682 /* JdUUID.hpp */,
 				B538782E1FB54F040071B682 /* EpigramDump.cpp */,
@@ -124,6 +140,9 @@
 		B583D0BF1FA97F0D007C07F0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B580E2451FB64D0A00DD177B /* libboost_system-clang-darwin42-mt-1_65_1.a */,
+				B580E2421FB64CF100DD177B /* libboost_chrono-clang-darwin42-mt-1_65_1.a */,
+				B580E2411FB64CF100DD177B /* libboost_timer-clang-darwin42-mt-1_65_1.a */,
 				B583D0C21FA97F20007C07F0 /* city.o */,
 				B583D0C01FA97F0D007C07F0 /* libboost_context-clang-darwin42-mt-1_65_1.a */,
 			);
@@ -218,6 +237,7 @@
 				B538781C1FB54E170071B682 /* JdConfig.cpp in Sources */,
 				B538781B1FB54E170071B682 /* JdCoreL2.cpp in Sources */,
 				B538781E1FB54E170071B682 /* JdCore.cpp in Sources */,
+				B580E2401FB64C8B00DD177B /* JdTimer.cpp in Sources */,
 				B583D0941FA97E85007C07F0 /* test.core.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

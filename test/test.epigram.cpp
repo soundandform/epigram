@@ -9,7 +9,17 @@
 #include "doctest.hpp"
 #include "Epigram.hpp"
 
-test_suite ("Epigram")
+#include "JdStopwatch.hpp"
+
+test_suite (Timers)
+{
+	doctest (Basic)
+	{
+		f64 seconds = Jd::MeasureTime ([] { sleep (1); }); 		expect (seconds > 1.) expect (seconds < 1.01)
+	}
+}
+
+test_suite (Epigram)
 {
 	doctest (ItBuilds)
 	{
@@ -19,7 +29,6 @@ test_suite ("Epigram")
 		f64 value = e ["string"];									expect (value == 1234.678)
 	}
 	
-
 	doctest (Pointers)
 	{
 		Epigram e;
