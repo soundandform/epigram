@@ -17,6 +17,10 @@ cd boost
 ./b2 toolset=clang cxxflags="-stdlib=libc++" linkflags="-stdlib=libc++" variant=release --layout=versioned
 
 cp stage/lib/libboost_context-clang-darwin42-mt-1_65_1.a ../../lib
+cp stage/lib/libboost_system-clang-darwin42-mt-1_65_1.a ../../lib
+cp stage/lib/libboost_thread-clang-darwin42-mt-1_65_1.a ../../lib
+cp stage/lib/libboost_timer-clang-darwin42-mt-1_65_1.a ../../lib
+cp stage/lib/libboost_chrono-clang-darwin42-mt-1_65_1.a ../../lib
 
 cd ..
 
