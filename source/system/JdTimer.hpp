@@ -6,15 +6,15 @@
  *
  */
 
-#ifndef EPTIME_H
-#define EPTIME_H
+#ifndef JDTIME_HPP
+#define JDTIME_HPP
 
 #include <boost/timer/timer.hpp>
 #include "JdNucleus.hpp"
 
+
 class JdTimer
 {
-	
 	public:
 				JdTimer				();
 
@@ -31,8 +31,6 @@ class JdTimer
 	boost::timer::cpu_timer			m_timer;
 };
 
-
-static JdTimer s_jdTimer;
 
 
 namespace Jd

@@ -56,6 +56,8 @@ f64 JdTimer::GetTimeInSeconds ()
 
 namespace Jd
 {
+	static JdTimer s_jdTimer;
+	
 	u64 GetMicroseconds ()
 	{
 		return s_jdTimer.GetMicroseconds ();
