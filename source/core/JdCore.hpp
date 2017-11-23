@@ -325,6 +325,9 @@ struct JdEnum
 
 
 
+typedef std::lock_guard <std::mutex> mutex_lock;
+typedef std::lock_guard <std::recursive_mutex> rmutex_lock;
+
 
 struct JdPreconditions
 {
