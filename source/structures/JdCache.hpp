@@ -10,7 +10,7 @@
 #define JdResourceCache_hpp
 
 #include "JdList.hpp"
-
+#include <list>
 
 template <typename T>
 struct JdCacheHandlerT
