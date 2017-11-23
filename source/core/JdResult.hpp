@@ -170,6 +170,11 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 		return m_resultCode;
 	}
 	
+	void					SetMessage				(stringRef_t i_message)
+	{
+		m_message = i_message;
+	}
+	
 	string					Message					() const
 	{
 		return m_message;
