@@ -15,11 +15,30 @@
 
 d_jdForwardInterface (IJdFiber);
 
+
+enum EJdFiberStatus
+{
+	e_jdFiber_invalid,
+	
+	e_jdFiber_running,
+	e_jdFiber_finished,
+	e_jdFiber_terminated,
+	e_jdFiber_aborted,
+	
+	// runnable states:
+	e_jdFiber_initialized,
+	e_jdFiber_paused,
+	e_jdFiber_exiting,
+	e_jdFiber_terminating
+};
+
+
 d_jdInterface (IJdFiberControl)
 {
 	virtual string				GetName				() = 0;
 	virtual bool				IsRunnable			() = 0;
-	virtual JdResult			Run					() = 0;
+	virtual EJdFiberStatus		Run					(JdResult & o_result) = 0;
+	virtual EJdFiberStatus		Run					() = 0;
 	virtual void				Yield				(IJdFiber i_toFiber = nullptr) = 0;
 	virtual void				YieldTo				(IJdFiber i_toFiber) = 0;
 	virtual JdResult			Terminate			() = 0;
@@ -33,7 +52,12 @@ d_jdInterface (IJdFiber)
 
 	virtual						~ IIJdFiber 		() {}
 	
-	JdResult					Run					()
+	size_t						Run					(JdResult & o_result)
+	{
+		return m_controller->Run (o_result);
+	}
+
+	size_t						Run					()
 	{
 		return m_controller->Run ();
 	}
@@ -67,23 +91,6 @@ d_jdInterface (IJdFiber)
 	private:
 	
 	IJdFiberControl				m_controller		= nullptr;
-};
-
-
-enum EJdFiberStatus
-{
-	e_jdFiber_invalid,
-	
-	e_jdFiber_running,
-	e_jdFiber_finished,
-	e_jdFiber_terminated,
-	e_jdFiber_aborted,
-
-	// runnable states:
-	e_jdFiber_initialized,
-	e_jdFiber_paused,
-	e_jdFiber_exiting,
-	e_jdFiber_terminating
 };
 
 
@@ -233,7 +240,7 @@ class JdFibers
 			return (m_state == c_jdFiber::initialized or m_state == c_jdFiber::paused);
 		}
 
-		virtual JdResult		Run						()
+		virtual EJdFiberStatus	Run						(JdResult & o_result)
 		{
 			d_jdAssert (m_home->AtHome (), "fiber can only be run from home state");
 			
@@ -242,14 +249,28 @@ class JdFibers
 				boost_ctx::transfer_t from = boost_ctx::jump_fcontext (m_context, this);
 				m_home->ComingHome (from.fctx);
 				
-				return m_result;
+				o_result = m_result;
 			}
-			else return d_jdError2 ("invalid fiber state");
+			else o_result = d_jdError2 ("invalid fiber state");
+			
+			return m_state;
+		}
+
+		virtual EJdFiberStatus	Run						()
+		{
+			if (m_state >= c_jdFiber::initialized)
+			{
+				boost_ctx::transfer_t from = boost_ctx::jump_fcontext (m_context, this);
+				m_home->ComingHome (from.fctx);
+			}
+
+			return m_state;
 		}
 
 		virtual void			YieldTo					(IJdFiber i_yieldTo)
 		{
-			Yield (i_yieldTo);
+			if (i_yieldTo)
+				Yield (i_yieldTo);
 		}
 		
 		virtual void			Yield					(IJdFiber i_yieldTo)
@@ -309,14 +330,14 @@ class JdFibers
 		
 		try
 		{
-			while (f->m_state == c_jdFiber::running)
+//			while (f->m_state == c_jdFiber::running)
 			{
 				i64 result = f->m_implementation->RunFiber ();
 
 				if (result == 0)
 					f->m_state = c_jdFiber::exiting;
 
-				f->m_home->ReturnHome (f);
+//				f->m_home->ReturnHome (f);
 			}
 		}
 		catch (JdFiberTerminate & _exit)

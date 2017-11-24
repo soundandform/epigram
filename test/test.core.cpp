@@ -93,23 +93,20 @@ test_ ("JdFiberV2")
 		JdFibers fibers;
 		if (1)
 		{
-			auto fiber = fibers.CreateFiber <MyFiber> (32768, & result, "fiber1");
+			auto fiber1 = fibers.CreateFiber <MyFiber> (32768, & result, "fiber1");
 			auto fiber2 = fibers.CreateFiber <MyFiber> (32768, & result, "fiber2");
 			
-			fiber->SetFriend (fiber2);
+			fiber1->SetFriend (fiber2);
 
 			if (not result)
 			{
-				result = fiber->Run ();		cout << result << endl;
+				fiber1->Run (result);		cout << result << endl;
 
-	//			d_jdAssert (fibers.AtHome (), "fiber state wrong");
-
-				result = fiber2->Run ();
-	//			d_jdAssert (fibers.AtHome (), "fiber state wrong");
+				auto r = fiber2->Run ();
 			}
 			
-			fibers.ReleaseFiber (fiber);
-			fibers.ReleaseFiber (fiber2);
+			result = fibers.ReleaseFiber (fiber1, true);	cout << result << endl; 		expect (result == c_jdNoErr)
+			result = fibers.ReleaseFiber (fiber2);			cout << result << endl;			expect (result == c_jdNoErr)
 			
 			cout << "\n\n";
 		}
@@ -129,9 +126,7 @@ test_ ("JdFiberV2")
 		cout << "\n\n\n";
 		pf->Terminate ();
 		
-		fibers.ReleaseFiber (pf);
-		
-		cout << "bye\n";
+		result = fibers.ReleaseFiber (pf);	expect (result == c_jdNoErr)
 	}
 }
 
