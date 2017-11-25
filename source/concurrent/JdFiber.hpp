@@ -39,8 +39,8 @@ d_jdInterface (IJdFiberControl)
 	virtual bool				IsRunnable			() = 0;
 	virtual EJdFiberStatus		Run					(JdResult & o_result) = 0;
 	virtual EJdFiberStatus		Run					() = 0;
-	virtual void				Yield				(IJdFiber i_toFiber = nullptr) = 0;
-	virtual void				YieldTo				(IJdFiber i_toFiber) = 0;
+	virtual void				Yield				(IJdFiber i_toFiber = nullptr) = 0;		// Yield (nullptr) switches to calling fiber
+	virtual void				YieldTo				(IJdFiber i_toFiber) = 0;				// YieldTo (nullptr) switches to home
 	virtual JdResult			Terminate			() = 0;
 };
 
@@ -172,9 +172,32 @@ class JdFibers
 		if (fc->m_context)
 			fc->m_state = e_jdFiber_initialized;
 		
+		m_fibers.push_back (fiber);
+		
 		return fiber;
 	}
 	
+	template <typename T = IIJdFiber>
+	T *							GetActiveFiber			()
+	{
+		return static_cast <T *> (m_activeFiber->m_implementation);
+	}
+
+	IJdFiberControl				GetActiveController 	()
+	{
+		return m_activeFiber;
+	}
+
+	size_t						GetNumFibers			() const
+	{
+		return m_fibers.size ();
+	}
+	
+	template <typename T>
+	T *							GetFiber				(size_t i_index)
+	{
+		return static_cast <T *> (m_fibers [i_index]);
+	}
 	
 	JdResult					ReleaseFiber			(IJdFiber i_fiber, bool i_forceQuit = false)
 	{
@@ -197,7 +220,10 @@ class JdFibers
 			else
 				m_activeFiber->Yield (i_fiber);		// TODO: test this scenario of releasing a fiber from another fiber
 		}
-		
+
+		auto i = find (m_fibers.begin (), m_fibers.end (), controller->m_implementation);
+		m_fibers.erase (i);
+
 		auto stack = controller->m_stack;
 		m_stacks.push_back ({ stack, controller->m_stackSize });
 
@@ -271,6 +297,8 @@ class JdFibers
 		{
 			if (i_yieldTo)
 				Yield (i_yieldTo);
+			else
+				m_home->ReturnHome (this);
 		}
 		
 		virtual void			Yield					(IJdFiber i_yieldTo)
@@ -434,6 +462,7 @@ class JdFibers
 	};
 	
 	list <StackRecord>				m_stacks;
+	vector <IJdFiber>				m_fibers;
 };
 
 #define __JdFiber_hpp__
