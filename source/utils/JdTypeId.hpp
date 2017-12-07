@@ -548,6 +548,49 @@ class JdTypeId
 
 
 
+template <typename D>
+class JdCasterT
+{
+	#if 0
+	
+		//usage:
+		 JdCasterT </*to:*/ f64> cast (/*from: */ c_jdTypeId::i64);
+	
+		 i64 from = 1234;
+		 auto to = cast (& from);
+
+	#endif
+	
+	typedef D (* CastFunc)	(voidptr_t);
+
+	template <typename S>
+	static D Cast (voidptr_t i_valuePtr)
+	{
+		return * (reinterpret_cast <const S *> (i_valuePtr));
+	}
+	
+	CastFunc			m_caster				= nullptr;
+
+	public:
+
+	JdCasterT (u8 i_srcTypeId)
+	{
+		switch (i_srcTypeId)
+		{
+			case c_jdTypeId::f64: m_caster = & Cast <f64>; break;
+			case c_jdTypeId::i64: m_caster = & Cast <i64>; break;
+			case c_jdTypeId::u64: m_caster = & Cast <u64>; break;
+
+			default: throw ("finish implementation"); break;
+		}
+	}
+	
+	D operator () (voidptr_t i_valuePtr)
+	{
+		return (* m_caster) (i_valuePtr);
+	}
+};
+
 
 struct JdCast
 {

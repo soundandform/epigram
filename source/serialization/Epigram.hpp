@@ -2177,7 +2177,7 @@ class EpigramT : public interface_t
 		m_allocator.Clear ();
 	}
 
-	size_t						Count               ()
+	size_t						Count               () const
 	{
 		size_t count = 0;
 		

@@ -111,13 +111,28 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 		m_resultCode = (i32) hash;
 	}
 	
+	JdResultT &				operator =				(const JdResultT <t_location, R1> & i_other)
+	{
+		if ((voidptr_t) & i_other != this)
+		{
+			m_resultCode	= i_other.m_resultCode;
+//			m_info		 	= i_other.m_info;
+			m_lineNum		= i_other.m_lineNum;
+			m_columnNum		= i_other.m_columnNum;
+			m_location 		= i_other.m_location;
+			m_message		= i_other.m_message;
+			m_return 		= i_other.m_return;
+		}
+		return * this;
+	}
+
 	template <typename L, typename R>
 	JdResultT &				operator =				(const JdResultT <L,R> & i_other)
 	{
 		if ((voidptr_t) & i_other != this)
 		{
 			m_resultCode	= i_other.m_resultCode;
-//			m_info		 	= i_other.m_info;
+			//			m_info		 	= i_other.m_info;
 			m_lineNum		= i_other.m_lineNum;
 			m_columnNum		= i_other.m_columnNum;
 			m_location 		= t_location ();
@@ -126,7 +141,7 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 		}
 		return * this;
 	}
-	
+
 	// anything that is not an error is positive; negative if it is an error; zero meaning "okay" state
 
 	bool					operator ==				(i32 i_result) const
