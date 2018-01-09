@@ -459,9 +459,12 @@ struct GraphT : T
 	
 	~GraphT ()
 	{
-		auto down = m_down;
-		for (auto d : down)
-			erase (*d);
+		if (m_up.size () == 0)
+		{
+			auto down = m_down;
+			for (auto d : down)
+				detach (*d);
+		}
 	}
 
 	GraphT (const T & i_element)
@@ -469,6 +472,8 @@ struct GraphT : T
 		T * base = this;
 		*base = i_element;
 	}
+	
+	GraphT (GraphT &) = delete;
 	
 	size_t				numChildren			() const
 	{
@@ -482,19 +487,18 @@ struct GraphT : T
 	}
 
 	
-	void 				visit 				(const function <void (T & i_node)> & i_vistor)
+	void 				visit 				(const function <void (T & i_node)> & i_visitor)
 	{
+		i_visitor (* this);
+		
 		for (auto & n : m_down)
-		{
-			i_vistor (* n);
-			n->visit (i_vistor);
-		}
+			n->visit (i_visitor);
 	}
 
 	void				prepend				(GraphT & i_node)
 	{
 		d_jdAssert (i_node.m_up.count (this) == 0, "node already linked");
-		i_node.m_up.insert (this);
+		i_node.AttachTo (this);
 		m_down.push_front (& i_node);
 	}
 	
@@ -510,7 +514,7 @@ struct GraphT : T
 	void				append				(GraphT & i_node)
 	{
 		d_jdAssert (i_node.m_up.count (this) == 0, "node already linked");
-		i_node.m_up.insert (this);
+		i_node.AttachTo (this);
 		m_down.push_back (& i_node);
 	}
 	
@@ -523,20 +527,41 @@ struct GraphT : T
 		return * node;
 	}
 
-
-	void				erase				(GraphT & i_node)
+	// ensures the node can be in a fully detached state until reattachment
+//	void				tempHold			()
+//	{
+//		m_up.insert (this);
+//	}
+	
+//	void				detachAndHold		(GraphT & i_node)
+//	{
+//		
+//	}
+	
+	// deletes the node if its ref count = 0
+	void				detach				(GraphT & i_node)
 	{
 		GraphT * node = & i_node;										d_jdAssert (i_node.m_up.count (this), "doesn't reference node");
 
 		i_node.m_up.erase (this);
 		auto i = find (m_down.begin (), m_down.end (), node);			d_jdAssert (i != m_down.end (), "node not found");
 		m_down.erase (i);
-		
-		if (i_node.m_up.size () == 0)
-		{
-			cout << "delete: " << node << endl;
-			delete node;
-		}
+
+		i_node.Release ();
+	}
+	
+	protected:
+	void				AttachTo			(GraphT * i_parent)
+	{
+		m_up.insert (i_parent);
+		Release ();
+	}
+	
+	void				Release				()
+	{
+		m_up.erase (this);
+		if (m_up.size () == 0)
+			delete this;
 	}
 	
 	friend class GraphT;
