@@ -12,149 +12,155 @@
 
 
 
-template <typename T>
-struct JdListElementT
-{
-	template <typename> friend class JdListT;
-	protected:
-	
-	T * next			= nullptr;
-	T * previous		= nullptr;
-};
+//template <typename T>
+//struct JdListElementT
+//{
+//	template <typename> friend class JdListT;
+//	protected:
+//
+//	T * next			= nullptr;
+//	T * previous		= nullptr;
+//};
+//
+//template <typename T>
+//struct JdList1T
+//{
+//	typedef T * element_t;
+//
+//					JdList1T			()
+//	{
+//		m_start.next = & m_end;
+//		m_end.previous = & m_start;
+//	}
+//
+//
+//	size_t			size			() const
+//	{
+//		return m_size;
+//	}
+//
+//	element_t		begin			()
+//	{
+//		return m_start.next;
+//	}
+//
+//	element_t		end				()
+//	{
+//		return & m_end;
+//	}
+//
+//
+//	element_t		insert			(element_t i_before, element_t i_element)
+//	{
+//		if (i_before != & m_start)
+//		{
+//			auto previous = i_before->previous;
+//			i_before->previous = i_element;
+//			previous->next = i_element;
+//
+//			i_element->previous = previous;
+//			i_element->next = i_before;
+//
+//			++m_size;
+//		}
+//
+//		return i_element;
+//	}
+//
+//	void			push_back		(element_t i_element)
+//	{
+//		insert (end (), i_element);
+//	}
+//
+//	element_t		pop_front		()
+//	{
+//		if (m_size)
+//		{
+//			element_t i = begin ();
+//			erase (i);
+//			return i;
+//		}
+//		else return nullptr;
+//	}
+//
+//	element_t		next			(element_t i_element)
+//	{
+//		return i_element->next;
+//	}
+//
+//	element_t		previous		(element_t i_element)
+//	{
+//		return i_element->previous;
+//	}
+//
+//
+//	element_t		erase			(element_t i_element)
+//	{
+//		d_jdAssert (i_element, "nul element");
+//		d_jdAssert (i_element != & m_start, "deleting null element");
+//		d_jdAssert (i_element != & m_end, "deleting end element");
+//
+//		auto next = i_element->next;
+//
+//		if (i_element->previous)
+//			i_element->previous->next = next;
+//		if (next)
+//			next->previous = i_element->previous;
+//
+//		i_element->next = nullptr;
+//		i_element->previous = nullptr;
+//
+//		--m_size;
+//
+//		return next;
+//	}
+//
+////	element_t		delete			(element_t i_element)
+////	{
+////		auto next = remove (i_element);
+////		delete i_element;
+////		return next;
+////	}
+//
+//	protected:
+//
+//	T				m_start,
+//					m_end;
+//
+//	size_t			m_size			= 0;
+//};
+//
+
 
 template <typename T>
 struct JdListT
 {
-	typedef T * element_t;
-	
-					JdListT			()
+	struct Header
 	{
-		m_start.next = & m_end;
-		m_end.previous = & m_start;
-	}
+//		Element (const T & i_element) : value (i_element) {}
+//		ElementT () : T () {}
 
-
-	size_t			size			() const
-	{
-		return m_size;
-	}
-	
-	element_t		begin			()
-	{
-		return m_start.next;
-	}
-
-	element_t		end				()
-	{
-		return & m_end;
-	}
-	
-
-	element_t		insert			(element_t i_before, element_t i_element)
-	{
-		if (i_before != & m_start)
-		{
-			auto previous = i_before->previous;
-			i_before->previous = i_element;
-			previous->next = i_element;
-			
-			i_element->previous = previous;
-			i_element->next = i_before;
-			
-			++m_size;
-		}
-		
-		return i_element;
-	}
-
-	void			push_back		(element_t i_element)
-	{
-		insert (end (), i_element);
-	}
-
-	element_t		pop_front		()
-	{
-		if (m_size)
-		{
-			element_t i = begin ();
-			erase (i);
-			return i;
-		}
-		else return nullptr;
-	}
-	
-	element_t		next			(element_t i_element)
-	{
-		return i_element->next;
-	}
-
-	element_t		previous		(element_t i_element)
-	{
-		return i_element->previous;
-	}
-
-	
-	element_t		erase			(element_t i_element)
-	{
-		d_jdAssert (i_element, "nul element");
-		d_jdAssert (i_element != & m_start, "deleting null element");
-		d_jdAssert (i_element != & m_end, "deleting end element");
-		
-		auto next = i_element->next;
-		
-		if (i_element->previous)
-			i_element->previous->next = next;
-		if (next)
-			next->previous = i_element->previous;
-		
-		i_element->next = nullptr;
-		i_element->previous = nullptr;
-		
-		--m_size;
-		
-		return next;
-	}
-
-//	element_t		delete			(element_t i_element)
-//	{
-//		auto next = remove (i_element);
-//		delete i_element;
-//		return next;
-//	}
-	
-	protected:
-	
-	T				m_start,
-					m_end;
-	
-	size_t			m_size			= 0;
-};
-
-
-
-template <typename T>
-struct JdList2T
-{
-	struct ElementT : T
-	{
-		ElementT (const T & i_element) : T (i_element) {}
-		ElementT () : T () {}
-
-		friend class JdList2T;
+		friend class JdListT;
 		
 		private:
-		ElementT * previous			= nullptr;
-		ElementT * next				= nullptr;
+		Header *	previous			= nullptr;
+		Header * 	next				= nullptr;
 		
 		#if DEBUG
-			JdList2T * linkedTo			= nullptr;
+			JdListT * linkedTo			= nullptr;
 		#endif
 	};
+	
+//	struct Element
+//	{
+//		Header 	header;
+//		T		object;
+//	};
 
 	struct Iterator
 	{
 		typedef const Iterator & IteratorRef;
-		friend class JdList2T;
+		friend class JdListT;
 		friend class Iterator;
 
 		bool operator == (IteratorRef i_iterator) const
@@ -260,26 +266,28 @@ struct JdList2T
 			return *m_at;
 		}
 		
-		ElementT * operator -> ()			{ return m_at; }
-		ElementT * operator -> () const		{ return m_at; }
+		Header * operator -> ()			{ return m_at; }
+		Header * operator -> () const		{ return m_at; }
 
 		private://--------------------------------------------------------------------------------
-		Iterator	(ElementT * i_start, JdList2T * i_list)
+		Iterator	(Header * i_start, JdListT * i_list)
 		:
 		m_at		(i_start),
 		m_list		(i_list)
-		{}
+		{
+			cout << "m_at: " << m_at << endl;
+		}
 		
-		ElementT * operator () () { return m_at; }
+		Header * operator () () { return m_at; }
 		
-		ElementT * m_at;
-		JdList2T * m_list;
+		Header *		m_at;
+		JdListT * 		m_list;
 	};
 
 	typedef Iterator iterator_t;
-	typedef ElementT * element_t;
+	typedef Header * header_t;
 	
-	JdList2T						()
+	JdListT							()
 	{
 		m_start.next = & m_end;
 		m_end.previous = & m_start;
@@ -290,14 +298,15 @@ struct JdList2T
 		#endif
 	}
 	
-	~ JdList2T						()
+	~ JdListT						()
 	{
 		auto i = begin ();
 		while (i != end ())
 		{
+			cout << "DELETE: " << this << "\n";
 			auto e = i.m_at;
-			++i;
-			delete e;
+			++i; // inc. first before blown away
+//			DeleteElement (e);
 		}
 	}
 	
@@ -323,22 +332,19 @@ struct JdList2T
 		return * m_start.next;
 	}
 
-	iterator_t					push_back		(const T & i_element)
+	
+	iterator_t					append			(const T & i_element)
 	{
-		auto element = new ElementT (i_element);
-		
+		auto element = NewElement (i_element);
 		_insert (end (), element);
-		
 		return { element, this };
 	}
 	
 	
 	iterator_t /* next */		insert			(iterator_t i_before, const T & i_element)
 	{
-		auto element = new ElementT (i_element);
-		
+		auto element = NewElement (i_element);
 		_insert (end (), element);
-		
 		return { next, this };
 	}
 
@@ -398,33 +404,149 @@ struct JdList2T
 	
 	protected:
 	
-	void				_insert			(iterator_t i_before, element_t i_element)
+	header_t			NewElement				(const T & i_element)
+	{
+		size_t s = sizeof (Header) + sizeof (T);
+		
+		auto header = (header_t) new u8 [s];
+		new (header) Header;
+		new (header+1) T (i_element);
+		return header;
+	}
+
+	void				DeleteElement			(header_t i_header)
+	{
+		T * element = (T *) (i_header + 1);
+		element->~T();
+		
+		auto data = (u8 *) i_header;
+		delete [] data;
+	}
+
+	void				_insert					(iterator_t i_before, header_t i_header)
 	{
 		#if DEBUG
-			d_jdAssert (i_element->linkedTo == nullptr, "list element belongs to another list");
-			i_element->linkedTo = this;
+			d_jdAssert (i_header->linkedTo == nullptr, "list element belongs to another list");
+			i_header->linkedTo = this;
 		#endif
 		
 		if (i_before() != & m_start)
 		{
 			auto previous = i_before->previous;
-			i_before->previous = i_element;
-			previous->next = i_element;
+			i_before->previous = i_header;
+			previous->next = i_header;
 			
-			i_element->previous = previous;
-			i_element->next = i_before ();
+			i_header->previous = previous;
+			i_header->next = i_before ();
 			
 			++m_size;
 		}
 	}
 	
-
-
-	ElementT		m_start,
+	Header 			m_start,
 					m_end;
 	
 	size_t			m_size			= 0;
 };
+
+
+
+
+template <typename T>
+struct GraphT : T
+{
+	GraphT () {}
+	
+	~GraphT ()
+	{
+		auto down = m_down;
+		for (auto d : down)
+			erase (*d);
+	}
+
+	GraphT (const T & i_element)
+	{
+		T * base = this;
+		*base = i_element;
+	}
+	
+	size_t				numChildren			() const
+	{
+		return m_down.size ();
+	}
+
+	GraphT &			operator []			(size_t i_index)
+	{
+		d_jdAssert (i_index < m_down.size (), "out of bounds");
+		return * m_down [i_index];
+	}
+
+	
+	void 				visit 				(const function <void (T & i_node)> & i_vistor)
+	{
+		for (auto & n : m_down)
+		{
+			i_vistor (* n);
+			n->visit (i_vistor);
+		}
+	}
+
+	void				prepend				(GraphT & i_node)
+	{
+		d_jdAssert (i_node.m_up.count (this) == 0, "node already linked");
+		i_node.m_up.insert (this);
+		m_down.push_front (& i_node);
+	}
+	
+	
+	GraphT &			prepend				(const T & i_element)
+	{
+		GraphT * node = new GraphT (i_element);
+		node->m_up.insert (this);
+		m_down.push_front (node);
+		return * node;
+	}
+
+	void				append				(GraphT & i_node)
+	{
+		d_jdAssert (i_node.m_up.count (this) == 0, "node already linked");
+		i_node.m_up.insert (this);
+		m_down.push_back (& i_node);
+	}
+	
+	
+	GraphT &			append				(const T & i_element)
+	{
+		GraphT * node = new GraphT (i_element);
+		node->m_up.insert (this);
+		m_down.push_back (node);
+		return * node;
+	}
+
+
+	void				erase				(GraphT & i_node)
+	{
+		GraphT * node = & i_node;										d_jdAssert (i_node.m_up.count (this), "doesn't reference node");
+
+		i_node.m_up.erase (this);
+		auto i = find (m_down.begin (), m_down.end (), node);			d_jdAssert (i != m_down.end (), "node not found");
+		m_down.erase (i);
+		
+		if (i_node.m_up.size () == 0)
+		{
+			cout << "delete: " << node << endl;
+			delete node;
+		}
+	}
+	
+	friend class GraphT;
+	
+	set <GraphT *>					m_up;
+	vector <GraphT *>				m_down;
+};
+
+
+
 
 
 #endif /* JdList_h */

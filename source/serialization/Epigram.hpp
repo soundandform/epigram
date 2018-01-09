@@ -2623,8 +2623,19 @@ class EpigramT : public interface_t
 	}
 	
 	//-------------------------------------------------------------------------------------------------------------------------------------------------
+	EpigramElement						Index				(size_t i_index) const
+	{
+		return const_cast <EpigramT *> (this)->_Index (i_index);
+	}
+	
 	EpigramElement						Index				(size_t i_index) // const
 	{
+		return _Index (i_index);
+	}
+		
+	EpigramElement						_Index				(size_t i_index)
+	{
+
 		EpigramElement element (this, EpNoType ());
 		
 //		size_t count = Count ();

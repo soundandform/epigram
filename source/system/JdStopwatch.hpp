@@ -10,6 +10,7 @@
 #define Jigidesign_JdCycles_h
 
 #include <iomanip>
+#include <iostream>
 
 #include <boost/timer/timer.hpp>
 #include "JdNucleus.hpp"
