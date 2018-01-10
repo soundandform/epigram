@@ -486,13 +486,20 @@ struct GraphT : T
 		return * m_down [i_index];
 	}
 
-	
 	void 				visit 				(const function <void (T & i_node)> & i_visitor)
 	{
 		i_visitor (* this);
 		
 		for (auto & n : m_down)
 			n->visit (i_visitor);
+	}
+
+	void 				visitBottomUp		(const function <void (T & i_node)> & i_visitor)
+	{
+		for (auto & n : m_down)
+			n->visit (i_visitor);
+
+		i_visitor (* this);
 	}
 
 	void				prepend				(GraphT & i_node)
@@ -550,7 +557,8 @@ struct GraphT : T
 		i_node.Release ();
 	}
 	
-	protected:
+	protected://--------------------------------------------------------------------------------
+	
 	void				AttachTo			(GraphT * i_parent)
 	{
 		m_up.insert (i_parent);
