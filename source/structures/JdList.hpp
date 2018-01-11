@@ -485,6 +485,8 @@ struct GraphT : T
 		d_jdAssert (i_index < m_down.size (), "out of bounds");
 		return * m_down [i_index];
 	}
+	
+	vector <GraphT *>	nodes				() { return m_down; }
 
 	void 				visit 				(const function <void (T & i_node)> & i_visitor)
 	{
