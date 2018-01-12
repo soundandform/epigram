@@ -455,6 +455,10 @@ struct JdListT
 template <typename T>
 struct GraphT : T
 {
+	typedef vector <GraphT *>						nodes_t;
+	typedef typename nodes_t::iterator				iterator_t;
+	typedef typename nodes_t::reverse_iterator		riterator_t;
+
 	GraphT () {}
 	
 	~GraphT ()
@@ -472,6 +476,16 @@ struct GraphT : T
 		T * base = this;
 		*base = i_element;
 	}
+
+	GraphT (GraphT && i_other)
+	:
+	m_up	(move (i_other.m_up)),
+	m_down 	(move (i_other.m_down)),
+	T		(move ((T &&)i_other))
+	{
+		
+	}
+
 	
 	GraphT (GraphT &) = delete;
 	
@@ -486,7 +500,15 @@ struct GraphT : T
 		return * m_down [i_index];
 	}
 	
-	vector <GraphT *>	nodes				() { return m_down; }
+	vector <GraphT *> &	children			() { return m_down; }
+	
+	
+	iterator_t			begin				() { return m_down.begin (); }
+	iterator_t			end					() { return m_down.end (); }
+
+	riterator_t			rbegin				() { return m_down.rbegin (); }
+	riterator_t			rend				() { return m_down.rend (); }
+
 
 	void 				visit 				(const function <void (T & i_node)> & i_visitor)
 	{
@@ -536,17 +558,35 @@ struct GraphT : T
 		return * node;
 	}
 
-	// ensures the node can be in a fully detached state until reattachment
-//	void				tempHold			()
-//	{
-//		m_up.insert (this);
-//	}
+	void				clone				(GraphT & i_other)
+	{
+		T * e = this;
+		* e = i_other;
+		CloneR (*this, i_other.children ());
+	}
+
 	
-//	void				detachAndHold		(GraphT & i_node)
-//	{
-//		
-//	}
+	GraphT				clone				()
+	{
+		GraphT base;
+		T * element = & base;
+		*element = *this;
+		
+		CloneR (base, m_down);
+		
+		return base;
+	}
 	
+	void				CloneR				(GraphT & i_to, nodes_t & i_from)
+	{
+		for (auto i : i_from)
+		{
+			T * element = i;
+			auto & copy = i_to.append (* element);
+			CloneR (copy, i->children ());
+		}
+	}
+
 	// deletes the node if its ref count = 0
 	void				detach				(GraphT & i_node)
 	{
@@ -559,7 +599,29 @@ struct GraphT : T
 		i_node.Release ();
 	}
 	
+	void				dump				()
+	{
+		DumpR (this);
+		cout << endl;
+	}
+	
 	protected://--------------------------------------------------------------------------------
+
+	void				DumpR				(GraphT * i_node)
+	{
+		T & obj = * i_node;
+		cout << "[" << i_node << " " << obj;
+		
+		if (i_node->numChildren ())
+		{
+			cout << " ";
+			for (auto i : i_node->children ())
+				DumpR (i);
+		}
+		
+		cout << "]";
+	}
+
 	
 	void				AttachTo			(GraphT * i_parent)
 	{
