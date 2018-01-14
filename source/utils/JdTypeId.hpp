@@ -339,6 +339,7 @@ namespace Jd
 	char TypeIdToChar (u8 i_typeId);
 	u8 TypeCharToId (char i_typeChar);
 	
+	bool IsPointer (u8 i_typeId);
 	bool IsIntegerType (u8 i_typeId);
 	bool IsFloatingPointType (u8 i_typeId);
 	bool IsSignedIntegerType (u8 i_typeId);

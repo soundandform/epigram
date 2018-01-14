@@ -69,6 +69,11 @@ namespace Jd
 		
 		return name;
 	}
+	
+	bool IsPointer (u8 i_typeId)
+	{
+		return (i_typeId != c_jdTypeId::unknown) and (i_typeId & c_jdTypeId::isPointer);
+	}
 
 	bool IsFloatingPointType (u8 i_typeId)
 	{
