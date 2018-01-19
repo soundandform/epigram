@@ -20,8 +20,19 @@
 
 namespace c_jdTypeId
 {
-	// note: bit 5 is unused.
-	
+	/*
+	 
+	0 0 0 1 1 1 1 1 =	c_jdType::unknown
+	 
+	o o o o o o o o
+	7 6 5 4 3 2 1 0
+	| | | | | | | |
+	 \ \ \_____________ unused: can be used for extended custom types.
+	  \ \______________ isPointer
+	   \_______________ isArray
+	 
+	 */
+	 
 	const u8	isPointer			=	1	<< 6,
 				isArray				=	1	<< 7,
 	
@@ -52,6 +63,8 @@ namespace c_jdTypeId
 				string16			=	16,
 				string32			=	17,
 	
+				// unused			=	18,
+	
 				binary				=	19,
 	
 				epigram				=	20,
@@ -62,21 +75,20 @@ namespace c_jdTypeId
 	
 				signature			=	24,
 	
-				// 25
-				// 26
+				// unused			=	25,
+
+				hash				=	26,
+				uuid				=	27,
 	
-				hash				=	27,
-				uuid				=	28,
-	
-				function			=	29,
+				function			=	28,
 				method				=	function,
 	
-				any					=	30,
-				none				=	31, // 'none' means unset. ('default' epigram item uses this key-type,  void/null means "set to null")
+				any					=	39,
+				none				=	30, // 'none' means unset. ('default' epigram item uses this key-type,  void/null means "set to null")
 	
-				unknown				=	0xff,
+				unknown				=	31, // 0x1f
 	
-				typeMask			=	0x1f | isPointer;		// 5 LS bits + isPointer
+				typeMask			=	0x1f | isPointer;		// 5 LS bits + isPointer		// FIX: hmm, there really shouldn't be a type mask now
 }
 
 
@@ -526,25 +538,61 @@ namespace Jd
 class JdTypeId
 {
 	public:
-				JdTypeId		(u8 i_typeId) : m_typeId (i_typeId) { }
-				JdTypeId		() {}
+					JdTypeId		(u8 i_typeId) : m_typeId (i_typeId) { }
+					JdTypeId		() {}
+	
+	u8				Id				() const { return m_typeId; }
+	
+	bool			operator !=		(const JdTypeId & i_rhs)
+	{
+		return m_typeId != i_rhs.m_typeId;
+	}
 	
 	template <typename T>
-	void		Set				() { m_typeId = Jd::TypeId <T> (); }
+	void			Set				() { m_typeId = Jd::TypeId <T> (); }
 
 	template <typename T>
-	void		Set				(const T &) { m_typeId = Jd::TypeId <T> (); }
+	void			Set				(const T &) { m_typeId = Jd::TypeId <T> (); }
 	
 	template <typename T>
-	bool		Is				() { return Jd::TypeId <T> () == m_typeId; }
+	bool			Is				() { return Jd::TypeId <T> () == m_typeId; }
 	
-				operator u8		() { return m_typeId; }
-	cstr_t		GetTypeName		() { return Jd::TypeIdToName (m_typeId); }
-	char		GetTypeChar		() { return Jd::TypeIdToChar (m_typeId); }
+	bool			Is				(u8 i_typeId)
+	{
+		return (m_typeId == i_typeId);
+	}
 	
+	bool 			IsArray			() const
+	{
+		return (m_typeId & c_jdTypeId::isArray);
+	}
+
+	bool			IsAny			() const
+	{
+		return (m_typeId == c_jdTypeId::any);
+	}
+
+	bool			IsFunction		() const
+	{
+		return (m_typeId == c_jdTypeId::function);
+	}
+
+	bool 			IsObject		() const
+	{
+		return IsObject (m_typeId);
+	}
+
+	static bool		IsObject		(u8 i_typeId)
+	{
+		return (i_typeId == c_jdTypeId::versionedObject or i_typeId == c_jdTypeId::object);
+	}
+
+	string			GetTypeName		() const 	{ return Jd::TypeIdToName (m_typeId); }
+	char			GetTypeChar		() 			{ return Jd::TypeIdToChar (m_typeId); }
 	
 	protected:
-	u8			m_typeId		= c_jdTypeId::unknown;
+	
+	u8				m_typeId		= c_jdTypeId::unknown;
 };
 
 

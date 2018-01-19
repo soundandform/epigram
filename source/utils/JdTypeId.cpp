@@ -72,7 +72,7 @@ namespace Jd
 	
 	bool IsPointer (u8 i_typeId)
 	{
-		return (i_typeId != c_jdTypeId::unknown) and (i_typeId & c_jdTypeId::isPointer);
+		return (i_typeId & c_jdTypeId::isPointer);
 	}
 
 	bool IsFloatingPointType (u8 i_typeId)
@@ -98,7 +98,7 @@ namespace Jd
 
 	bool IsTypeSet (u8 i_typeId)
 	{
-		return (i_typeId < c_jdTypeId::unknown);
+		return (i_typeId != c_jdTypeId::unknown);
 			
 	}
 

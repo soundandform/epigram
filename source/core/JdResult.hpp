@@ -83,10 +83,10 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 							}
 
 
-							JdResultT				(cstr_t i_message, t_location i_location, u32 i_lineNum, u32 i_columnNum, bool i_isFailure)
+							JdResultT				(cstr_t i_message, t_location i_location, u32 i_lineNum, u32 i_columnNum, i32 i_resultCode)
 							:
 							m_message				(i_message),
-							m_resultCode			(i_isFailure ? -1 : 0),
+							m_resultCode			(i_resultCode),
 							m_location				(i_location),
 							m_lineNum				(i_lineNum),
 							m_columnNum				(i_columnNum)
