@@ -226,12 +226,25 @@ class JdFibers
 
 		auto stack = controller->m_stack;
 		m_stacks.push_back ({ stack, controller->m_stackSize });
-
+		
+#if d_m3DebugFibers
+		size_t numWords = controller->m_stackSize >> 3;
+		auto words = (u64 *) stack;
+		
+		size_t t = 0;
+		while (t < numWords)
+		{
+			if (words [t])
+				break;
+			++t;
+		}
+		
+		numWords -= t;
+		cout << "stackSize: " << controller->m_stackSize << " used: " << (numWords << 3) << endl;
+#endif
+			
 		i_fiber->~IIJdFiber ();
 		controller->~FiberController ();
-		
-//		cout << "free: " << (voidptr_t) stack << endl;
-//		free (stack);
 		
 		return c_jdNoErr;
 	}
@@ -449,7 +462,12 @@ class JdFibers
 			++i;
 		}
 		
-		return (u8 *) malloc (i_stackSize);
+		auto stack = (u8 *) malloc (i_stackSize);
+#		if DEBUG
+			memset (stack, 0x0, i_stackSize);
+#		endif
+		
+		return stack;
 	}
 	
 	FiberController					m_homeFiber;

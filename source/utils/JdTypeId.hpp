@@ -60,8 +60,8 @@ namespace c_jdTypeId
 				f64					=	14,
 
 				string				=	15,
-				string16			=	16,
-				string32			=	17,
+//				string16			=	16,
+//				string32			=	17,
 	
 				// unused			=	18,
 	
@@ -83,7 +83,7 @@ namespace c_jdTypeId
 				function			=	28,
 				method				=	function,
 	
-				any					=	39,
+				any					=	29,
 				none				=	30, // 'none' means unset. ('default' epigram item uses this key-type,  void/null means "set to null")
 	
 				unknown				=	31, // 0x1f

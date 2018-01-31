@@ -1858,7 +1858,13 @@ class EpigramT : public interface_t
 			
 			return value;
 		}
-		
+
+		template <typename T>
+		T						As								() const
+		{
+			return To <T> ();
+		}
+
 //		template <typename K>
 //		EpigramKVT				operator []						(const K & i_key) const
 //		{
