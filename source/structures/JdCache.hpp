@@ -275,8 +275,8 @@ class JdCacheT : protected JdCacheHandlerT <T>
 	protected:
 	t_handler *										m_handler				= nullptr;
 	
-	JdListT <ResourceRecord>						m_queue;
-	JdListT <ResourceRecord>						m_freeRecords;
+	JdList1T <ResourceRecord>						m_queue;
+	JdList1T <ResourceRecord>						m_freeRecords;
 	
 	size_t											m_totalResourceSize		= 0;
 };

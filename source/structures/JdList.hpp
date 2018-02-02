@@ -10,126 +10,125 @@
 #define JdList_h
 
 
+template <typename T>
+struct JdListElementT
+{
+	template <typename> friend class JdList1T;
+	protected:
+
+	T * next			= nullptr;
+	T * previous		= nullptr;
+};
 
 
-//template <typename T>
-//struct JdListElementT
-//{
-//	template <typename> friend class JdListT;
-//	protected:
-//
-//	T * next			= nullptr;
-//	T * previous		= nullptr;
-//};
-//
-//template <typename T>
-//struct JdList1T
-//{
-//	typedef T * element_t;
-//
-//					JdList1T			()
+template <typename T>
+struct JdList1T
+{
+	typedef T * element_t;
+
+					JdList1T			()
+	{
+		m_start.next = & m_end;
+		m_end.previous = & m_start;
+	}
+
+
+	size_t			size			() const
+	{
+		return m_size;
+	}
+
+	element_t		begin			()
+	{
+		return m_start.next;
+	}
+
+	element_t		end				()
+	{
+		return & m_end;
+	}
+
+
+	element_t		insert			(element_t i_before, element_t i_element)
+	{
+		if (i_before != & m_start)
+		{
+			auto previous = i_before->previous;
+			i_before->previous = i_element;
+			previous->next = i_element;
+
+			i_element->previous = previous;
+			i_element->next = i_before;
+
+			++m_size;
+		}
+
+		return i_element;
+	}
+
+	void			push_back		(element_t i_element)
+	{
+		insert (end (), i_element);
+	}
+
+	element_t		pop_front		()
+	{
+		if (m_size)
+		{
+			element_t i = begin ();
+			erase (i);
+			return i;
+		}
+		else return nullptr;
+	}
+
+	element_t		next			(element_t i_element)
+	{
+		return i_element->next;
+	}
+
+	element_t		previous		(element_t i_element)
+	{
+		return i_element->previous;
+	}
+
+
+	element_t		erase			(element_t i_element)
+	{
+		d_jdAssert (i_element, "nul element");
+		d_jdAssert (i_element != & m_start, "deleting null element");
+		d_jdAssert (i_element != & m_end, "deleting end element");
+
+		auto next = i_element->next;
+
+		if (i_element->previous)
+			i_element->previous->next = next;
+		if (next)
+			next->previous = i_element->previous;
+
+		i_element->next = nullptr;
+		i_element->previous = nullptr;
+
+		--m_size;
+
+		return next;
+	}
+
+//	element_t		delete			(element_t i_element)
 //	{
-//		m_start.next = & m_end;
-//		m_end.previous = & m_start;
-//	}
-//
-//
-//	size_t			size			() const
-//	{
-//		return m_size;
-//	}
-//
-//	element_t		begin			()
-//	{
-//		return m_start.next;
-//	}
-//
-//	element_t		end				()
-//	{
-//		return & m_end;
-//	}
-//
-//
-//	element_t		insert			(element_t i_before, element_t i_element)
-//	{
-//		if (i_before != & m_start)
-//		{
-//			auto previous = i_before->previous;
-//			i_before->previous = i_element;
-//			previous->next = i_element;
-//
-//			i_element->previous = previous;
-//			i_element->next = i_before;
-//
-//			++m_size;
-//		}
-//
-//		return i_element;
-//	}
-//
-//	void			push_back		(element_t i_element)
-//	{
-//		insert (end (), i_element);
-//	}
-//
-//	element_t		pop_front		()
-//	{
-//		if (m_size)
-//		{
-//			element_t i = begin ();
-//			erase (i);
-//			return i;
-//		}
-//		else return nullptr;
-//	}
-//
-//	element_t		next			(element_t i_element)
-//	{
-//		return i_element->next;
-//	}
-//
-//	element_t		previous		(element_t i_element)
-//	{
-//		return i_element->previous;
-//	}
-//
-//
-//	element_t		erase			(element_t i_element)
-//	{
-//		d_jdAssert (i_element, "nul element");
-//		d_jdAssert (i_element != & m_start, "deleting null element");
-//		d_jdAssert (i_element != & m_end, "deleting end element");
-//
-//		auto next = i_element->next;
-//
-//		if (i_element->previous)
-//			i_element->previous->next = next;
-//		if (next)
-//			next->previous = i_element->previous;
-//
-//		i_element->next = nullptr;
-//		i_element->previous = nullptr;
-//
-//		--m_size;
-//
+//		auto next = remove (i_element);
+//		delete i_element;
 //		return next;
 //	}
-//
-////	element_t		delete			(element_t i_element)
-////	{
-////		auto next = remove (i_element);
-////		delete i_element;
-////		return next;
-////	}
-//
-//	protected:
-//
-//	T				m_start,
-//					m_end;
-//
-//	size_t			m_size			= 0;
-//};
-//
+
+	protected:
+
+	T				m_start,
+					m_end;
+
+	size_t			m_size			= 0;
+};
+
 
 
 template <typename T>

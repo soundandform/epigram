@@ -16,8 +16,6 @@
 
 namespace Jd
 {
-	std::vector <char> ReadAllBytesOfFile (stringRef_t i_filename);
-	
 	template <typename T>
 	void ByteSwap (T & io_value)
 	{
