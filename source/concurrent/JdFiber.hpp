@@ -9,8 +9,10 @@
 
 #include <boost/context/all.hpp>
 #include <list>
+#include <iomanip>
 
 #include "JdAssert.hpp"
+#include "JdTable.hpp"
 
 
 d_jdForwardInterface (IJdFiber);
@@ -228,19 +230,8 @@ class JdFibers
 		m_stacks.push_back ({ stack, controller->m_stackSize });
 		
 #if d_m3DebugFibers
-		size_t numWords = controller->m_stackSize >> 3;
-		auto words = (u64 *) stack;
-		
-		size_t t = 0;
-		while (t < numWords)
-		{
-			if (words [t])
-				break;
-			++t;
-		}
-		
-		numWords -= t;
-		cout << "stackSize: " << controller->m_stackSize << " used: " << (numWords << 3) << endl;
+
+//		cout << "stackSize: " << controller->m_stackSize << " used: " << (numWords << 3) << endl;
 #endif
 			
 		i_fiber->~IIJdFiber ();
@@ -253,6 +244,25 @@ class JdFibers
 //	{
 //
 //	}
+	
+
+	
+	void						dump					()
+	{
+		if (m_fibers.size ())
+		{
+			JdTable t ({ "fiber", "name", "stack", "used", "runs", "L:state" });
+
+			cstr_t states [] = { "invalid", "running", "finished", "terminated", "aborted", "inited", "paused", "exiting", "terminating" };
+			
+			for (auto i : m_fibers)
+			{
+				auto f = static_cast <FiberController *> (i->m_controller);
+
+				t.AddRow (f, f->m_name, JdByteSize (f->m_stackSize), JdByteSize (measure_stack_height (f)), f->m_runs, states [f->m_state]);
+			}
+		}
+	}
 	
 	protected:
 	
@@ -285,6 +295,7 @@ class JdFibers
 			
 			if (m_state >= c_jdFiber::initialized)
 			{
+				++m_runs;
 				boost_ctx::transfer_t from = boost_ctx::jump_fcontext (m_context, this);
 				m_home->ComingHome (from.fctx);
 				
@@ -299,6 +310,7 @@ class JdFibers
 		{
 			if (m_state >= c_jdFiber::initialized)
 			{
+				++m_runs;
 				boost_ctx::transfer_t from = boost_ctx::jump_fcontext (m_context, this);
 				m_home->ComingHome (from.fctx);
 			}
@@ -334,6 +346,8 @@ class JdFibers
 			
 			if (m_state == c_jdFiber::terminating)
 				throw JdFiberTerminate ();
+			
+			++m_runs;
 		}
 		
 		virtual JdResult		Terminate				()
@@ -354,6 +368,7 @@ class JdFibers
 
 		void *					m_stack					= nullptr;
 		size_t					m_stackSize				= 0;
+		size_t					m_runs					= 0;
 		JdFibers *				m_home					= nullptr;
 		boost_ctx::fcontext_t	m_context				= nullptr;
 		IJdFiber				m_implementation		= nullptr;
@@ -470,6 +485,23 @@ class JdFibers
 		return stack;
 	}
 	
+	size_t						measure_stack_height	(FiberController * i_fiberController)
+	{
+		size_t numWords = i_fiberController->m_stackSize / sizeof (size_t);
+		auto words = (size_t *) i_fiberController->m_stack;
+		
+		size_t t = 0;
+		while (t < numWords)
+		{
+			if (words [t])
+				break;
+			++t;
+		}
+		
+		numWords -= t;
+		return numWords * sizeof (size_t);
+	}
+	
 	FiberController					m_homeFiber;
 	FiberController *				m_activeFiber			= & m_homeFiber;
 
@@ -481,6 +513,7 @@ class JdFibers
 	
 	list <StackRecord>				m_stacks;
 	vector <IJdFiber>				m_fibers;
+	
 };
 
 #define __JdFiber_hpp__
