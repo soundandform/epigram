@@ -93,32 +93,35 @@ struct JdTable
 			totalWidth += (c.width + padding);
 		}
 		
-		string div (totalWidth + 2, '-');
-		string end = "~" + div + "~";
-		div += "--";
-		end += "\n"; div += "\n";
+		string div (totalWidth + 4, '-');
+		div = "+" + div + "+";
+		div += "\n";
 		
 		string pad (padding, ' ');
+		string headerPad = pad;
+//		headerPad [pad.size ()/2] = '|';
 		
 		for (size_t r = 0; r < m_numRows + 1; ++r)
 		{
 			if (r == 0) cout << div;
 			
-			cout << "  ";
+			cout << "|  ";
 			for (auto & c : m_columns)
 			{
 				d_jdAssert (r < c.rows.size (), "row out of bounds");
 				
 				if (r != 0) cout << setfill (c.fill);
 				cout << setw (c.width) << (c.alignLeft or r == 0 ? left : right) << c.rows [r];
-				cout << setfill (' ') << pad;
+				cout << setfill (' ');
+				if (& c != & m_columns.back ())
+					cout << (r == 0 ? headerPad : pad);
 			}
-			cout << endl;
+			cout << "  |\n";
 			
 			if (r == 0) cout << div;
 		}
 		
-		cout << end << endl;
+		cout << div << endl;
 		
 		m_printed = true;
 	}

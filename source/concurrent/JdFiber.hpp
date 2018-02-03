@@ -251,7 +251,7 @@ class JdFibers
 	{
 		if (m_fibers.size ())
 		{
-			JdTable t ({ "fiber", "name", "stack", "used", "runs", "L:state" });
+			JdTable t ({ "fiber", "name", "stack", "max-used", "runs", "L:state" });
 
 			cstr_t states [] = { "invalid", "running", "finished", "terminated", "aborted", "inited", "paused", "exiting", "terminating" };
 			
@@ -295,7 +295,7 @@ class JdFibers
 			
 			if (m_state >= c_jdFiber::initialized)
 			{
-				++m_runs;
+//				++m_runs;
 				boost_ctx::transfer_t from = boost_ctx::jump_fcontext (m_context, this);
 				m_home->ComingHome (from.fctx);
 				
@@ -310,7 +310,7 @@ class JdFibers
 		{
 			if (m_state >= c_jdFiber::initialized)
 			{
-				++m_runs;
+//				++m_runs;
 				boost_ctx::transfer_t from = boost_ctx::jump_fcontext (m_context, this);
 				m_home->ComingHome (from.fctx);
 			}
@@ -323,13 +323,18 @@ class JdFibers
 			if (i_yieldTo)
 				Yield (i_yieldTo);
 			else
+			{
+				++m_runs;
 				m_home->ReturnHome (this);
+			}
 		}
 		
 		virtual void			Yield					(IJdFiber i_yieldTo)
 		{
 //			u8 stack; cout << "freestack: " << & stack - (u8*) m_stack << endl;
 			
+			++m_runs;
+
 			d_jdAssert (m_state == c_jdFiber::running, "fiber can't yield; aint't runin");
 		
 			if (i_yieldTo)
@@ -347,7 +352,7 @@ class JdFibers
 			if (m_state == c_jdFiber::terminating)
 				throw JdFiberTerminate ();
 			
-			++m_runs;
+//			++m_runs;
 		}
 		
 		virtual JdResult		Terminate				()
