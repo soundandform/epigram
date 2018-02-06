@@ -10,7 +10,8 @@
 #define Jigidesign_IJdPlatform_h
 
 #include "IEpigram.hpp"
-#include "JdInternal.h"
+#include "JdCore.hpp"
+#include "JdUUID.hpp"
 #include "JdEnum.hpp"
 
 /*

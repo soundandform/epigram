@@ -10,7 +10,7 @@
 #define __Jigidesign__JdMacPlatform__
 
 #include "IJdPlatform.h"
-#include "JdInternal.h"
+#include "JdCore.hpp"
 
 #include <string>
 

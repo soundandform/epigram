@@ -239,9 +239,9 @@ u32 CEpigramConnection::Connect (const char * i_serviceNameOrLocation, uint16_t 
             
             auto fs = JdPlatform::Get <IJdPlatform::FileSystem> ();
 
-            JdString path = fs->GetSandboxPath (c_jdFileSystemLocation::appData) + JdNewUUID ().ToString () + ".epilog";
+            string path = fs->GetSandboxPath (c_jdFileSystemLocation::appData) + JdNewUUID ().ToString () + ".epilog";
             
-            m_logFile = fopen (path, "w");
+            m_logFile = fopen (path.c_str(), "w");
         }
         
 		CEpigramRunner runner (i_serviceNameOrLocation, i_portNumber, m_queue, m_queueMessages, m_logFile, i_handler, this);
