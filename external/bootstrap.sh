@@ -21,6 +21,7 @@ cp stage/lib/libboost_system-clang-darwin42-mt-1_65_1.a ../../lib
 cp stage/lib/libboost_thread-clang-darwin42-mt-1_65_1.a ../../lib
 cp stage/lib/libboost_timer-clang-darwin42-mt-1_65_1.a ../../lib
 cp stage/lib/libboost_chrono-clang-darwin42-mt-1_65_1.a ../../lib
+cp stage/lib/libboost_program_options-clang-darwin42-mt-1_65_1.a  ../../lib
 
 cd ..
 
