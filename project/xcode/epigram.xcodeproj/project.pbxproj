@@ -80,6 +80,7 @@
 		B583D0C01FA97F0D007C07F0 /* libboost_context-clang-darwin42-mt-1_65_1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_context-clang-darwin42-mt-1_65_1.a"; path = "../../lib/libboost_context-clang-darwin42-mt-1_65_1.a"; sourceTree = "<group>"; };
 		B583D0C21FA97F20007C07F0 /* city.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = city.o; path = ../../external/cityhash/src/city.o; sourceTree = "<group>"; };
 		B584EF391FA97E2E00A8B431 /* epitest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = epitest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5C695B32029E317001DC0F3 /* JdTable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JdTable.hpp; path = debug/JdTable.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +102,7 @@
 		B583D0951FA97E8F007C07F0 /* source */ = {
 			isa = PBXGroup;
 			children = (
+				B5C695B32029E317001DC0F3 /* JdTable.hpp */,
 				B580E23F1FB64C8B00DD177B /* JdStopwatch.hpp */,
 				B580E23D1FB64C8B00DD177B /* JdTimer.cpp */,
 				B580E23E1FB64C8B00DD177B /* JdTimer.hpp */,
@@ -204,7 +206,7 @@
 					};
 				};
 			};
-			buildConfigurationList = B584EF341FA97E2E00A8B431 /* Build configuration list for PBXProject "epitest" */;
+			buildConfigurationList = B584EF341FA97E2E00A8B431 /* Build configuration list for PBXProject "epigram" */;
 			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -379,7 +381,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B584EF341FA97E2E00A8B431 /* Build configuration list for PBXProject "epitest" */ = {
+		B584EF341FA97E2E00A8B431 /* Build configuration list for PBXProject "epigram" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B584EF3E1FA97E2E00A8B431 /* Debug */,
