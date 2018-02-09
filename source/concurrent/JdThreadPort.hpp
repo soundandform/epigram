@@ -1112,7 +1112,7 @@ class JdPortedThread : public JdThread, public JdThreadPort <Handler>
 
 
 template <typename t_thread, u32 t_argSize = 64>
-struct JdThreadPort2 : public JdMessagePortT <t_thread, t_argSize>, public JdThreadProtocol
+struct JdThreadPort2 : public JdMessagePortT <t_thread, t_argSize>, public IJdThread
 {
     JdThreadPort2 (u32 i_queueSize = 512)
     :

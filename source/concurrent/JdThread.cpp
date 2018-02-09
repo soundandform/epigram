@@ -8,7 +8,7 @@
 
 #include "JdThread.hpp"
 
-d_epilogCategory (threads, JdThread)
+//d_epilogCategory (threads, JdThread)
 
 namespace Jd
 {

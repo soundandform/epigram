@@ -9,9 +9,12 @@
 #ifndef __Jigidesign__JdThread__
 #define __Jigidesign__JdThread__
 
+#include "Epigram.hpp"
 #include "JdSemaphore.hpp"
-#include "Epilog.hpp"
+#include "JdEnum.hpp"
 #include <thread>
+//#include "Epilog.hpp"
+#define d_epilogBuild 1
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -56,7 +59,6 @@ d_jdEnum_ (ThreadState, pending, initializing, running, quiting, quit, zombie);
 
 const u8 c_jdThread_defaultPriority = 0;
 
-#include "Epigram.hpp"
 
 
 struct IJdThread
@@ -68,28 +70,27 @@ struct IJdThread
     };
     
     virtual ~                       IJdThread       () { };
-    
-    virtual JdResult                Setup           () = 0;                             // Setup happens in creator thread (which is probably main)
-    virtual JdResult                Run             (EpigramRef i_args, IThreadInfo & i_info) = 0;
-    virtual JdResult                Break           () = 0;
-	virtual JdResult                Finalize        (const JdResult &i_runResult) = 0;	// Finalize happens in-thread
-    virtual JdResult                Teardown        (const JdResult &i_runResult) = 0;  // Teardown happens in creator thread (which is probably main)
+    virtual JdResult                Setup           () 												{ return c_jdNoErr; }		// Setup happens in creator thread (which is probably main)
+    virtual JdResult                Run             (EpigramRef i_args, IThreadInfo & i_info)	 	= 0;
+    virtual JdResult                Break           () 												{ return c_jdNoErr; };
+	virtual JdResult                Finalize        (const JdResult &i_runResult) 					{ return i_runResult; };	// Finalize happens in-thread
+    virtual JdResult                Teardown        (const JdResult &i_runResult)					{ return i_runResult; };	// Teardown happens in creator thread (which is probably main)
 };
 
 
-struct JdThreadProtocol : IJdThread
-{
-    virtual JdResult                Setup           () { return c_jdNoErr; }
-
-#if 0
-	 // The only required override for JdThreadProtocol
-	virtual JdResult                Run             (EpigramRef i_args, IThreadInfo & i_info) = 0;
-#endif
-	
-    virtual JdResult                Break           () { return c_jdNoErr; }
-    virtual JdResult                Finalize        (const JdResult &i_runResult) { return i_runResult; }
-    virtual JdResult                Teardown        (const JdResult &i_runResult) { return i_runResult; }
-};
+//struct JdThreadProtocol : IJdThread
+//{
+//    virtual JdResult                Setup           () { return c_jdNoErr; }
+//
+//#if 0
+//	 // The only required override for JdThreadProtocol
+//	virtual JdResult                Run             (EpigramRef i_args, IThreadInfo & i_info) = 0;
+//#endif
+//
+//    virtual JdResult                Break           () { return c_jdNoErr; }
+//    virtual JdResult                Finalize        (const JdResult &i_runResult) { return i_runResult; }
+//    virtual JdResult                Teardown        (const JdResult &i_runResult) { return i_runResult; }
+//};
 
 
 
@@ -287,7 +288,7 @@ class JdThreadT
         u32 breakAttempts = 0;
         while (breakAttempts++ < 3)
         {
-			auto p = static_cast <JdThreadProtocol *> (m_implementation);
+			auto p = static_cast <IJdThread *> (m_implementation);
             result = p->Break();
             if (! result) break;
             usleep (10000);
