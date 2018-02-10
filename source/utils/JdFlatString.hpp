@@ -14,6 +14,7 @@
 #endif
 
 #include "JdNucleus.hpp"
+#include <cstring>
 
 template <int t_length>
 class JdFlatString

@@ -393,8 +393,10 @@ namespace Jd
 		template <> inline constexpr const u8 TypeId2T <int16_t> ()				{ return c_jdTypeId::i16; }
 		template <> inline constexpr const u8 TypeId2T <uint16_t> ()			{ return c_jdTypeId::u16; }
 		template <> inline constexpr const u8 TypeId2T <int32_t> ()				{ return c_jdTypeId::i32; }
+#if __APPLE__
 		template <> inline constexpr const u8 TypeId2T <long> ()				{ return c_jdTypeId::i64; }	// what?
 		template <> inline constexpr const u8 TypeId2T <unsigned long> ()		{ return c_jdTypeId::u64; }
+#endif
 		template <> inline constexpr const u8 TypeId2T <uint32_t> ()			{ return c_jdTypeId::u32; }
 		template <> inline constexpr const u8 TypeId2T <int64_t> ()				{ return c_jdTypeId::i64; }
 		template <> inline constexpr const u8 TypeId2T <uint64_t> ()			{ return c_jdTypeId::u64; }

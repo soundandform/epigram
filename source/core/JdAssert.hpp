@@ -13,8 +13,10 @@
 #	include <signal.h>
 # endif
 
+#include <unistd.h>
 #include "JdConfig.hpp"
 #include "JdResult.hpp"
+
 
 
 class JdException : public std::exception, public JdResult
