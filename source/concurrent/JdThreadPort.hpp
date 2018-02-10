@@ -854,6 +854,12 @@ class JdMessageQueue2
 	{
 		m_pathway.claimSequence.Acquire ();
 	}
+	
+	inline void ReleaseMessages (u32 i_numMessages)
+	{
+		while (i_numMessages--)
+			m_pathway.claimSequence.Acquire ();
+	}
 
 	protected:
 	

@@ -190,7 +190,7 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 		m_message = i_message;
 	}
 	
-	string					Message					() const
+	string					GetMessage				() const
 	{
 		return m_message;
 	}

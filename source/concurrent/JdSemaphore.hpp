@@ -49,6 +49,18 @@ class JdSemaphore
         --m_count;
     }
 
+	
+	void WaitAll ()
+	{
+		std::unique_lock <std::mutex> lock (m_mutex);
+		
+		while (m_count == 0)
+			m_condition.wait (lock);
+		
+		m_count -= m_count;
+	}
+
+	
 	bool TimedWait (u32 i_microseconds)	// returns true if semaphore acquired
 	{
 		auto waitTime = std::chrono::microseconds (i_microseconds);
@@ -72,7 +84,7 @@ class JdSemaphore
 	
 	protected:
 
-	u32								m_count;
+	u64								m_count;
     std::mutex						m_mutex;
     std::condition_variable			m_condition;
 };
