@@ -56,7 +56,7 @@ inline const EpArg_ <cstr_t> operator"" _ (const char *i_name, size_t i_length)
 	return EpArg_ <cstr_t> (i_name);
 }
 
-inline const EpArg_<u8> operator"" _ (u64 i_index)
+inline const EpArg_<u8> operator"" _ (unsigned long long int i_index)
 {
 	d_jdAssert (i_index < 256, "indexed argument out of range");
 	

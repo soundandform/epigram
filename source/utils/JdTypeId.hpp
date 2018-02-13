@@ -407,7 +407,7 @@ namespace Jd
 		template <typename T>
 		class EpigramTypeIdT
 		{
-			friend constexpr const u8 TypeId <T> ();
+			friend const u8 TypeId <T> ();
 			friend char TypeIdChar <T> ();
 			
 			struct EpigramFundamentalTypeId

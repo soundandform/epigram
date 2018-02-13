@@ -64,7 +64,7 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 							{ }
 
 	
-							JdResultT <JdR>			(const JdResultT <JdR> & i_return)
+							JdResultT 				(const JdResultT <JdR> & i_return)
 							:
 							m_location				(i_return.m_location),
 //							m_info					(i_return.m_info),

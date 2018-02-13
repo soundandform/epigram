@@ -2089,8 +2089,8 @@ class EpigramT : public interface_t
 	}
 
 	//----------------------------------------------------------------------------------------------------------------------
-	template <typename... Args>
-	EpigramT			(const EpigramT & i_epigram1, Args ... i_args)
+	template <typename... _Args>
+	EpigramT			(const EpigramT & i_epigram1, _Args ... i_args)
 	{
 		this->operator = (i_epigram1);
 		this->Args (i_args...);
@@ -2105,23 +2105,23 @@ class EpigramT : public interface_t
 		this->In (i_arg.name, i_arg.value);
 	}
 
-	template <typename A, typename T, typename... Args>
-	EpigramT			(const EpArg <A,T> & i_arg, Args ... i_args)
+	template <typename A, typename T, typename... _Args>
+	EpigramT			(const EpArg <A,T> & i_arg, _Args ... i_args)
 	{
 		this->In (i_arg.name, i_arg.value);
 		this->Args (i_args...);
 	}
 
 
-	template <typename A, typename T, typename... Args>
+	template <typename A, typename T, typename... _Args>
 	void Args (const EpArg <A,T> & i_arg)
 	{
 		this->In (i_arg.name, i_arg.value);
 	}
 	
 
-	template <typename A, typename T, typename... Args>
-	void Args (const EpArg <A,T> & i_arg, Args ... i_args)
+	template <typename A, typename T, typename... _Args>
+	void Args (const EpArg <A,T> & i_arg, _Args ... i_args)
 	{
 		this->In (i_arg.name, i_arg.value);
 		this->Args (i_args...);
@@ -2132,8 +2132,8 @@ class EpigramT : public interface_t
 		Merge (i_epigram);
 	}
 	
-	template <typename... Args>
-	void Args (const EpigramT & i_epigram, Args ... i_args)
+	template <typename... _Args>
+	void Args (const EpigramT & i_epigram, _Args ... i_args)
 	{
 		this->Merge (i_epigram);
 		this->Args (i_args...);

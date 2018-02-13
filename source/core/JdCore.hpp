@@ -252,7 +252,7 @@ struct JdEnum
 		return m_value;
 	}
 	
-	const operator T () const
+	operator T () const
 	{
 		return m_value;
 	}
