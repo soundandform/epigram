@@ -354,8 +354,12 @@ class JdThread
 	
 	static void Runner (JdThread * i_thread, u8 i_priority)
 	{
-		pthread_setname_np (pthread_self(), i_thread->m_threadName);
-		
+		#if __APPLE__
+			pthread_setname_np (i_thread->m_threadName);
+		#else
+			pthread_setname_np (pthread_self(), i_thread->m_threadName);
+		#endif
+
 		// set thread priority
 		if (i_priority != c_jdThread_defaultPriority)
 		{
