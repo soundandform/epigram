@@ -396,6 +396,9 @@ namespace Jd
 #if __APPLE__
 		template <> inline constexpr const u8 TypeId2T <long> ()				{ return c_jdTypeId::i64; }	// what?
 		template <> inline constexpr const u8 TypeId2T <unsigned long> ()		{ return c_jdTypeId::u64; }
+#else
+		template <> inline constexpr const u8 TypeId2T <long long> ()			{ return c_jdTypeId::i64; }	
+		template <> inline constexpr const u8 TypeId2T <unsigned long long> ()	{ return c_jdTypeId::u64; }	
 #endif
 		template <> inline constexpr const u8 TypeId2T <uint32_t> ()			{ return c_jdTypeId::u32; }
 		template <> inline constexpr const u8 TypeId2T <int64_t> ()				{ return c_jdTypeId::i64; }
