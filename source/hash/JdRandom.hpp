@@ -11,6 +11,7 @@
 
 #include "JdNucleus.hpp"
 #include <random>
+#include <mutex>
 
 class JdRandom
 {

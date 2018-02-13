@@ -8,6 +8,7 @@
 
 #include "JdCoreL2.hpp"
 #include <city.h>
+#include <cstring>
 
 
 namespace Jd

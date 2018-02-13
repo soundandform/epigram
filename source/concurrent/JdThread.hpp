@@ -13,6 +13,7 @@
 #include "JdSemaphore.hpp"
 #include "JdEnum.hpp"
 #include <thread>
+#include <pthread.h>
 //#include "Epilog.hpp"
 #define d_epilogBuild 1
 
@@ -353,7 +354,7 @@ class JdThread
 	
 	static void Runner (JdThread * i_thread, u8 i_priority)
 	{
-		pthread_setname_np (i_thread->m_threadName);
+		pthread_setname_np (pthread_self(), i_thread->m_threadName);
 		
 		// set thread priority
 		if (i_priority != c_jdThread_defaultPriority)

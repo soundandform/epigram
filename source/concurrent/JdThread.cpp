@@ -14,6 +14,10 @@ namespace Jd
 {
 	void EnforceMainThread ()
 	{
-		d_jdAssert (pthread_main_np (), "not in main thread");
+		#if __APPLE__
+			d_jdAssert (pthread_main_np (), "not in main thread");
+		#else
+			// FIX
+		#endif
 	}
 }

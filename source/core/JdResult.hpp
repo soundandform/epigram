@@ -137,7 +137,7 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 			m_columnNum		= i_other.m_columnNum;
 			m_location 		= t_location ();
 			m_message		= i_other.m_message;
-			m_return 		= R1 ();
+			get <0> (m_return)	= R1 ();
 		}
 		return * this;
 	}
@@ -170,7 +170,7 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 
 	void					SetReturn 				(const R1 & i_return)
 	{
-		m_return = i_return;
+		get <0> (m_return) = i_return;
 	}
 
 	R1						GetReturn 				() const

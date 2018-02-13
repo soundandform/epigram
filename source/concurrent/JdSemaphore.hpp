@@ -11,9 +11,8 @@
 #include "JdNucleus.hpp"
 #include <thread>
 
-#include <boost/thread/condition_variable.hpp>
-#include <boost/thread/mutex.hpp>    
-#include <boost/thread/locks.hpp>
+#include <condition_variable>
+#include <mutex>    
 
 class JdSemaphore
 {
