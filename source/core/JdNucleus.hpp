@@ -21,7 +21,6 @@ typedef uint8_t  u8;  typedef int8_t  i8;
 typedef float    f32; typedef double  f64;
 
 typedef const char * cstr_t;
-typedef const char * cstr_t;
 typedef const char * utf8_t;
 typedef const void * voidptr_t;
 typedef const std::string & stringRef_t;
