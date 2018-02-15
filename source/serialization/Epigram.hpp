@@ -2920,8 +2920,8 @@ typedef const Epigram & EpigramRef;
 //}
 
 
-#undef type_def
-#undef type_if
+//#undef type_def
+//#undef type_if
 
 
 

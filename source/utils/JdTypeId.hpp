@@ -678,8 +678,8 @@ struct JdCast
 };
 
 
-#undef type_def
-#undef type_if
+//#undef type_def
+//#undef type_if
 
 
 #endif /* defined(__Epilog__JdTypeId__) */

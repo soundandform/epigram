@@ -339,6 +339,8 @@ struct JdPreconditions
 	JdPreconditions ();
 };
 
+#define type_def typedef typename
+#define type_if typedef typename std::conditional
 
 #endif
 
