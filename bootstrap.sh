@@ -28,13 +28,7 @@ else
 	./b2 
 fi
 
-cp stage/lib/libboost_context*.a ../../lib
-cp stage/lib/libboost_system*.a ../../lib
-cp stage/lib/libboost_thread*.a ../../lib
-cp stage/lib/libboost_timer*.a ../../lib
-cp stage/lib/libboost_chrono*.a ../../lib
-cp stage/lib/libboost_program_options*.a  ../../lib
-
+mv stage/lib/libboost_*.a ../../lib
 
 # CityHash ----------------------------------------------------------------------------------------------------------------
 
