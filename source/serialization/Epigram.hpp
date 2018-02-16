@@ -589,7 +589,7 @@ class EpigramT : public interface_t
 		const u8 *			start;
 		const u8 *			end;
 
-		size_t				count					= 1;
+		size_t				count					= 0;
 
 		u32					sequence;
 		
@@ -1113,7 +1113,7 @@ class EpigramT : public interface_t
 		}
 
 		
-		static const u8 * Fetch (T & o_object, const u8 * i_iterator, PayloadRef i_payload, u8 i_objectVersion)
+		static const u8 * Fetch (T & o_object, const u8 * i_iterator, PayloadRef i_payload, u8 i_objectVersion = 0)
 		{
 			auto next = i_iterator + sizeof (T);
 			

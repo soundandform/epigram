@@ -298,7 +298,7 @@ std::ostream & operator << (std::ostream &output, const JdResultT <L, R1> & i_re
 	else
 		sprintf (code, "%d", i_result.Code ());
 	
-	string msg = i_result.Message ();
+	string msg = i_result.GetMessage ();
 	
 	output << msg;
 //	if  (msg.size ()) output << " ";
