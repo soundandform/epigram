@@ -760,7 +760,7 @@ class JdMessageQueue2
 		}
 	}
 	
-	inline u32 GetMessages () // don't wait; grab all available
+	inline u32 ClaimMessages () // don't wait; grab all available
 	{
 		i32 available = atomic_read32 ((u32*) &m_signalCount.value);	// available always monotonically increases from this perspective as the consumer
 
@@ -859,6 +859,22 @@ class JdMessageQueue2
 	{
 		while (i_numMessages--)
 			m_pathway.claimSequence.Acquire ();
+	}
+	
+	bool GetMessage (t_record & o_message)
+	{
+		i32 available = atomic_read32 ((u32*) &m_signalCount.value);
+		
+		if (available)
+		{
+			available = 1;
+			atomic_add32 ((u32 *) &m_signalCount.value, -available);
+			o_message = * ViewMessage ();
+			ReleaseMessage ();
+
+			return true;
+		}
+		else return false;
 	}
 
 	protected:
