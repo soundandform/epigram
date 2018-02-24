@@ -128,6 +128,8 @@ class JdFibers
 	{
 		for (auto i : m_stacks)
 			free (i.stack);
+		
+		d_jdAssert (m_fibers.size () == 0, "unreleased fibers");
 	}
 	
 	template <typename T>
