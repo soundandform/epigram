@@ -13,6 +13,10 @@
 #include "JdUtils.hpp"
 
 #include <unordered_map>
+#include <list>
+#include <deque>
+#include <set>
+
 
 #define type_def typedef typename
 #define type_if typedef typename std::conditional
@@ -341,9 +345,25 @@ struct TypeIdsMap
 			 
 };
 
-template <typename T>
-struct is_cstring : public std::integral_constant
-<bool, std::is_same <char *, typename std::decay <T>::type>::value or std::is_same<const char *, typename std::decay< T >::type>::value> {};
+namespace jd
+{
+	template <typename T>
+	struct is_cstring : public std::integral_constant
+	<bool, std::is_same <char *, typename std::decay <T>::type>::value or std::is_same<const char *, typename std::decay< T >::type>::value> {};
+
+	template <typename T> struct is_vector : std::false_type {};
+	template <typename... Ts> struct is_vector <std::vector	<Ts...>> : std::true_type {};
+
+	template <typename T>
+	struct has_iterator : std::false_type { };
+	
+	template <typename... Ts> struct has_iterator <std::list	<Ts...>> : std::true_type { };
+	template <typename... Ts> struct has_iterator <std::vector	<Ts...>> : std::true_type { };
+	template <typename... Ts> struct has_iterator <std::deque	<Ts...>> : std::true_type { };
+	template <typename... Ts> struct has_iterator <std::set		<Ts...>> : std::true_type { };
+	
+}
+
 
 
 namespace Jd
@@ -473,7 +493,7 @@ namespace Jd
 			type_if <std::is_pointer <T>::value and
 					 is_class <Tnp>::value,				EpigramObjPointerTypeId,		typeIdX>::type						typeIdY;
 			
-			type_if <is_cstring <T>::value,				EpigramStringTypeId,			typeIdY>::type						typeIdZ;
+			type_if <jd::is_cstring <T>::value,			EpigramStringTypeId,			typeIdY>::type						typeIdZ;
 			
 			type_if <is_base_of <IIEpigram, T>::value,	EpigramEpigramTypeId,			typeIdZ>::type						typeIdB;
 			

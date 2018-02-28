@@ -38,6 +38,7 @@ enum EJdFiberStatus
 d_jdInterface (IJdFiberControl)
 {
 	virtual string				GetName				() = 0;
+	virtual void				SetName				(stringRef_t i_name) = 0;
 	virtual bool				IsRunnable			() = 0;
 	virtual EJdFiberStatus		Run					(JdResult & o_result) = 0;
 	virtual EJdFiberStatus		Run					() = 0;
@@ -127,6 +128,8 @@ class JdFibers
 	{
 		for (auto i : m_stacks)
 			free (i.stack);
+		
+		d_jdAssert (m_fibers.size () == 0, "unreleased fibers");
 	}
 	
 	template <typename T>
@@ -229,11 +232,6 @@ class JdFibers
 		auto stack = controller->m_stack;
 		m_stacks.push_back ({ stack, controller->m_stackSize });
 		
-#if d_m3DebugFibers
-
-//		cout << "stackSize: " << controller->m_stackSize << " used: " << (numWords << 3) << endl;
-#endif
-			
 		i_fiber->~IIJdFiber ();
 		controller->~FiberController ();
 		
@@ -270,8 +268,8 @@ class JdFibers
 	{
 								FiberController			(JdFibers * i_home, void * i_stack, IJdFiber i_implementation, stringRef_t i_name)
 								:
-								m_home					(i_home),
 								m_stack					(i_stack),
+								m_home					(i_home),
 								m_implementation		(i_implementation),
 								m_name					(i_name)
 		{
@@ -282,6 +280,11 @@ class JdFibers
 		virtual string			GetName					()
 		{
 			return m_name;
+		}
+
+		virtual void			SetName					(stringRef_t i_name)
+		{
+			m_name = i_name;
 		}
 
 		virtual bool			IsRunnable				()

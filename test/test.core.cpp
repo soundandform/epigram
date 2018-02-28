@@ -1,21 +1,29 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include "doctest.hpp"
-#include "Epigram.hpp"
-
-
-
 #include "JdTypeId.hpp"
+#include "JdStopwatch.hpp"
+#include "JdTimer.hpp"
+#include "JdAssert.hpp"
 
-test_("TypeId")
+
+test_suite (Timers)
+{
+	doctest ("basic")
+	{
+		f64 seconds = Jd::MeasureTime ([] { sleep (1); }); 			expect (seconds > 1.) expect (seconds < 1.01)
+		u64 us = Jd::GetMicroseconds ();							expect (us > 1000000);
+	}
+}
+
+
+doctest ("TypeId")
 {
 	char typeChar = Jd::TypeIdChar <string> ();					expect (typeChar == 's')
 	u8 typeId = Jd::TypeId <string> ();							expect (typeId == c_jdTypeId::string)
 }
 
-#include "JdAssert.hpp"
-
-test_ ("JdAssert")
+doctest ("JdAssert")
 {
 	string msg = "ok";
 
@@ -25,7 +33,7 @@ test_ ("JdAssert")
 
 #include "Epigram.hpp"
 
-test_ ("Epigram")
+doctest ("Epigram")
 {
 	Epigram e;
 	
@@ -85,7 +93,7 @@ class PersistentFiber : public IIJdFiber
 };
 
 
-test_ ("JdFiberV2")
+doctest ("JdFiberV2")
 {
 	for (u32 i = 0; i < 3; ++i)
 	{

@@ -509,6 +509,23 @@ struct GraphT : T
 	riterator_t			rend				() { return m_down.rend (); }
 
 
+	bool 				find 				(const function <bool (T & i_node)> & i_visitor)
+	{
+		auto done = i_visitor (* this);
+		
+		if (not done)
+		{
+			for (auto & n : m_down)
+			{
+				done = n->find (i_visitor);
+				if (done) break;
+			}
+		}
+		
+		return done;
+	}
+	
+
 	void 				visit 				(const function <void (T & i_node)> & i_visitor)
 	{
 		i_visitor (* this);
@@ -592,7 +609,7 @@ struct GraphT : T
 		GraphT * node = & i_node;										d_jdAssert (i_node.m_up.count (this), "doesn't reference node");
 
 		i_node.m_up.erase (this);
-		auto i = find (m_down.begin (), m_down.end (), node);			d_jdAssert (i != m_down.end (), "node not found");
+		auto i = std::find (m_down.begin (), m_down.end (), node);			d_jdAssert (i != m_down.end (), "node not found");
 		m_down.erase (i);
 
 		i_node.Release ();

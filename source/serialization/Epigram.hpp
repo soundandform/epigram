@@ -292,17 +292,6 @@ template <> inline const char *		EpigramDefaultValue () { return c_epigram::null
 template <> inline std::string		EpigramDefaultValue () { return c_epigram::nullString; }
 
 
-namespace jd
-{
-	template <typename T>
-	struct has_iterator : std::false_type { };
-
-	template <typename... Ts> struct has_iterator <std::list	<Ts...>> : std::true_type { };
-	template <typename... Ts> struct has_iterator <std::vector	<Ts...>> : std::true_type { };
-	template <typename... Ts> struct has_iterator <std::deque	<Ts...>> : std::true_type { };
-	template <typename... Ts> struct has_iterator <std::set		<Ts...>> : std::true_type { };
-}
-
 struct EpNoType { };
 
 
@@ -365,7 +354,7 @@ struct EpigramCast
 	};
 
 	type_if <	is_class <T>::value,								Null,						Auto>::type				caster_a;
-	type_if <	is_cstring <T>::value,								Null,						caster_a>::type			caster_b;
+	type_if <	jd::is_cstring <T>::value,							Null,						caster_a>::type			caster_b;
 	
 	type_if <	is_same <S, std::string>::value and
 							is_fundamental <T>::value,				StringToFundamental,		caster_b>::type			caster_c;
@@ -589,7 +578,7 @@ class EpigramT : public interface_t
 		const u8 *			start;
 		const u8 *			end;
 
-		size_t				count					= 1;
+		size_t				count					= 0;
 
 		u32					sequence;
 		
@@ -1113,7 +1102,7 @@ class EpigramT : public interface_t
 		}
 
 		
-		static const u8 * Fetch (T & o_object, const u8 * i_iterator, PayloadRef i_payload, u8 i_objectVersion)
+		static const u8 * Fetch (T & o_object, const u8 * i_iterator, PayloadRef i_payload, u8 i_objectVersion = 0)
 		{
 			auto next = i_iterator + sizeof (T);
 			
@@ -1205,7 +1194,7 @@ class EpigramT : public interface_t
 		type_if <is_pointer <R>::value and is_class <Rnp>::value,	ObjPointerT <Rnp, R>,			storerA>::type					storerP;
 		
 		type_if <is_same <std::string, R>::value,					StringType,						storerP>::type					storerB;
-		type_if <is_cstring <R>::value,								StringType,						storerB>::type					storerC;
+		type_if <jd::is_cstring <R>::value,							StringType,						storerB>::type					storerC;
 		
 		type_if <is_base_of <IIEpigram, R>::value,					EpigramType,					storerC>::type					storerD;
 
@@ -1305,7 +1294,7 @@ class EpigramT : public interface_t
 		
 		type_if <jd::has_iterator	<T>::value,		ContainerStorer <T, IT>,	ItemStorer <T>	>::type		A;
 		type_if <is_array			<T>::value,		ArrayStorer <R>,			A				>::type		B;
-		type_if <is_cstring			<T>::value,		ItemStorer <cstr_t>,		B				>::type		C;
+		type_if <jd::is_cstring		<T>::value,		ItemStorer <cstr_t>,		B				>::type		C;
 		
 		public:
 		
