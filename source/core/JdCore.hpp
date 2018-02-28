@@ -324,10 +324,9 @@ struct JdEnum
 // d_jdInterface (IMyInterface) helps create an interface (struct) named "IIMyInterface" and typedefs a ptr to that interface as "IMyInterface"
 // This eliminates 10,000 superfluous asterisks in the code
 
-struct IIJdInterface { virtual ~IIJdInterface () {} };
 
 #define d_jdForwardInterface(IFACE) struct I##IFACE; typedef I##IFACE * IFACE;
-#define d_jdInterface(IFACE) d_jdForwardInterface (IFACE) struct I##IFACE : IIJdInterface
+#define d_jdInterface(IFACE) d_jdForwardInterface (IFACE) struct I##IFACE
 
 
 

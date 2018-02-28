@@ -2318,6 +2318,13 @@ class EpigramT : public interface_t
 	{
 		return this;
 	}
+
+	
+	operator IIEpigram * ()
+	{
+		return this;
+	}
+	
 	
 	explicit operator std::string () const
 	{
