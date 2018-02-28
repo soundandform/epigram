@@ -82,7 +82,14 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 								m_message = i_result.m_message;
 							}
 
+							JdResultT				(cstr_t i_message)
+							:
+							m_message				(i_message)
+							{
+								m_resultCode = -1;
+							}
 
+	
 							JdResultT				(cstr_t i_message, t_location i_location, u32 i_lineNum, u32 i_columnNum, i32 i_resultCode)
 							:
 							m_message				(i_message),
@@ -298,7 +305,7 @@ std::ostream & operator << (std::ostream &output, const JdResultT <L, R1> & i_re
 	else
 		sprintf (code, "%d", i_result.Code ());
 	
-	string msg = i_result.Message ();
+	string msg = i_result.GetMessage ();
 	
 	output << msg;
 //	if  (msg.size ()) output << " ";

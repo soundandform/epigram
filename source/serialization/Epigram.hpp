@@ -83,7 +83,7 @@
 
 		for (auto & i : msg)
 		{
-			cout i ": " << i.Name () << " = " << i.Type () << endl;
+			cout << i.GetKeyString () << " = " << i.GetValueTypeName () << endl;
 		}
 
 
@@ -2332,13 +2332,8 @@ class EpigramT : public interface_t
 	
 	explicit operator std::string () const
 	{
-		std::string sdata;
-		
 		auto payload = GetPayload ();
-		sdata.resize (payload.size);
-		memcpy (sdata.data (), payload.data, payload.size);
-		
-		return sdata;
+		return std::string ((const char *) payload.bytes, payload.size);
 	}
 
 	

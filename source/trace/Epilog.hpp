@@ -38,6 +38,7 @@
 
 #include "JdFlatString.hpp"
 #include "JdUtils.hpp"
+#include "JdCore.hpp"
 
 // some stupid header was defining a check macro
 #ifdef check
