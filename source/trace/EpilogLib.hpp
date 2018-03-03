@@ -53,7 +53,7 @@ struct IEpilogCore
 
 
 
-typedef JdMessageQueue2 <EpilogQueuedMsg2k> queue_t;
+typedef JdMessageQueue <EpilogQueuedMsg2k> queue_t;
 
 
 class CEpigramRunner
