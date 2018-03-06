@@ -73,6 +73,18 @@ doctest ("epigram.empty")
 }
 
 
+doctest ("epigram.count")
+{
+	Epigram e;
+	e ["key"] = "value";
+	
+//	e.dump ();
+	vector <string> values = e ["key"];							expect (values.size () == 1)
+	if (values.size ())											expect (values [0] == "value")
+}
+
+
+
 doctest ("epigram.strings")
 {
 	Epigram msg;

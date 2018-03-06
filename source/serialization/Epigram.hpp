@@ -149,8 +149,11 @@
 	----------------------------------
 	
 		[ 7+: sizeof-POD ] [ 8+: class-name-plus-null ] repeat: { pod-n [ 8+: pod-data ]}
-	 
 	
+	 
+	 //----------------------------------------
+
+	 
 	 (  8+: value-count    )		extant if isArray flag is set
 	
 	 {  X:  value-payload  }
@@ -2557,6 +2560,8 @@ class EpigramT : public interface_t
 				
 				if (isArray)
 					m_kv.count = Jd::Decode7bRE <size_t> (next, key);
+				else
+					m_kv.count = 1;
 				
 				m_kv.sequence = m_allocator.GetSequence ();
 				m_kv.keyType = keyType;
@@ -2663,9 +2668,9 @@ class EpigramT : public interface_t
 				element.start = next;
 				
 				if (isArray)
-				{
 					element.count = Jd::Decode7bRE <size_t> (next, key);
-				}
+				else
+					element.count = 1;
 				
 				element.sequence = m_allocator.GetSequence ();
 				element.keyType = keyType;
@@ -2757,12 +2762,12 @@ class EpigramT : public interface_t
 				{
 					++next;
 					element.start = next;
-					
+
 					if (isArray)
-					{
 						element.count = Jd::Decode7bRE <size_t> (next, key);
-					}
-					
+					else
+						element.count = 1;
+
 					element.sequence = m_allocator.GetSequence ();
 					element.keyType = keyType;
 					element.valueType = valueType;
