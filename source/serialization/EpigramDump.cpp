@@ -230,8 +230,9 @@ bool EpigramDumper::Decompose (const u8 * i_start, const u8 * i_end, u32 i_depth
 			case TypeId <f32> ():			dump = ParsePayload <f32> (key, endKey);	break;
 			case c_jdTypeId::hash:			dump = ParseHashPayload <u64> (key, endKey, &keyCount);	break;
 			case c_jdTypeId::none:			/* dump = ParseHashPayload <u64> (key, endKey);	*/ break;
-				
-			default: d_jdThrow ("unimplemented epigram key dumper: @", Jd::TypeIdToChar (keyType));	break;
+			case c_jdTypeId::pod:			dump = ParsePODPayload (key, endKey, &keyCount); break;
+
+			default: d_jdThrow ("unimplemented epigram key dumper: @", Jd::TypeIdToName (keyType));	break;
 				
 		};
 		

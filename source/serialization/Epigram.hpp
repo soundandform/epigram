@@ -179,8 +179,6 @@
 			- object recognition and casting. See above
 			- and smarter Dumps ()
 		
-	 - TODO: Epigram v3
-
 	 - TODO: single integer key type?  7s encoded
 	 
 			- compaction could be deferred until Delivery
@@ -194,7 +192,6 @@
 	 
 	
 	 - TODO: sequence assertion full converage
-	 
 	 
 */
 
@@ -1308,26 +1305,6 @@ class EpigramT : public interface_t
 	
 	/// Fetchers -------------------------------------------------------------------------------------------------------------------------------
 	
-//	struct Fetchers
-//	{
-//		for (u32 i = 0; i < Jd::SizeOfArray (casters); ++i)
-//			casters [i] = NullFetch;
-//		
-//		casters [c_jdTypeId::f32] = FetchAndCast <f32>;
-//		casters [c_jdTypeId::f64] = FetchAndCast <f64>;
-//		casters [c_jdTypeId::i16] = FetchAndCast <i16>;
-//		casters [c_jdTypeId::u16] = FetchAndCast <u16>;
-//		casters [c_jdTypeId::i32] = FetchAndCast <i32>;
-//		casters [c_jdTypeId::u32] = FetchAndCast <u32>;
-//		casters [c_jdTypeId::i64] = FetchAndCast <i64>;
-//		casters [c_jdTypeId::u64] = FetchAndCast <u64>;
-//		casters [c_jdTypeId::boolean] = FetchAndCast <bool>;
-//		casters [c_jdTypeId::string] = FetchAndCast <string>;
-//
-//		fetchAndCast_t		fetchers		[32] = {};
-//	};
-
-
 	template <typename T>
 	struct CastingFetcher
 	{
@@ -2316,7 +2293,7 @@ class EpigramT : public interface_t
 		else return false;
 	}
 
-	//explicit
+
 	operator const IIEpigram * () const
 	{
 		return this;
@@ -2891,9 +2868,8 @@ typedef SizedEpigramT <0> Epigram0;
 typedef SizedEpigramT <0> epigram;
 typedef const epigram & epigramRef_t;
 
-typedef const Epigram256 & Epigram256Ref;
-
 typedef const Epigram & EpigramRef;
+typedef const Epigram256 & Epigram256Ref;
 
 #define msg_ Epigram()
 

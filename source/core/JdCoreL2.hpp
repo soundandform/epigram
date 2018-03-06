@@ -49,6 +49,41 @@ namespace Jd
 	{
 		return SingletonHelper <X> (true);
 	}
+	
+	
+	template <class X>
+	void ReleaseSingleton (X * i_singleton)
+	{
+		if (i_singleton)
+			SingletonHelper <X> (false);
+	}
+
+	
+	template <typename X>
+	struct Singleton
+	{
+		Singleton ()
+		{
+			m_lonely = Jd::AcquireSingleton <X> ();
+		}
+		
+		~Singleton ()
+		{
+			Jd::ReleaseSingleton (m_lonely);
+		}
+		
+		X * operator -> () const
+		{
+			return m_lonely;
+		}
+		
+		operator X * () const
+		{
+			return m_lonely;
+		}
+		
+		X * m_lonely;
+	};
 }
 
 
