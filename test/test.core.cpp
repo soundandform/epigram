@@ -44,6 +44,28 @@ doctest ("Epigram")
 }
 
 
+enum EOrientation
+{
+	e_none,
+	e_horizontal,
+	e_vertical
+};
+
+doctest ("epigram.enum")
+{
+	Epigram e;
+	e ["orientation"] = e_horizontal;
+	e.dump ();
+	
+	EOrientation o = e_none;
+	e ["orientation"] >> o;						expect (o == e_horizontal)
+	
+	u32 v = 0;
+	e ["orientation"] >> v;						// enums don't cast to ints, currently.
+	cout << v << endl;
+}
+
+
 #include "JdFiber.hpp"
 
 class MyFiber : public IIJdFiber
