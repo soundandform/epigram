@@ -249,7 +249,7 @@ class JdFibers
 	{
 		if (m_fibers.size ())
 		{
-			JdTable t ({ "fiber", "name", "stack", "max-used", "runs", "L:state" });
+			JdTable t ({ "fiber", "L:name", "stack", "max-used", "runs", "L:state" });
 
 			cstr_t states [] = { "invalid", "running", "finished", "terminated", "aborted", "inited", "paused", "exiting", "terminating" };
 			
