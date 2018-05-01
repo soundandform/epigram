@@ -82,9 +82,11 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 								m_message = i_result.m_message;
 							}
 
-							JdResultT				(cstr_t i_message)
+							JdResultT				(stringRef_t i_message)
 							:
-							m_message				(i_message)
+							m_message				(i_message),
+							m_columnNum				(0),
+							m_lineNum				(0)
 							{
 								m_resultCode = -1;
 							}
@@ -111,7 +113,9 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 	
 							JdResultT				(cstr_t i_message, bool i_isError, bool) // use this to define constants (d_jdResult)
 							:
-							m_message				(i_message)
+							m_message				(i_message),
+							m_columnNum				(0),
+							m_lineNum				(0)
 	{
 		i32 hash = Jd::HashCString31 (i_message);
 		hash |= (0x80000000 * (i32) i_isError);

@@ -480,10 +480,7 @@ struct GraphT : T
 	:
 	m_up	(move (i_other.m_up)),
 	m_down 	(move (i_other.m_down)),
-	T		(move ((T &&)i_other))
-	{
-		
-	}
+	T		(move ((T &&)i_other)) 			{}
 
 	
 	GraphT (GraphT &) = delete;
