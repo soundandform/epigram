@@ -79,6 +79,11 @@ d_jdInterface (IJdFiber)
 	{
 		m_controller->Yield ();
 	}
+	
+	string						GetName				()
+	{
+		return m_controller->GetName ();
+	}
 
 	
 	protected:

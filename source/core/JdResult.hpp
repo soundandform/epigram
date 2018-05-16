@@ -192,6 +192,19 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 		return m_resultCode;
 	}
 	
+	i32						GetCode					() const
+	{
+		return m_resultCode;
+	}
+	
+//	void					Clear					()
+//	{
+//		m_resultCode = 0;
+//		m_location = t_location ();
+//		m_columnNum = 0;
+//		m_lineNum = 0;
+//	}
+	
 	void					SetMessage				(stringRef_t i_message)
 	{
 		m_message = i_message;
