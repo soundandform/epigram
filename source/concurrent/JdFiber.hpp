@@ -133,7 +133,11 @@ class JdFibers
 	{
 		for (auto i : m_stacks)
 			free (i.stack);
+	
+		//for (auto f : m_fibers)
+		//	cout << "unreleased: " << f << endl;
 		
+		//cout << "fibers: " << m_fibers.size () << endl;
 		d_jdAssert (m_fibers.size () == 0, "unreleased fibers");
 	}
 	
