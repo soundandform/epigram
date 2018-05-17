@@ -6,6 +6,16 @@
 #include "JdTimer.hpp"
 #include "JdAssert.hpp"
 
+#include "Epilog.hpp"
+
+epilogger (localhost, 9999)
+
+doctest ("epilog")
+{
+	string yep = "yup";
+	epilog_func (normal, "this a normal message: @", yep)
+}
+
 
 test_suite (Timers)
 {

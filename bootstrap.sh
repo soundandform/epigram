@@ -8,10 +8,11 @@ mkdir lib
 
 cd external
 
-BOOST=boost_1_65_1
+BOOST_VERSION=1.67.0
+BOOST=boost_1_67_0
 BOOST_TAR=$BOOST.tar.gz
 
-curl -L -O https://dl.bintray.com/boostorg/release/1.65.1/source/$BOOST_TAR
+curl -L -O https://dl.bintray.com/boostorg/release/$BOOST_VERSION/source/$BOOST_TAR
 tar -zxf $BOOST_TAR
 rm $BOOST_TAR
 mv $BOOST boost

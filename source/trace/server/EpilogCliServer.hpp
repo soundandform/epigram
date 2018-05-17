@@ -14,7 +14,7 @@
 #include "EpilogStructs.hpp"
 #include "JdThreadPort.hpp"
 
-typedef JdMessageQueue2 <EpilogMsg> EpilogMsgQueue;
+typedef JdMessageQueue <EpilogMsg> EpilogMsgQueue;
 
 
 
