@@ -33,11 +33,26 @@
 		B5C695D0202A1612001DC0F3 /* JdAssert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878161FB54E160071B682 /* JdAssert.cpp */; };
 		B5C695D1202A161E001DC0F3 /* JdConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878141FB54E160071B682 /* JdConfig.cpp */; };
 		B5C695D2202A164F001DC0F3 /* JdCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878181FB54E160071B682 /* JdCore.cpp */; };
+		B5D09CF020AE740C0036BB57 /* epilogger.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B5D09CEF20AE740C0036BB57 /* epilogger.hpp */; };
+		B5D09CF220AE740C0036BB57 /* epiloggerPriv.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B5D09CF120AE740C0036BB57 /* epiloggerPriv.hpp */; };
+		B5D09CF420AE740C0036BB57 /* epilogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5D09CF320AE740C0036BB57 /* epilogger.cpp */; };
+		B5D09CF820AE741A0036BB57 /* EpilogLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5DB7A5E20AE3E6500FB25CD /* EpilogLib.cpp */; };
+		B5D09CF920AE742B0036BB57 /* libboost_timer-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2411FB64CF100DD177B /* libboost_timer-clang-darwin42-mt-x64-1_67.a */; };
+		B5D09CFA20AE74310036BB57 /* JdTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B580E23D1FB64C8B00DD177B /* JdTimer.cpp */; };
+		B5D09CFB20AE743A0036BB57 /* libboost_system-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2451FB64D0A00DD177B /* libboost_system-clang-darwin42-mt-x64-1_67.a */; };
+		B5D09CFC20AE74490036BB57 /* JdMacPlatform.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5DB7A6120AE3E9E00FB25CD /* JdMacPlatform.mm */; };
+		B5D09CFD20AE74580036BB57 /* JdAssert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878161FB54E160071B682 /* JdAssert.cpp */; };
+		B5D09CFE20AE74770036BB57 /* EpigramAppleUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5DB7A6320AE3EC300FB25CD /* EpigramAppleUtil.cpp */; };
+		B5D09D0020AE74810036BB57 /* JdUUID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878321FB54F3A0071B682 /* JdUUID.cpp */; };
+		B5D09D0120AE748C0036BB57 /* JdConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878141FB54E160071B682 /* JdConfig.cpp */; };
+		B5D09D0220AE74910036BB57 /* JdCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878181FB54E160071B682 /* JdCore.cpp */; };
+		B5D09D0420AE74A30036BB57 /* libboost_thread-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C695CC202A1553001DC0F3 /* libboost_thread-clang-darwin42-mt-x64-1_67.a */; };
+		B5D09D0620AE74B50036BB57 /* libboost_chrono-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2421FB64CF100DD177B /* libboost_chrono-clang-darwin42-mt-x64-1_67.a */; };
+		B5D09D0720AE74C60036BB57 /* JdCoreL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878121FB54E160071B682 /* JdCoreL2.cpp */; };
+		B5D09D0820AE74D10036BB57 /* city.o in Frameworks */ = {isa = PBXBuildFile; fileRef = B583D0C21FA97F20007C07F0 /* city.o */; };
+		B5D09D0920AE76200036BB57 /* libepilogger.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B5D09CED20AE740C0036BB57 /* libepilogger.dylib */; };
 		B5DB7A5C20AE3D9000FB25CD /* epilog in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5C695B82029E42A001DC0F3 /* epilog */; };
-		B5DB7A5F20AE3E6500FB25CD /* EpilogLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5DB7A5E20AE3E6500FB25CD /* EpilogLib.cpp */; };
 		B5DB7A6020AE3E7900FB25CD /* libboost_thread-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C695CC202A1553001DC0F3 /* libboost_thread-clang-darwin42-mt-x64-1_67.a */; };
-		B5DB7A6220AE3E9E00FB25CD /* JdMacPlatform.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5DB7A6120AE3E9E00FB25CD /* JdMacPlatform.mm */; };
-		B5DB7A6420AE3EC300FB25CD /* EpigramAppleUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5DB7A6320AE3EC300FB25CD /* EpigramAppleUtil.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -113,6 +128,10 @@
 		B5C695CA202A1553001DC0F3 /* libboost_date_time-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_date_time-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_date_time-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
 		B5C695CB202A1553001DC0F3 /* libboost_program_options-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_program_options-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_program_options-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
 		B5C695CC202A1553001DC0F3 /* libboost_thread-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_thread-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_thread-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
+		B5D09CED20AE740C0036BB57 /* libepilogger.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libepilogger.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5D09CEF20AE740C0036BB57 /* epilogger.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = epilogger.hpp; sourceTree = "<group>"; };
+		B5D09CF120AE740C0036BB57 /* epiloggerPriv.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = epiloggerPriv.hpp; sourceTree = "<group>"; };
+		B5D09CF320AE740C0036BB57 /* epilogger.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = epilogger.cpp; sourceTree = "<group>"; };
 		B5DB7A5E20AE3E6500FB25CD /* EpilogLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EpilogLib.cpp; path = trace/EpilogLib.cpp; sourceTree = "<group>"; };
 		B5DB7A6120AE3E9E00FB25CD /* JdMacPlatform.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = JdMacPlatform.mm; path = system/mac/JdMacPlatform.mm; sourceTree = "<group>"; };
 		B5DB7A6320AE3EC300FB25CD /* EpigramAppleUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EpigramAppleUtil.cpp; path = serialization/EpigramAppleUtil.cpp; sourceTree = "<group>"; };
@@ -124,6 +143,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5D09D0920AE76200036BB57 /* libepilogger.dylib in Frameworks */,
 				B583D0C31FA97F20007C07F0 /* city.o in Frameworks */,
 				B580E2461FB64D0B00DD177B /* libboost_system-clang-darwin42-mt-x64-1_67.a in Frameworks */,
 				B583D0C11FA97F0D007C07F0 /* libboost_context-clang-darwin42-mt-x64-1_67.a in Frameworks */,
@@ -140,6 +160,18 @@
 				B5C695CE202A1553001DC0F3 /* libboost_program_options-clang-darwin42-mt-x64-1_67.a in Frameworks */,
 				B5C695CF202A1553001DC0F3 /* libboost_thread-clang-darwin42-mt-x64-1_67.a in Frameworks */,
 				B5C695C8202A1552001DC0F3 /* libboost_system-clang-darwin42-mt-x64-1_67.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B5D09CEA20AE740C0036BB57 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B5D09D0820AE74D10036BB57 /* city.o in Frameworks */,
+				B5D09D0420AE74A30036BB57 /* libboost_thread-clang-darwin42-mt-x64-1_67.a in Frameworks */,
+				B5D09CFB20AE743A0036BB57 /* libboost_system-clang-darwin42-mt-x64-1_67.a in Frameworks */,
+				B5D09D0620AE74B50036BB57 /* libboost_chrono-clang-darwin42-mt-x64-1_67.a in Frameworks */,
+				B5D09CF920AE742B0036BB57 /* libboost_timer-clang-darwin42-mt-x64-1_67.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -215,6 +247,7 @@
 				B583D0921FA97E85007C07F0 /* doctest.hpp */,
 				B583D0931FA97E85007C07F0 /* test.core.cpp */,
 				B562BD761FB55D9500FDE277 /* test.epigram.cpp */,
+				B5D09CEE20AE740C0036BB57 /* epilogger */,
 				B584EF3A1FA97E2E00A8B431 /* Products */,
 				B583D0BF1FA97F0D007C07F0 /* Frameworks */,
 			);
@@ -225,6 +258,7 @@
 			children = (
 				B584EF391FA97E2E00A8B431 /* epitest */,
 				B5C695B82029E42A001DC0F3 /* epilog */,
+				B5D09CED20AE740C0036BB57 /* libepilogger.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -239,7 +273,29 @@
 			name = epilog;
 			sourceTree = "<group>";
 		};
+		B5D09CEE20AE740C0036BB57 /* epilogger */ = {
+			isa = PBXGroup;
+			children = (
+				B5D09CEF20AE740C0036BB57 /* epilogger.hpp */,
+				B5D09CF120AE740C0036BB57 /* epiloggerPriv.hpp */,
+				B5D09CF320AE740C0036BB57 /* epilogger.cpp */,
+			);
+			path = epilogger;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		B5D09CEB20AE740C0036BB57 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B5D09CF220AE740C0036BB57 /* epiloggerPriv.hpp in Headers */,
+				B5D09CF020AE740C0036BB57 /* epilogger.hpp in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
 		B584EF381FA97E2E00A8B431 /* epitest */ = {
@@ -276,6 +332,23 @@
 			productReference = B5C695B82029E42A001DC0F3 /* epilog */;
 			productType = "com.apple.product-type.tool";
 		};
+		B5D09CEC20AE740C0036BB57 /* epilogger */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B5D09CF720AE740C0036BB57 /* Build configuration list for PBXNativeTarget "epilogger" */;
+			buildPhases = (
+				B5D09CE920AE740C0036BB57 /* Sources */,
+				B5D09CEA20AE740C0036BB57 /* Frameworks */,
+				B5D09CEB20AE740C0036BB57 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = epilogger;
+			productName = epilogger;
+			productReference = B5D09CED20AE740C0036BB57 /* libepilogger.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -290,6 +363,10 @@
 						ProvisioningStyle = Automatic;
 					};
 					B5C695B72029E42A001DC0F3 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					B5D09CEC20AE740C0036BB57 = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
 					};
@@ -309,6 +386,7 @@
 			targets = (
 				B584EF381FA97E2E00A8B431 /* epitest */,
 				B5C695B72029E42A001DC0F3 /* epilog */,
+				B5D09CEC20AE740C0036BB57 /* epilogger */,
 			);
 		};
 /* End PBXProject section */
@@ -328,12 +406,9 @@
 				B53878271FB54EA40071B682 /* JdUtils.cpp in Sources */,
 				B538781C1FB54E170071B682 /* JdConfig.cpp in Sources */,
 				B538781B1FB54E170071B682 /* JdCoreL2.cpp in Sources */,
-				B5DB7A6420AE3EC300FB25CD /* EpigramAppleUtil.cpp in Sources */,
 				B538781E1FB54E170071B682 /* JdCore.cpp in Sources */,
-				B5DB7A5F20AE3E6500FB25CD /* EpilogLib.cpp in Sources */,
 				B580E2401FB64C8B00DD177B /* JdTimer.cpp in Sources */,
 				B583D0941FA97E85007C07F0 /* test.core.cpp in Sources */,
-				B5DB7A6220AE3E9E00FB25CD /* JdMacPlatform.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -346,6 +421,23 @@
 				B5C695C32029E4AA001DC0F3 /* EpilogCliServer.cpp in Sources */,
 				B5C695C42029E4AA001DC0F3 /* epilog.cpp in Sources */,
 				B5C695D2202A164F001DC0F3 /* JdCore.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B5D09CE920AE740C0036BB57 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B5D09CFC20AE74490036BB57 /* JdMacPlatform.mm in Sources */,
+				B5D09D0120AE748C0036BB57 /* JdConfig.cpp in Sources */,
+				B5D09CFD20AE74580036BB57 /* JdAssert.cpp in Sources */,
+				B5D09CFE20AE74770036BB57 /* EpigramAppleUtil.cpp in Sources */,
+				B5D09D0220AE74910036BB57 /* JdCore.cpp in Sources */,
+				B5D09CF420AE740C0036BB57 /* epilogger.cpp in Sources */,
+				B5D09D0720AE74C60036BB57 /* JdCoreL2.cpp in Sources */,
+				B5D09CFA20AE74310036BB57 /* JdTimer.cpp in Sources */,
+				B5D09CF820AE741A0036BB57 /* EpilogLib.cpp in Sources */,
+				B5D09D0020AE74810036BB57 /* JdUUID.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -505,6 +597,42 @@
 			};
 			name = Release;
 		};
+		B5D09CF520AE740C0036BB57 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					"d_epilogLibBuild=1",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		B5D09CF620AE740C0036BB57 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "d_epilogLibBuild=1";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -531,6 +659,15 @@
 			buildConfigurations = (
 				B5C695BD2029E42A001DC0F3 /* Debug */,
 				B5C695BE2029E42A001DC0F3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B5D09CF720AE740C0036BB57 /* Build configuration list for PBXNativeTarget "epilogger" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B5D09CF520AE740C0036BB57 /* Debug */,
+				B5D09CF620AE740C0036BB57 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

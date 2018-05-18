@@ -153,7 +153,7 @@ struct EpilogEvent
 };
 
 
-#ifdef d_buildEpilogLib
+#ifdef d_epilogLibBuild
 	#define d_epExtern __attribute__ ((visibility("default")))
     #define d_epImport
 #else
