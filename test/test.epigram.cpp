@@ -84,6 +84,20 @@ doctest ("epigram.count")
 }
 
 
+doctest ("epigram.iterate")
+{
+	Epigram e;
+	e ["key"] = "value";
+	e [0] = "other1";
+	e ["key2"] = "value23";
+	
+	for (auto & kv : e)
+	{
+		cout << kv.GetKeyString () << endl;
+	}
+}
+
+
 
 doctest ("epigram.strings")
 {

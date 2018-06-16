@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B50B2EFB20BE11540043139F /* libepilogger.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5D09CED20AE740C0036BB57 /* libepilogger.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		B53878101FB54D550071B682 /* JdFiber.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B538780F1FB54D550071B682 /* JdFiber.cpp */; };
 		B538781B1FB54E170071B682 /* JdCoreL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878121FB54E160071B682 /* JdCoreL2.cpp */; };
 		B538781C1FB54E170071B682 /* JdConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878141FB54E160071B682 /* JdConfig.cpp */; };
@@ -33,9 +34,6 @@
 		B5C695D0202A1612001DC0F3 /* JdAssert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878161FB54E160071B682 /* JdAssert.cpp */; };
 		B5C695D1202A161E001DC0F3 /* JdConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878141FB54E160071B682 /* JdConfig.cpp */; };
 		B5C695D2202A164F001DC0F3 /* JdCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878181FB54E160071B682 /* JdCore.cpp */; };
-		B5D09CF020AE740C0036BB57 /* epilogger.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B5D09CEF20AE740C0036BB57 /* epilogger.hpp */; };
-		B5D09CF220AE740C0036BB57 /* epiloggerPriv.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B5D09CF120AE740C0036BB57 /* epiloggerPriv.hpp */; };
-		B5D09CF420AE740C0036BB57 /* epilogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5D09CF320AE740C0036BB57 /* epilogger.cpp */; };
 		B5D09CF820AE741A0036BB57 /* EpilogLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5DB7A5E20AE3E6500FB25CD /* EpilogLib.cpp */; };
 		B5D09CF920AE742B0036BB57 /* libboost_timer-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2411FB64CF100DD177B /* libboost_timer-clang-darwin42-mt-x64-1_67.a */; };
 		B5D09CFA20AE74310036BB57 /* JdTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B580E23D1FB64C8B00DD177B /* JdTimer.cpp */; };
@@ -56,6 +54,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		B50B2EFA20BE11440043139F /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/local/lib;
+			dstSubfolderSpec = 0;
+			files = (
+				B50B2EFB20BE11540043139F /* libepilogger.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		B584EF371FA97E2E00A8B431 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -129,9 +137,6 @@
 		B5C695CB202A1553001DC0F3 /* libboost_program_options-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_program_options-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_program_options-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
 		B5C695CC202A1553001DC0F3 /* libboost_thread-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_thread-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_thread-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
 		B5D09CED20AE740C0036BB57 /* libepilogger.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libepilogger.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		B5D09CEF20AE740C0036BB57 /* epilogger.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = epilogger.hpp; sourceTree = "<group>"; };
-		B5D09CF120AE740C0036BB57 /* epiloggerPriv.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = epiloggerPriv.hpp; sourceTree = "<group>"; };
-		B5D09CF320AE740C0036BB57 /* epilogger.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = epilogger.cpp; sourceTree = "<group>"; };
 		B5DB7A5E20AE3E6500FB25CD /* EpilogLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EpilogLib.cpp; path = trace/EpilogLib.cpp; sourceTree = "<group>"; };
 		B5DB7A6120AE3E9E00FB25CD /* JdMacPlatform.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = JdMacPlatform.mm; path = system/mac/JdMacPlatform.mm; sourceTree = "<group>"; };
 		B5DB7A6320AE3EC300FB25CD /* EpigramAppleUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EpigramAppleUtil.cpp; path = serialization/EpigramAppleUtil.cpp; sourceTree = "<group>"; };
@@ -247,7 +252,6 @@
 				B583D0921FA97E85007C07F0 /* doctest.hpp */,
 				B583D0931FA97E85007C07F0 /* test.core.cpp */,
 				B562BD761FB55D9500FDE277 /* test.epigram.cpp */,
-				B5D09CEE20AE740C0036BB57 /* epilogger */,
 				B584EF3A1FA97E2E00A8B431 /* Products */,
 				B583D0BF1FA97F0D007C07F0 /* Frameworks */,
 			);
@@ -273,16 +277,6 @@
 			name = epilog;
 			sourceTree = "<group>";
 		};
-		B5D09CEE20AE740C0036BB57 /* epilogger */ = {
-			isa = PBXGroup;
-			children = (
-				B5D09CEF20AE740C0036BB57 /* epilogger.hpp */,
-				B5D09CF120AE740C0036BB57 /* epiloggerPriv.hpp */,
-				B5D09CF320AE740C0036BB57 /* epilogger.cpp */,
-			);
-			path = epilogger;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -290,8 +284,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B5D09CF220AE740C0036BB57 /* epiloggerPriv.hpp in Headers */,
-				B5D09CF020AE740C0036BB57 /* epilogger.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,6 +331,7 @@
 				B5D09CE920AE740C0036BB57 /* Sources */,
 				B5D09CEA20AE740C0036BB57 /* Frameworks */,
 				B5D09CEB20AE740C0036BB57 /* Headers */,
+				B50B2EFA20BE11440043139F /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -433,7 +426,6 @@
 				B5D09CFD20AE74580036BB57 /* JdAssert.cpp in Sources */,
 				B5D09CFE20AE74770036BB57 /* EpigramAppleUtil.cpp in Sources */,
 				B5D09D0220AE74910036BB57 /* JdCore.cpp in Sources */,
-				B5D09CF420AE740C0036BB57 /* epilogger.cpp in Sources */,
 				B5D09D0720AE74C60036BB57 /* JdCoreL2.cpp in Sources */,
 				B5D09CFA20AE74310036BB57 /* JdTimer.cpp in Sources */,
 				B5D09CF820AE741A0036BB57 /* EpilogLib.cpp in Sources */,

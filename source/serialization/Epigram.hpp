@@ -2511,6 +2511,46 @@ class EpigramT : public interface_t
 
 		EpigramElement & operator * () const
 		{
+			m_kv.valueType = c_jdTypeId::unknown;
+			
+			if (m_index >= 0)
+			{
+				const u8 * ptr = m_elements [m_index];
+				const u8 * end = m_allocator.GetBuffer () - 1;
+			
+				const u8 * decode = ptr;
+				
+				auto payloadSize = Jd::ReverseDecode7bRE <size_t> (decode, end) + c_payloadMinSize;
+				auto next = decode - payloadSize;
+				
+				u8 valueType = *decode--;
+				u8 keyType = *decode--;
+				
+				keyType &= c_jdTypeId::typeMask;
+				
+				bool isArray = valueType & c_jdTypeId::isArray;
+				valueType &= c_jdTypeId::typeMask;
+				
+				auto keySize = Jd::ReverseDecode7bRE <size_t> (decode, end);
+				
+				auto key = decode - keySize + 1;
+				
+				++next;
+				
+				if (isArray)
+					m_kv.count = Jd::Decode7bRE <size_t> (next, key);
+				else
+					m_kv.count = 1;
+				
+				m_kv.sequence = m_allocator.GetSequence ();
+				m_kv.keyType = keyType;
+				m_kv.valueType = valueType;
+				m_kv.payload = const_cast <u8 *> (next);
+				m_kv.endPayload = key;
+				m_kv.end = ptr + 1;
+			}
+
+#if 0
 			const u8 * ptr = m_ptr;
 			const u8 * end = m_allocator.GetBuffer () -1;
 			
@@ -2547,31 +2587,35 @@ class EpigramT : public interface_t
 				m_kv.endPayload = key;
 				m_kv.end = ptr + 1;
 			}
+#endif
 			
 			return m_kv;
 		}
 		
 		const Iterator & operator++ ()
 		{
-			const u8 * end = m_allocator.GetBuffer () -1;
+//			const u8 * end = m_allocator.GetBuffer () -1;
+//
+//			if (m_ptr > end)
+//			{
+//				auto payloadSize = Jd::ReverseDecode7bRE <size_t> (m_ptr, end) + c_payloadMinSize;
+//				m_ptr -= payloadSize;
+//			}
 			
-			if (m_ptr > end)
-			{
-				auto payloadSize = Jd::ReverseDecode7bRE <size_t> (m_ptr, end) + c_payloadMinSize;
-				m_ptr -= payloadSize;
-			}
+			if (m_index >= 0)
+				--m_index;
 			
 			return * this;
 		}
 
-		bool operator == (const Iterator & i_other) const
-		{
-			return m_ptr == i_other.m_ptr;
-		}
+//		bool operator == (const Iterator & i_other) const
+//		{
+//			return m_ptr == i_other.m_ptr;
+//		}
 
 		bool operator != (const Iterator & i_other) const
 		{
-			return m_ptr != i_other.m_ptr;
+			return m_index != i_other.m_index;
 		}
 		
 		protected:
@@ -2580,7 +2624,21 @@ class EpigramT : public interface_t
 		m_kv		(i_epigram, EpNoType ()),
 		m_ptr		(i_pointer),
 		m_allocator	(i_allocator)
-		{}
+		{
+			const u8 * end = m_allocator.GetBuffer () -1;
+			
+			while (i_pointer > end)
+			{
+				m_elements.push_back (i_pointer);
+				
+				auto payloadSize = Jd::ReverseDecode7bRE <size_t> (i_pointer, end) + c_payloadMinSize;
+				i_pointer -= payloadSize;
+				
+//				cout << "payloadsize: " << payloadSize << endl;
+			}
+
+			m_index = m_elements.size () - 1;
+		}
 
 		
 		private://--------------------------------------------------------------------------------------------
@@ -2588,6 +2646,9 @@ class EpigramT : public interface_t
 		mutable EpigramElement			m_kv;
 		const u8 *						m_ptr;
 		allocator_t &					m_allocator;
+		
+		vector <const u8 *>				m_elements;
+		ptrdiff_t						m_index;
 	};
 	
 	
