@@ -380,22 +380,22 @@ class EpigramHybridAllocator
 	template <u32 S> friend class EpigramHybridAllocator;
 	
 	public:
-	
-	u32 GetSequence			() const { return m_sequence; }
-	
-	u8 * GetBuffer			() //const
-	{
-		return m_start;
-	}
-	
-	u8 * GetBufferEnd () const
-	{
-		return m_end;
-	}
-	
 	struct BufferRange { u8 * start, * end; };
 	
-	BufferRange GetBufferRange	() { return { m_start, m_end }; }
+
+	u32			GetSequence			() const	{ return m_sequence; }
+	
+	u8 *		GetBuffer			() 			{ return m_start; }
+	u8 * 		GetBufferEnd		() const	{ return m_end; }
+	
+	size_t 		GetCapacity			()			{ return m_size; }
+	size_t		GetNumUsedBytes 	()			{ return (m_end - m_start); }
+	size_t		GetNumFreeBytes		()			{ return m_size - (m_end - m_start); }
+	
+	bool		IsHeapAllocated	 	() const	{ return (m_start != m_data); }
+	
+	BufferRange GetBufferRange		() 			{ return { m_start, m_end }; }
+	
 	
 	void Reset				()		// delete heap & return to stack storage
 	{
@@ -461,30 +461,10 @@ class EpigramHybridAllocator
 	}
 	
 	
-	size_t GetCapacity			()
-	{
-		return m_size;
-	}
-	
-	size_t GetNumUsedBytes ()
-	{
-		return (m_end - m_start);
-	}
-	
-	size_t GetNumFreeBytes		()
-	{
-		return m_size - (m_end - m_start);
-	}
-	
 	~ EpigramHybridAllocator ()
 	{
 		if (IsHeapAllocated ())
 			free (m_start);
-	}
-	
-	bool IsHeapAllocated () const
-	{
-		return (m_start != m_data);
 	}
 	
 	EpigramHybridAllocator ()
@@ -1856,10 +1836,7 @@ class EpigramT : public interface_t
 			else return nullptr;
 		}
 		
-		size_t					Count							() const
-		{
-			return this->count;
-		}
+		size_t					Count					() const					{ return this->count; }
 
 		bool					IsSet					() const					{ return this->valueType != c_jdTypeId::unknown; }
 		bool					IsNull					() const					{ return not IsSet (); }
@@ -1924,10 +1901,12 @@ class EpigramT : public interface_t
 			return Jd::TypeIdToFullName (this->keyType);
 		}
 		
+		
+		// GetKey <string> () can be used which will then cast other types to a string
+		// GetKeyString () is a fast alternative which points to the null terminated string in the epigram structure
 		cstr_t					GetKeyString					() const
 		{
 			cstr_t key = c_epigram::nullString;
-//			cstr_t key = nullptr;
 			
 			if (this->keyType == c_jdTypeId::string)
 				key = (cstr_t) this->keyPayload;
@@ -1996,9 +1975,6 @@ class EpigramT : public interface_t
 	
 	typedef EpigramKVT <KVAny <EpNoType>> EpigramElement;
 
-	public:
-
-	
 	public: // constructors --------------------------------------------------------------------------------------
 	
 	EpigramT () {}
@@ -2142,16 +2118,6 @@ class EpigramT : public interface_t
 	}
 	
 
-	void						Reset				()
-	{
-		m_allocator.Reset ();
-	}
-	
-	void						Clear				()
-	{
-		m_allocator.Clear ();
-	}
-
 	size_t						Count               () const
 	{
 		size_t count = 0;
@@ -2196,22 +2162,11 @@ class EpigramT : public interface_t
 	}
 
 	
-	size_t						GetCapacity			() const
-	{
-		return m_allocator.GetCapacity ();
-	}
-
-	size_t						GetSize				() const
-	{
-		return m_allocator.GetNumUsedBytes ();
-	}
-
-	
-	u32							GetSequence			() const
-	{
-		return m_allocator.GetSequence ();
-	}
-	
+	size_t						GetCapacity			() const	{ return m_allocator.GetCapacity (); }
+	size_t						GetSize				() const	{ return m_allocator.GetNumUsedBytes (); }
+	u32							GetSequence			() const	{ return m_allocator.GetSequence (); }
+	void						Reset				()			{ m_allocator.Reset (); }
+	void						Clear				()			{ m_allocator.Clear (); }
 	
 	void						Load				(const u8 * i_bytes, size_t i_numBytes)
 	{
@@ -2258,7 +2213,7 @@ class EpigramT : public interface_t
 			{
 				cstr_t hacked = i.GetKeyString ();
 				
-				if (hacked)
+//				if (hacked)
 					Erase (hacked);
 				
 				// options: examine raw key. fastest, but only perfectly works for fundamentals and simple POD. probably good enough. having an epigram as the key is kinda fringe usage
@@ -2594,14 +2549,6 @@ class EpigramT : public interface_t
 		
 		const Iterator & operator++ ()
 		{
-//			const u8 * end = m_allocator.GetBuffer () -1;
-//
-//			if (m_ptr > end)
-//			{
-//				auto payloadSize = Jd::ReverseDecode7bRE <size_t> (m_ptr, end) + c_payloadMinSize;
-//				m_ptr -= payloadSize;
-//			}
-			
 			if (m_index >= 0)
 				--m_index;
 			
@@ -2627,14 +2574,13 @@ class EpigramT : public interface_t
 		{
 			const u8 * end = m_allocator.GetBuffer () -1;
 			
+			// element sizes are decoded and pointers are pushed to a vector so that the iterator can traverse forward
 			while (i_pointer > end)
 			{
 				m_elements.push_back (i_pointer);
 				
 				auto payloadSize = Jd::ReverseDecode7bRE <size_t> (i_pointer, end) + c_payloadMinSize;
 				i_pointer -= payloadSize;
-				
-//				cout << "payloadsize: " << payloadSize << endl;
 			}
 
 			m_index = m_elements.size () - 1;
