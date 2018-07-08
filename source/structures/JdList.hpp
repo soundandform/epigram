@@ -490,6 +490,16 @@ struct GraphT : T
 		return m_down.size ();
 	}
 
+	size_t				numNodes			() const
+	{
+		size_t s = m_down.size ();
+		for (auto n : m_down)
+			s += n->numNodes ();
+		
+		return s;
+	}
+
+	
 	GraphT &			operator []			(size_t i_index)
 	{
 		d_jdAssert (i_index < m_down.size (), "out of bounds");
