@@ -72,6 +72,7 @@ namespace c_jdTypeId
 				binary				=	19,
 	
 				epigram				=	20,
+				dictionary			=	epigram,
 
 				pod					=	21,
 				object				=	22,
