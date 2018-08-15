@@ -544,7 +544,7 @@ struct GraphT : T
 	void 				visitBottomUp		(const function <void (T & i_node)> & i_visitor)
 	{
 		for (auto & n : m_down)
-			n->visit (i_visitor);
+			n->visitBottomUp (i_visitor);
 
 		i_visitor (* this);
 	}
@@ -633,7 +633,7 @@ struct GraphT : T
 	void				DumpR				(GraphT * i_node)
 	{
 		T & obj = * i_node;
-		cout << "[" << i_node << " " << obj;
+		cout << "[" << obj << " " << i_node;
 		
 		if (i_node->numChildren ())
 		{
