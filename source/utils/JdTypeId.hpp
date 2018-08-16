@@ -264,7 +264,9 @@ struct TypeIdsMap
 		longNames ['d'] = "default";  //	TODO: ptr to binary not allowed
 		
 		longNames ['E'] = "epigram";
-		
+
+		longNames ['m'] = "function";
+
 		longNames ['b'] = "bool ";
 		longNames ['c'] = "bool *";
 		
