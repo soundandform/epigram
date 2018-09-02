@@ -19,8 +19,11 @@ struct JdTable
 		table.AddRow (w, x, y, z); 												// Jd::ToString () is applied on each element
 		table.Print (); 														// optional.  ~JdTable() prints by default.
 	
-		// or
-		JdTable table ({ "column1,10", ".:column2,20", ":column3,5", "L:column4,9"});
+		// or immediate table w/ fixed widths
+		JdTable table ({ "column1,10", ".:column2,20", "col3", "L:column4,9"});		// column widths
+		table.PrintRow (w, x, y, z);
+		table.EndCap ();
+	
 	#endif
 	
 	struct Column
@@ -89,13 +92,13 @@ struct JdTable
 		}
 
 		for (auto & c : m_columns)
-			c.rows.clear ();
+			c.rows.resize (1);	// leaving the header there
 
 		AddRow (i_column, i_columns...);
-		OutputRow (0, padding);
+		OutputRow (1, padding);
 	}
 	
-	void End ()
+	void EndCap ()
 	{
 		size_t padding = 4;
 		size_t width = CalculateWidth (padding);
