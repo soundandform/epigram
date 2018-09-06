@@ -206,10 +206,10 @@ struct TypeIdsMap
 		names ['x'] = "uuid";  //	TODO: ptr to enum just not allowed. dumb.
 		names ['e'] = "enum";  //	TODO: ptr to enum just not allowed. dumb.
 		names ['B'] = "bin";  //	TODO: ptr to binary not allowed
-//		names ['a'] = "#32";  //	TODO: ptr to binary not allowed
-		names ['h'] = "#64";  //	TODO: ptr to binary not allowed
-		names ['a'] = "any";  //	TODO: ptr to binary not allowed
-		names ['d'] = "def";  //	TODO: ptr to binary not allowed
+//		names ['a'] = "#32";
+		names ['h'] = "#64";
+		names ['a'] = "any";
+		names ['d'] = "def";
 		names ['m'] = "fun";
 
 		names ['E'] = "epg";
@@ -616,6 +616,7 @@ class JdTypeId
 	}
 
 	string			GetTypeName		() const 	{ return Jd::TypeIdToName (m_typeId); }
+	string			GetLongTypeName	() const 	{ return Jd::TypeIdToFullName (m_typeId); }
 	char			GetTypeChar		() 			{ return Jd::TypeIdToChar (m_typeId); }
 	
 	protected:
