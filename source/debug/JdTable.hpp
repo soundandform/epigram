@@ -81,13 +81,12 @@ struct JdTable
 	{
 		size_t padding = 4;
 		size_t width = CalculateWidth (padding);
-		string div = GetDivider (width);
 
 		if (not m_printed)
 		{
-			cout << div;
+			cout << GetDivider (width, true);
 			OutputRow (0, padding);
-			cout << div;
+			cout << GetDivider (width);
 			m_printed = true;
 		}
 
@@ -127,10 +126,10 @@ struct JdTable
 	
 	protected:
 	
-	string GetDivider (size_t i_width)
+	string GetDivider (size_t i_width, bool i_topBorder = false)
 	{
 		string div (i_width + 4, '-');
-		div = "+" + div + "+";
+		div = (i_topBorder ? "." : "+" ) + div + (i_topBorder ? "." : "+" );
 		div += "\n";
 		
 		return div;
@@ -162,7 +161,7 @@ struct JdTable
 			size_t totalWidth = CalculateWidth (padding);
 			string div = GetDivider (totalWidth);
 			
-			cout << div;
+			cout << GetDivider (totalWidth, true);
 			for (size_t r = 0; r < m_numRows + 1; ++r)
 			{
 				OutputRow (r, padding);
