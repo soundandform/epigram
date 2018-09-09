@@ -356,15 +356,6 @@ namespace jd
 
 	template <typename T> struct is_vector : std::false_type {};
 	template <typename... Ts> struct is_vector <std::vector	<Ts...>> : std::true_type {};
-
-	template <typename T>
-	struct has_iterator : std::false_type { };
-	
-	template <typename... Ts> struct has_iterator <std::list	<Ts...>> : std::true_type { };
-	template <typename... Ts> struct has_iterator <std::vector	<Ts...>> : std::true_type { };
-	template <typename... Ts> struct has_iterator <std::deque	<Ts...>> : std::true_type { };
-	template <typename... Ts> struct has_iterator <std::set		<Ts...>> : std::true_type { };
-	
 }
 
 

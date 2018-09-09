@@ -79,7 +79,7 @@ struct JdTable
 	template <typename T, typename... Args>
 	void PrintRow (T && i_column, Args... i_columns)
 	{
-		size_t padding = 4;
+		size_t padding = m_padding;
 		size_t width = CalculateWidth (padding);
 
 		if (not m_printed)
@@ -99,8 +99,7 @@ struct JdTable
 	
 	void EndCap ()
 	{
-		size_t padding = 4;
-		size_t width = CalculateWidth (padding);
+		size_t width = CalculateWidth (m_padding);
 		cout << GetDivider (width);
 	}
 	
@@ -157,7 +156,7 @@ struct JdTable
 	{
 		if (not m_printed)
 		{
-			size_t padding = 4;
+			size_t padding = m_padding;
 			size_t totalWidth = CalculateWidth (padding);
 			string div = GetDivider (totalWidth);
 			
@@ -200,6 +199,7 @@ struct JdTable
 	vector <Column>			 	m_columns;
 	bool						m_printed			= false;
 	size_t 						m_numRows			= 0;
+	size_t						m_padding			= 3;
 	
 };
 
