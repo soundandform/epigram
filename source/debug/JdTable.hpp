@@ -10,6 +10,7 @@
 #define JdTable_h
 
 #include "JdStdStringUtils.hpp"
+#include <iomanip>
 
 struct JdTable
 {
