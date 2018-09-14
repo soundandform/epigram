@@ -21,28 +21,13 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <vector>
-#include <set>
-#include <list>
-#include <deque>
 #include <limits>
 #include <type_traits>
 #include <mutex>
 
+#include "JdTypeTraits.hpp"
+
 using namespace std;
-
-
-namespace jd
-{
-	template <typename T>
-	struct has_iterator : std::false_type { };
-	
-	template <typename... Ts> struct has_iterator <std::list	<Ts...>> : std::true_type { };
-	template <typename... Ts> struct has_iterator <std::vector	<Ts...>> : std::true_type { };
-	template <typename... Ts> struct has_iterator <std::deque	<Ts...>> : std::true_type { };
-	template <typename... Ts> struct has_iterator <std::set		<Ts...>> : std::true_type { };
-	
-}
 
 
 namespace Jd
