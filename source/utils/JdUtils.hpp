@@ -65,6 +65,13 @@ namespace Jd
                     end = strstr (start, "]");
                 }
             }
+#elif _MSC_VER
+			cstr_t start = strstr(__FUNCSIG__, "[T = ");
+			if (start)
+			{
+				start += 5;
+				end = strstr(start, "]");
+			}
 #endif
 			
 			if (end)
