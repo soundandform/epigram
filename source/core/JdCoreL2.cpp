@@ -15,15 +15,16 @@ namespace Jd
 {
     i32 HashCString31 (const char *i_string)
     {
-		u64 hash = std::hash <std::string_view> () (string_view (i_string, strlen (i_string)));
-        hash &= 0x000000007FFFFFFF;
+		//u64 hash = std::hash <std::string_view> () (string_view (i_string, strlen (i_string)));
+		u64 hash = std::hash <std::string>() (i_string);
+		hash &= 0x000000007FFFFFFF;
         return (i32) hash;
     }
 	
 	u64 HashString64 (const string &i_string)
 	{
 		//		return CityHash64 (i_string.c_str(), i_string.size());
-		return std::hash <std::string_view> () (i_string);
+		return std::hash <std::string> () (i_string);
 	}
 
 
