@@ -11,9 +11,9 @@
 
 # if __APPLE__
 #	include <signal.h>
+#	include <unistd.h>
 # endif
 
-#include <unistd.h>
 #include "JdConfig.hpp"
 #include "JdResult.hpp"
 
@@ -62,7 +62,9 @@ void JdAssert (bool i_shouldBeTrue, cstr_t i_truthfulOrLyingStatement, cstr_t i_
 		// Break into the debugger
 		if (not JdConfig::IsUnitTest () and JdConfig::IsDebug ())
 		{
-			usleep (50000);		// give epilog 50ms to flush.
+			#if __APPLE__
+				usleep (50000);		// give epilog 50ms to flush.
+			#endif
 //			raise (SIGTRAP);
 		}
 		
@@ -104,7 +106,9 @@ JdResult JdResert (bool i_shouldBeTrue, cstr_t i_truthfulOrLyingStatement, cstr_
 			// Break into the debugger
 			if (not JdConfig::IsUnitTest () and JdConfig::IsDebug ())
 			{
-				usleep (50000);		// give epilog 50ms to flush.
+				#if __APPLE__
+					usleep (50000);		// give epilog 50ms to flush.
+				#endif
 //				raise (SIGTRAP);
 			}
 			

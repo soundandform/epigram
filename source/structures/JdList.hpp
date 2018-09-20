@@ -490,6 +490,16 @@ struct GraphT : T
 		return m_down.size ();
 	}
 
+	size_t				numNodes			() const
+	{
+		size_t s = m_down.size ();
+		for (auto n : m_down)
+			s += n->numNodes ();
+		
+		return s;
+	}
+
+	
 	GraphT &			operator []			(size_t i_index)
 	{
 		d_jdAssert (i_index < m_down.size (), "out of bounds");
@@ -522,7 +532,12 @@ struct GraphT : T
 		return done;
 	}
 	
-
+	void 				visit 				(const function <void (T * i_parent, T & i_node)> & i_visitor)
+	{
+		VisitWithParent (nullptr, i_visitor);
+	}
+	
+	
 	void 				visit 				(const function <void (T & i_node)> & i_visitor)
 	{
 		i_visitor (* this);
@@ -534,7 +549,7 @@ struct GraphT : T
 	void 				visitBottomUp		(const function <void (T & i_node)> & i_visitor)
 	{
 		for (auto & n : m_down)
-			n->visit (i_visitor);
+			n->visitBottomUp (i_visitor);
 
 		i_visitor (* this);
 	}
@@ -603,7 +618,7 @@ struct GraphT : T
 	// deletes the node if its ref count = 0
 	void				detach				(GraphT & i_node)
 	{
-		GraphT * node = & i_node;										d_jdAssert (i_node.m_up.count (this), "doesn't reference node");
+		GraphT * node = & i_node;											d_jdAssert (i_node.m_up.count (this), "doesn't reference node");
 
 		i_node.m_up.erase (this);
 		auto i = std::find (m_down.begin (), m_down.end (), node);			d_jdAssert (i != m_down.end (), "node not found");
@@ -620,10 +635,19 @@ struct GraphT : T
 	
 	protected://--------------------------------------------------------------------------------
 
+	void 				VisitWithParent		(T * i_parent, const function <void (T * i_parent, T & i_node)> & i_visitor)
+	{
+		i_visitor (i_parent, * this);
+		
+		for (auto & n : m_down)
+			n->VisitWithParent (this, i_visitor);
+	}
+
+	
 	void				DumpR				(GraphT * i_node)
 	{
 		T & obj = * i_node;
-		cout << "[" << i_node << " " << obj;
+		cout << "[" << obj << " " << i_node;
 		
 		if (i_node->numChildren ())
 		{

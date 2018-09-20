@@ -157,9 +157,13 @@ struct EpilogEvent
 	#define d_epExtern __attribute__ ((visibility("default")))
     #define d_epImport
 #else
+#if _MSC_VER
+#	define d_epExtern extern
+#	define d_epImport 
+#else
 	#define d_epExtern extern
     #define d_epImport __attribute__((weak_import))
-
+#endif
 
 struct EpilogEmptyArg {};
 

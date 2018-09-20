@@ -45,6 +45,8 @@ d_jdInterface (IJdFiberControl)
 	virtual void				Yield				(IJdFiber i_toFiber = nullptr) = 0;		// Yield (nullptr) switches to calling fiber
 	virtual void				YieldTo				(IJdFiber i_toFiber) = 0;				// YieldTo (nullptr) switches to home
 	virtual JdResult			Terminate			() = 0;
+	
+	virtual void				dump				() = 0;
 };
 
 class JdFibers;
@@ -85,7 +87,11 @@ d_jdInterface (IJdFiber)
 		return m_controller->GetName ();
 	}
 
-	
+	void						dump				()
+	{
+		m_controller->dump ();
+	}
+
 	protected:
 	
 	virtual i64					RunFiber			() = 0;
@@ -294,6 +300,11 @@ class JdFibers
 		virtual void			SetName					(stringRef_t i_name)
 		{
 			m_name = i_name;
+		}
+		
+		virtual void			dump					()
+		{
+			m_home->dump ();
 		}
 
 		virtual bool			IsRunnable				()

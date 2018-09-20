@@ -76,7 +76,8 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 							JdResultT				(const JdResultT &i_result, t_location i_location, u32 i_lineNum, u32 i_columnNum = 0)
 							:
 							m_location				(i_location),
-							m_lineNum				(i_lineNum)
+							m_lineNum				(i_lineNum),
+							m_columnNum				(i_columnNum)
 							{
 								m_resultCode = i_result.m_resultCode;
 								m_message = i_result.m_message;
@@ -194,6 +195,11 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 	i32						Code					() const
 	{
 		return m_resultCode;
+	}
+
+	void					SetResultCode			(i32 i_resultCode)
+	{
+		m_resultCode = i_resultCode;
 	}
 	
 	i32						GetCode					() const

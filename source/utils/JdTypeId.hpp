@@ -72,6 +72,7 @@ namespace c_jdTypeId
 				binary				=	19,
 	
 				epigram				=	20,
+				dictionary			=	epigram,
 
 				pod					=	21,
 				object				=	22,
@@ -205,10 +206,10 @@ struct TypeIdsMap
 		names ['x'] = "uuid";  //	TODO: ptr to enum just not allowed. dumb.
 		names ['e'] = "enum";  //	TODO: ptr to enum just not allowed. dumb.
 		names ['B'] = "bin";  //	TODO: ptr to binary not allowed
-//		names ['a'] = "#32";  //	TODO: ptr to binary not allowed
-		names ['h'] = "#64";  //	TODO: ptr to binary not allowed
-		names ['a'] = "any";  //	TODO: ptr to binary not allowed
-		names ['d'] = "def";  //	TODO: ptr to binary not allowed
+//		names ['a'] = "#32";
+		names ['h'] = "#64";
+		names ['a'] = "any";
+		names ['d'] = "def";
 		names ['m'] = "fun";
 
 		names ['E'] = "epg";
@@ -263,7 +264,9 @@ struct TypeIdsMap
 		longNames ['d'] = "default";  //	TODO: ptr to binary not allowed
 		
 		longNames ['E'] = "epigram";
-		
+
+		longNames ['m'] = "function";
+
 		longNames ['b'] = "bool ";
 		longNames ['c'] = "bool *";
 		
@@ -353,15 +356,6 @@ namespace jd
 
 	template <typename T> struct is_vector : std::false_type {};
 	template <typename... Ts> struct is_vector <std::vector	<Ts...>> : std::true_type {};
-
-	template <typename T>
-	struct has_iterator : std::false_type { };
-	
-	template <typename... Ts> struct has_iterator <std::list	<Ts...>> : std::true_type { };
-	template <typename... Ts> struct has_iterator <std::vector	<Ts...>> : std::true_type { };
-	template <typename... Ts> struct has_iterator <std::deque	<Ts...>> : std::true_type { };
-	template <typename... Ts> struct has_iterator <std::set		<Ts...>> : std::true_type { };
-	
 }
 
 
@@ -416,13 +410,13 @@ namespace Jd
 #if __APPLE__
 		template <> inline constexpr const u8 TypeId2T <long> ()				{ return c_jdTypeId::i64; }	// what?
 		template <> inline constexpr const u8 TypeId2T <unsigned long> ()		{ return c_jdTypeId::u64; }
+		template <> inline constexpr const u8 TypeId2T <int64_t>()				{ return c_jdTypeId::i64; }
+		template <> inline constexpr const u8 TypeId2T <uint64_t>()				{ return c_jdTypeId::u64; }
 #else
 		template <> inline constexpr const u8 TypeId2T <long long> ()			{ return c_jdTypeId::i64; }	
 		template <> inline constexpr const u8 TypeId2T <unsigned long long> ()	{ return c_jdTypeId::u64; }	
 #endif
 		template <> inline constexpr const u8 TypeId2T <uint32_t> ()			{ return c_jdTypeId::u32; }
-		template <> inline constexpr const u8 TypeId2T <int64_t> ()				{ return c_jdTypeId::i64; }
-		template <> inline constexpr const u8 TypeId2T <uint64_t> ()			{ return c_jdTypeId::u64; }
 		template <> inline constexpr const u8 TypeId2T <std::string> ()			{ return c_jdTypeId::string; }
 		template <> inline constexpr const u8 TypeId2T <void> ()				{ return c_jdTypeId::voidNull; }
 		
@@ -613,6 +607,7 @@ class JdTypeId
 	}
 
 	string			GetTypeName		() const 	{ return Jd::TypeIdToName (m_typeId); }
+	string			GetLongTypeName	() const 	{ return Jd::TypeIdToFullName (m_typeId); }
 	char			GetTypeChar		() 			{ return Jd::TypeIdToChar (m_typeId); }
 	
 	protected:

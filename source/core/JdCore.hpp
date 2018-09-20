@@ -21,11 +21,11 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <vector>
-#include <set>
 #include <limits>
 #include <type_traits>
 #include <mutex>
+
+#include "JdTypeTraits.hpp"
 
 using namespace std;
 
@@ -68,15 +68,42 @@ namespace Jd
 	{
 		return t_length;
 	}
-	
-	template <typename T>
-	std::string ToString (const T &i_value)
+
+	struct OtherToString
 	{
+		template <typename T>
+		static void Stringify (std::ostringstream & o_oss, const T & i_value)
+		{
+			o_oss << i_value;
+		}
+	};
+
+	struct ContainerToString;
+
+	template <typename T>
+	std::string ToString (const T & i_value)
+	{
+		typedef typename conditional <jd::has_iterator <T>::value, ContainerToString, OtherToString>::type	 s;
+
 		std::ostringstream oss;
-		oss << i_value;
-		return oss.str();
+		s::Stringify (oss, i_value);
+		
+		return oss.str ();
 	}
 	
+	struct ContainerToString
+	{
+		template <typename T>
+		static void Stringify (std::ostringstream & o_oss, const T & i_container)
+		{
+			size_t c = 0;
+			for (auto & i : i_container)
+			{
+				if (c++) o_oss << ", ";
+				o_oss << Jd::ToString (i);
+			}
+		}
+	};
 	
 	const char c_epilogInsertToken = '@';
 	

@@ -12,9 +12,10 @@
 #include "JdNucleus.hpp"
 #include "JdUtils.hpp"
 
-#include <city.h>	
+#include "city.h"
 #include <iostream>
 #include <assert.h>
+#include <algorithm>
 #include <type_traits>
 #include "JdTypeId.hpp"
 
@@ -327,7 +328,7 @@ class EpDeserializer
 	EpDeserializer &				CString				(char * o_string, u32 i_maxStringLength)
 	{
 		size_t numBytes = strnlen ((cstr_t) m_ptr, m_numBytes);
-		numBytes = min (numBytes, (size_t) i_maxStringLength);
+		numBytes = std::min (numBytes, (size_t) i_maxStringLength);
 		
 		memcpy (o_string, m_ptr, numBytes);
 		o_string [numBytes] = 0;
