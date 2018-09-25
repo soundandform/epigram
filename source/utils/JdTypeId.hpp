@@ -574,9 +574,9 @@ class JdTypeId
 	void			Set				(const T &) { m_typeId = Jd::TypeId <T> (); }
 	
 	template <typename T>
-	bool			Is				() { return Jd::TypeId <T> () == m_typeId; }
+	bool			Is				() const { return Jd::TypeId <T> () == m_typeId; }
 	
-	bool			Is				(u8 i_typeId)
+	bool			Is				(u8 i_typeId) const
 	{
 		return (m_typeId == i_typeId);
 	}
@@ -608,7 +608,7 @@ class JdTypeId
 
 	string			GetTypeName		() const 	{ return Jd::TypeIdToName (m_typeId); }
 	string			GetLongTypeName	() const 	{ return Jd::TypeIdToFullName (m_typeId); }
-	char			GetTypeChar		() 			{ return Jd::TypeIdToChar (m_typeId); }
+	char			GetTypeChar		() const	{ return Jd::TypeIdToChar (m_typeId); }
 	
 	protected:
 	
