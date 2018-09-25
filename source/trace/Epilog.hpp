@@ -202,9 +202,9 @@ struct EpilogConvert
 		typedef void * cast_type;
 	};
 	
-	type_if <is_fundamental<T>::value,			Fundamental<T>, Object<T> >::type type_;
-	type_if <is_pointer<T>::value,				Fundamental<T>, type_>::type type__;
-	type_if <is_same <T,EpilogEmptyArg>::value, EmptyArg,		type__>::type type;
+	type_if <is_fundamental<T>::value,					Fundamental<T>, Object<T> >::type	type_;
+	type_if <std::is_pointer<T>::value,					Fundamental<T>, type_>::type		type__;
+	type_if <std::is_same <T,EpilogEmptyArg>::value,	EmptyArg,		type__>::type		type;
 };
 
 const i32 c_epilogStackSize = 3072;
@@ -530,8 +530,8 @@ struct EpilogCasterObjC
 struct EpilogCaster
 #endif
 {
-	type_if <is_same <T, string>::value, JdString256, T>::type			A;
-	type_if <is_same <T, cstr_t>::value, JdString256, A>::type			B;
+	type_if <std::is_same <T, string>::value, JdString256, T>::type			A;
+	type_if <std::is_same <T, cstr_t>::value, JdString256, A>::type			B;
 	
 	#if __OBJC__
 		type_if <is_same <T, CFStringRef>::value, JdString256, B>::type		C;
