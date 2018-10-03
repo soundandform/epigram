@@ -110,7 +110,7 @@ struct TypeIdsMap
 	{
 	/*
 		not placed: string16 string32
-	
+		---- are the pointer equivalents
 	
 		A |                 a | any                  0  \void
 		B | binary          b  \bool                 1  /----
@@ -125,7 +125,7 @@ struct TypeIdsMap
 		K  \u16             k  \i16
 		L  /---             l  /---
 		M |                 m | method/function
-		N |                 n |
+		N |                 n | signature
 		O  \versioned       o  \object
 		P  /object          p  /------
 		Q |                 q |
@@ -151,6 +151,7 @@ struct TypeIdsMap
 		chars [c_jdTypeId::pod]				= 'S';
 		
 		chars [c_jdTypeId::enumeration]		= 'e';
+		chars [c_jdTypeId::signature]		= 'n';
 		chars [c_jdTypeId::epigram]			= 'E';
 		chars [c_jdTypeId::binary]			= 'B';
 		chars [c_jdTypeId::uuid]			= 'x';
@@ -205,6 +206,7 @@ struct TypeIdsMap
 		
 		names ['x'] = "uuid";  //	TODO: ptr to enum just not allowed. dumb.
 		names ['e'] = "enum";  //	TODO: ptr to enum just not allowed. dumb.
+		names ['n'] = "sig";
 		names ['B'] = "bin";  //	TODO: ptr to binary not allowed
 //		names ['a'] = "#32";
 		names ['h'] = "#64";
@@ -266,6 +268,7 @@ struct TypeIdsMap
 		longNames ['E'] = "epigram";
 
 		longNames ['m'] = "function";
+		longNames ['n'] = "signature";
 
 		longNames ['b'] = "bool ";
 		longNames ['c'] = "bool *";
@@ -574,9 +577,9 @@ class JdTypeId
 	void			Set				(const T &) { m_typeId = Jd::TypeId <T> (); }
 	
 	template <typename T>
-	bool			Is				() { return Jd::TypeId <T> () == m_typeId; }
+	bool			Is				() const { return Jd::TypeId <T> () == m_typeId; }
 	
-	bool			Is				(u8 i_typeId)
+	bool			Is				(u8 i_typeId) const
 	{
 		return (m_typeId == i_typeId);
 	}
