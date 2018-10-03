@@ -86,7 +86,7 @@ struct JdVersion
 		return (major != c_jdVersionNumDontCare || minor != c_jdVersionNumDontCare || revision != c_jdRevisionNumDontCare);
 	}
 	
-	operator u64 ()
+	operator u64 () const
 	{
 		return ((u64) major << 48) | ((u64) minor << 32) | ((u64) revision);
 	}

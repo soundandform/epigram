@@ -202,9 +202,9 @@ struct EpilogConvert
 		typedef void * cast_type;
 	};
 	
-	type_if <is_fundamental<T>::value,			Fundamental<T>, Object<T> >::type type_;
-	type_if <is_pointer<T>::value,				Fundamental<T>, type_>::type type__;
-	type_if <is_same <T,EpilogEmptyArg>::value, EmptyArg,		type__>::type type;
+	type_if <is_fundamental<T>::value,					Fundamental<T>, Object<T> >::type	type_;
+	type_if <std::is_pointer<T>::value,					Fundamental<T>, type_>::type		type__;
+	type_if <std::is_same <T,EpilogEmptyArg>::value,	EmptyArg,		type__>::type		type;
 };
 
 const i32 c_epilogStackSize = 3072;
@@ -530,8 +530,8 @@ struct EpilogCasterObjC
 struct EpilogCaster
 #endif
 {
-	type_if <is_same <T, string>::value, JdString256, T>::type			A;
-	type_if <is_same <T, cstr_t>::value, JdString256, A>::type			B;
+	type_if <std::is_same <T, string>::value, JdString256, T>::type			A;
+	type_if <std::is_same <T, cstr_t>::value, JdString256, A>::type			B;
 	
 	#if __OBJC__
 		type_if <is_same <T, CFStringRef>::value, JdString256, B>::type		C;
@@ -1108,14 +1108,34 @@ class TraceClient
 // Different strategy? This avoids a copy
 // memory = epg_NewEvent (); CreateEpilogEvent (memory, ...); epg_PushEvent (memory) /
 
+#include <iomanip>
+
+static void LogNow (uint8_t i_importance, const char * i_className, EpilogEvent * i_event)
+{
+	char str [4096];
+	i_event->formatter (str, i_event);
+	cout << std::setw (20) << i_className << "| " << str << endl;
+}
+
+#if 1
 #define d_epilog(a_classification, ...) if (epg_LogDeferred) \
 	{	\
 		char stack [c_epilogStackSize]; \
 		epg_LogDeferred (c_epilogClassification_##a_classification, Jd::ParseObjectName (d_epilogObject), CreateEpilogEvent (stack, __VA_ARGS__)); \
 	}
+#else
+#define d_epilog(a_classification, ...) if (epg_LogDeferred) \
+	{	\
+		char stack [c_epilogStackSize]; \
+		LogNow (c_epilogClassification_##a_classification, Jd::ParseObjectName (d_epilogObject), CreateEpilogEvent (stack, __VA_ARGS__)); \
+	}
+#endif
 
-#define d_epilog_(a_classification, ...) if (epg_LogDeferred) { char stack [c_epilogStackSize]; epg_LogDeferred (c_epilogClassification_##a_classification, Jd::ParseObjectName (d_epilogObject), CreateEpilogEvent_ (stack, __VA_ARGS__)); }
-
+//#if 0
+//#	define d_epilog_(a_classification, ...) if (epg_LogDeferred) { char stack [c_epilogStackSize]; epg_LogDeferred (c_epilogClassification_##a_classification, Jd::ParseObjectName (d_epilogObject), CreateEpilogEvent_ (stack, __VA_ARGS__)); }
+//#else
+//# 	define d_epilog_(a_classification, ...) if (true)fdsfsd { char stack [c_epilogStackSize]; fdsfsd LogNow (c_epilogClassification_##a_classification, Jd::ParseObjectName (d_epilogObject), CreateEpilogEvent_ (stack, __VA_ARGS__)); }
+//#endif
 
 #define d_epilog_normal(...)	d_epilog (normal, __VA_ARGS__)
 #define d_epilog_fatal(...)		d_epilog (fatal, __VA_ARGS__)

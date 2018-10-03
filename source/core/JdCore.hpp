@@ -83,7 +83,7 @@ namespace Jd
 	template <typename T>
 	std::string ToString (const T & i_value)
 	{
-		typedef typename conditional <jd::has_iterator <T>::value, ContainerToString, OtherToString>::type	 s;
+		typedef typename std::conditional <jd::has_iterator <T>::value, ContainerToString, OtherToString>::type	 s;
 
 		std::ostringstream oss;
 		s::Stringify (oss, i_value);
