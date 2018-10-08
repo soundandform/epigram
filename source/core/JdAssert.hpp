@@ -139,7 +139,7 @@ JdResult JdResert (bool i_shouldBeTrue, cstr_t i_truthfulOrLyingStatement, cstr_
 #define d_jdResert(TRUTH, ...) JdResert (TRUTH, #TRUTH, __FILE__, __LINE__, __VA_ARGS__)
 
 #define d_jdThrow(...) JdAssert (false, "throw", __FILE__, __LINE__, __VA_ARGS__)
-
+#define d_jdFix() d_jdThrow ("fix")
 
 
 #endif /* JdAssert_hpp */
