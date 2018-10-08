@@ -454,6 +454,12 @@ struct JdListT
 template <typename T>
 struct GraphT : T
 {
+	static GraphT *		castToGraphNode 			(T * i_node)
+	{
+		return static_cast <GraphT *> (i_node);
+	}
+	
+	
 	typedef vector <GraphT *>						nodes_t;
 	typedef typename nodes_t::iterator				iterator_t;
 	typedef typename nodes_t::reverse_iterator		riterator_t;
@@ -482,8 +488,24 @@ struct GraphT : T
 	m_down 	(move (i_other.m_down)),
 	T		(move ((T &&)i_other)) 			{}
 
+//	GraphT (const GraphT & i_other) = delete;
 	
-	GraphT (GraphT &) = delete;
+	GraphT (const GraphT & i_other)
+	:
+	m_up	(i_other.m_up),
+	m_down 	(i_other.m_down),
+	T		((T &) i_other) 			{}
+
+
+	GraphT & operator = (const GraphT & i_other)
+	{
+		m_up = i_other.m_up;
+		m_down = i_other.m_down;
+		* (T *) this = i_other;
+
+		return *this;
+	}
+
 	
 	size_t				numChildren			() const
 	{
@@ -633,7 +655,7 @@ struct GraphT : T
 		cout << endl;
 	}
 	
-	protected://--------------------------------------------------------------------------------
+//	protected://--------------------------------------------------------------------------------
 
 	void 				VisitWithParent		(T * i_parent, const function <void (T * i_parent, T & i_node)> & i_visitor)
 	{
