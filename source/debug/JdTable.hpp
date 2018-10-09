@@ -9,6 +9,7 @@
 #ifndef JdTable_h
 #define JdTable_h
 
+#include "JdAssert.hpp"
 #include "JdStdStringUtils.hpp"
 #include <iomanip>
 
