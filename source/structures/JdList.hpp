@@ -666,16 +666,23 @@ struct GraphT : T
 	}
 
 	
-	void				DumpR				(GraphT * i_node)
+	void				DumpR				(GraphT * i_node, size_t i_depth = 0)
 	{
 		T & obj = * i_node;
+		
+		cout << "\n";
+		auto d = i_depth;
+		while (d--)
+			cout << "  ";
+
 		cout << "[" << obj << " " << i_node;
+		
+		++i_depth;
 		
 		if (i_node->numChildren ())
 		{
-			cout << " ";
 			for (auto i : i_node->children ())
-				DumpR (i);
+				DumpR (i, i_depth);
 		}
 		
 		cout << "]";
