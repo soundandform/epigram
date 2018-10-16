@@ -22,6 +22,8 @@ const bool JdConfig::IsPlatform (EJdPlatform i_platform)
 	
 	#if __APPLE__
 		platform = c_jdPlatform::macOS;
+	#elif _WIN32
+		platform = c_jdPlatform::windows;
 	#endif
 	
 	return (i_platform == platform);

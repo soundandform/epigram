@@ -36,9 +36,25 @@
 	#define d_disableEpilog 0
 #endif
 
+# if d_disableEpilog
+
+	# undef epilog
+	# undef epilog_
+	# define epilog(...) {}
+	# define epilog_(...) {}
+	# define epilog_func(...) {}
+
+	# define d_epilogCategory(...)
+
+	# define epilogger(NAME,PORT)
+
+# else
+
 #include "JdFlatString.hpp"
 #include "JdUtils.hpp"
-#include "JdCore.hpp"
+#include "JdCoreL2.hpp"
+
+#include <type_traits>
 
 // some stupid header was defining a check macro
 #ifdef check
@@ -61,9 +77,7 @@ const uint8_t c_epilogClassification_special 	= 0x80;
 const uint8_t c_epilogClassification_warning 	= 0x0C;
 const uint8_t c_epilogClassification_fatal 		= 0x0F;
 
-#include "JdCoreL2.hpp"
 
-#include <type_traits>
 #define type_if typedef typename std::conditional
 using namespace std;
 
@@ -1069,15 +1083,11 @@ class TraceClient
 
 
 
-#if d_disableEpilog
-#	define epilogger(NAME,PORT)
-#else
 #	if DEBUG
 #		define epilogger(NAME,PORT) static Epilog::Session s_epigramConnection (#NAME,PORT, false);
 #	else
 #		define epilogger(NAME,PORT) static Epilog::Session s_epigramConnection (#NAME,PORT, true);
 #	endif
-#endif
 
 // Macro awesomeness follows:
 
@@ -1164,17 +1174,9 @@ static void LogNow (uint8_t i_importance, const char * i_className, EpilogEvent 
 #define epilog(a_classification, ...) d_epilog_##a_classification (__VA_ARGS__)
 #define epilog_(a_classification, ...) d_epilog__##a_classification (__VA_ARGS__)
 
-#if d_disableEpilog
-	#undef epilog
-	#undef epilog_
-	#define epilog(...) {}
-	#define epilog_(...) {}
-	#define epilog_func(...) {}
-#else
-	#define epilog(a_classification, ...) d_epilog_##a_classification (__VA_ARGS__)
-	#define epilog_(a_classification, ...) d_epilog__##a_classification (__VA_ARGS__)
-	#define epilog_func(a_classification, ...) if (epg_LogDeferred) { char stack [c_epilogStackSize]; epg_LogDeferred (c_epilogClassification_##a_classification, 0, CreateEpilogEvent (stack, __VA_ARGS__)); }
-#endif
+# define epilog(a_classification, ...) d_epilog_##a_classification (__VA_ARGS__)
+# define epilog_(a_classification, ...) d_epilog__##a_classification (__VA_ARGS__)
+# define epilog_func(a_classification, ...) if (epg_LogDeferred) { char stack [c_epilogStackSize]; epg_LogDeferred (c_epilogClassification_##a_classification, 0, CreateEpilogEvent (stack, __VA_ARGS__)); }
 
 
 #define epi_panel(panel_name, ...)							epg_NewPanel (#panel_name, __VA_ARGS__);
@@ -1213,14 +1215,13 @@ namespace Epilog
 #define d_epilogCatChooser(...) d_epigramGet10thArg(__VA_ARGS__, _epilogCat9, _epilogCat8, _epilogCat7, _epilogCat6, _epilogCat5, _epilogCat4, _epilogCat3, _epilogCat2, _epilogCat1)
 
 
-# if d_disableEpilog
-#	define d_epilogCategory(...)
-# else
 #	define d_epilogCategory(...) d_epilogCatChooser(__VA_ARGS__)(__VA_ARGS__)
-# endif
 
 
 #undef type_if
+
+# endif 
+
 
 #define Epilog_h
 #endif

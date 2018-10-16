@@ -20,10 +20,10 @@ struct IIEpigramIn // : Jd::TypedT <c_jdTypeId::epigram>
 			const void *			data;
 		};
 		
-		unsigned long				size;
+		size_t						size;
 	};
 	
-//	virtual const unsigned char *	/* payload */		GetPayload			(unsigned int * o_size) const = 0;			// FIX: size_t
+//	virtual const unsigned char *	/* payload */		GetPayload			(unsigned int * o_size) const = 0;
 	virtual Payload										GetPayload			() const = 0;
 };
 
@@ -31,7 +31,7 @@ struct IIEpigramIn // : Jd::TypedT <c_jdTypeId::epigram>
 struct IIEpigramOut : IIEpigramIn
 {
 	virtual void										Deliver					(const IIEpigramIn * i_epigram) = 0;
-	virtual void										Deliver					(const void * i_data, unsigned long i_size) = 0; // FIX: size_t
+	virtual void										Deliver					(const void * i_data, size_t i_size) = 0;
 };
 
 typedef IIEpigramOut IIEpigram;
