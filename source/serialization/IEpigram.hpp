@@ -9,6 +9,7 @@
 #ifndef Jigidesign_IEpigram_h
 #define Jigidesign_IEpigram_h
 
+#include <stddef.h>
 
 struct IIEpigramIn // : Jd::TypedT <c_jdTypeId::epigram>
 {
