@@ -1929,8 +1929,9 @@ class EpigramT : public interface_t
 			if (this->Is <T> ())
 			{
 				typename value_t::store_t ev;
-				this->template CastedFetch (ev);		// FIX: this should probably be an uncasted fetch!
-				
+//				this->template CastedFetch (ev);		// FIX: this should probably be an uncasted fetch!
+				this-> CastedFetch(ev);		// FIX: this should probably be an uncasted fetch!
+
 				return (ev == i_value);
 			}
 			else return false;
@@ -2807,7 +2808,8 @@ class EpigramT : public interface_t
 template <typename I, typename T>
 void operator << (T & o_value, const EpigramT<>::EpigramKVT <I> & i_kv)
 {
-	i_kv.template CastedFetch (o_value);
+//	i_kv.template CastedFetch (o_value);
+	i_kv. CastedFetch(o_value);
 }
 
 
