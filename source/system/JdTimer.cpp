@@ -7,7 +7,6 @@
  */
 
 #include <iostream>
-#include <sys/time.h>
 #include "JdTimer.hpp"
 
 using namespace std;
