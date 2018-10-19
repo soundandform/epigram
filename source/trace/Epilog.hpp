@@ -52,7 +52,7 @@
 
 #include "JdFlatString.hpp"
 #include "JdUtils.hpp"
-#include "JdCoreL2.hpp"
+#include "JdCore.hpp"
 
 #include <type_traits>
 
