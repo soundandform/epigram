@@ -8,7 +8,9 @@
 
 #include "JdNucleus.hpp"
 
-#pragma GCC diagnostic ignored "-Wconversion"
+# if ! defined (_MSC_VER)
+	# pragma GCC diagnostic ignored "-Wconversion"
+#endif
 
 #ifndef Jigidesign_JdCore_h
 #define Jigidesign_JdCore_h

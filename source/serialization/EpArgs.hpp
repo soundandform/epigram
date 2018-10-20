@@ -60,7 +60,7 @@ inline const EpArg_<u8> operator"" _ (unsigned long long int i_index)
 {
 	d_jdAssert (i_index < 256, "indexed argument out of range");
 	
-	return EpArg_ <u8> (i_index);
+	return EpArg_ <u8> ((u8) i_index);
 }
 
 
