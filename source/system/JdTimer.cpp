@@ -9,8 +9,6 @@
 #include <iostream>
 #include "JdTimer.hpp"
 
-using namespace std;
-
 
 JdTimer::JdTimer ()
 {

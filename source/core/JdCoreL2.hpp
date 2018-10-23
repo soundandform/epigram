@@ -17,7 +17,7 @@
 namespace Jd
 {
 	i32 HashCString31 (const char *i_string);
-	u64 HashString64 (const string & i_string);
+	u64 HashString64 (const std::string & i_string);
 
 	
 	template <class X>

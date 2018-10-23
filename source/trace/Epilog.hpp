@@ -79,7 +79,6 @@ const uint8_t c_epilogClassification_fatal 		= 0x0F;
 
 
 #define type_if typedef typename std::conditional
-using namespace std;
 
 const char c_epilogInsertToken = '@';
 

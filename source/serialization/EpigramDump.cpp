@@ -36,7 +36,7 @@ out (i_stream)
 	m_end += payload.size;
 }
 
-EpigramDumper::EpigramDumper (const u8 * i_payload, u32 i_size, std::ostream & i_stream)
+EpigramDumper::EpigramDumper (const u8 * i_payload, size_t i_size, std::ostream & i_stream)
 :
 out (i_stream)
 {

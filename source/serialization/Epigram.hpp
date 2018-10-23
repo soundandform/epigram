@@ -213,6 +213,7 @@
 #include "EpSerializationRaw.hpp"
 #include "EpArgs.hpp"
 
+#pragma warning (disable: 4200)  // warning about zero size m_data [] in allocator
 
 #define type_def typedef typename
 #define type_if typedef typename std::conditional
@@ -718,7 +719,7 @@ class EpigramT : public interface_t
 			StoreString (i_allocator, i_string, strlen (i_string));
 		}
 
-		static void StoreString (allocator_t & i_allocator, const char * const i_string, u32 i_length)
+		static void StoreString (allocator_t & i_allocator, const char * const i_string, size_t i_length)
 		{
 			++i_length;
 			u8 * ptr = i_allocator.Allocate (i_length);
@@ -1195,7 +1196,7 @@ class EpigramT : public interface_t
 	template <typename C, typename T>
 	struct ContainerStorer
 	{
-		static u32 GetItemCount (const C & i_container) { return i_container.size (); }
+		static size_t GetItemCount (const C & i_container) { return i_container.size (); }
 		static u8 GetTypeId () { return Jd::TypeId <R> (); }
 		
 		static u8 Store (allocator_t & i_allocator, const C & i_value, size_t i_count)
@@ -1224,7 +1225,7 @@ class EpigramT : public interface_t
 	struct ItemStorer
 	{
 		static u8		GetTypeId		()					{ return Jd::TypeId <T> (); }
-		static u32		GetItemCount	(const T &)			{ return 1; }
+		static size_t	GetItemCount	(const T &)			{ return 1; }
 		
 		static u8		Store			(allocator_t & i_allocator, const T & i_value, size_t /* i_count */)
 		{

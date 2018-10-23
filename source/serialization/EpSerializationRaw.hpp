@@ -394,7 +394,7 @@ namespace JdSerialize
 			return hasher ();
 		}
 		
-		void Deserialize (voidptr_t i_data, u32 i_numBytes, u8 i_version)
+		void Deserialize (voidptr_t i_data, size_t i_numBytes, u8 i_version)
 		{
 			EpDeserializer deserializer (i_data, i_numBytes, i_version);
 			
@@ -402,7 +402,7 @@ namespace JdSerialize
 			_this->Serializer (deserializer);
 		}
 		
-		template <typename A> u32 Serialize (A &o_allocator) const
+		template <typename A> size_t Serialize (A &o_allocator) const
 		{
 			EpSerializer <A> serializer (o_allocator);
 			

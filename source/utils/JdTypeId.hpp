@@ -344,7 +344,7 @@ struct TypeIdsMap
 	cstr_t	names		[128] = {};
 	cstr_t	longNames	[128] = {};
 	
-	unordered_map <string, u8>		namesToIds;
+	std::unordered_map <string, u8>		namesToIds;
 	
 	u8 pointerForbidden [7] = {
 		c_jdTypeId::uuid, c_jdTypeId::enumeration, c_jdTypeId::binary, c_jdTypeId::method, c_jdTypeId::uuid, c_jdTypeId::hash, c_jdTypeId::none };

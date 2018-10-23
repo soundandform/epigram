@@ -21,7 +21,7 @@ namespace Jd
         return (i32) hash;
     }
 	
-	u64 HashString64 (const string &i_string)
+	u64 HashString64 (const std::string &i_string)
 	{
 		//		return CityHash64 (i_string.c_str(), i_string.size());
 		return std::hash <std::string> () (i_string);

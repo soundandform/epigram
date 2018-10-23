@@ -19,7 +19,7 @@ struct EpigramDumper
 {
 	//	EpigramDumper					(Epigram & i_epigram, std::ostream & i_stream);
 	EpigramDumper						(EpDelivery i_epigram, std::ostream & i_stream = cout);
-	EpigramDumper						(const u8 * i_payload, u32 i_size, std::ostream & i_stream = cout);
+	EpigramDumper						(const u8 * i_payload, size_t i_size, std::ostream & i_stream = cout);
 	
 	void	DumpCode					() const;
 	void	Dump						(u32 i_sequence) const;

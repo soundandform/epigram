@@ -159,7 +159,7 @@ struct JdListT
 	struct Iterator
 	{
 		typedef const Iterator & IteratorRef;
-		friend class JdListT;
+		friend struct JdListT;
 		friend class Iterator;
 
 		bool operator == (IteratorRef i_iterator) const
