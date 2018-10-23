@@ -310,7 +310,7 @@ struct TypeIdsMap
 			if (c)
 			{
 				if (not names [c])
-					throw (string ("no name for JdTypeId"));
+					throw (std::string ("no name for JdTypeId"));
 				
 				namesToIds [names [c]] = i;
 				
@@ -344,7 +344,7 @@ struct TypeIdsMap
 	cstr_t	names		[128] = {};
 	cstr_t	longNames	[128] = {};
 	
-	std::unordered_map <string, u8>		namesToIds;
+	std::unordered_map <std::string, u8>		namesToIds;
 	
 	u8 pointerForbidden [7] = {
 		c_jdTypeId::uuid, c_jdTypeId::enumeration, c_jdTypeId::binary, c_jdTypeId::method, c_jdTypeId::uuid, c_jdTypeId::hash, c_jdTypeId::none };
@@ -394,10 +394,7 @@ namespace Jd
 
 	
 	namespace Private
-	{		
-		using namespace std;
-		
-		
+	{
 		template <typename T> constexpr const u8 TypeId2T ()					{ return c_jdTypeId::unknown; }
 		
 		template <> inline constexpr const u8 TypeId2T <bool> ()				{ return c_jdTypeId::boolean; }
@@ -484,23 +481,23 @@ namespace Jd
 
 			type_def std::remove_pointer <T>::type		Tnp;
 			
-			type_if <std::is_class <T>::value,			EpigramStructTypeId,			EpigramFundamentalTypeId>::type		typeIdA;
+			type_if <std::is_class <T>::value,					EpigramStructTypeId,			EpigramFundamentalTypeId>::type		typeIdA;
 			
-			type_if <std::is_pointer <T>::value,		EpigramPointerTypeId,			typeIdA>::type						typeIdX;
+			type_if <std::is_pointer <T>::value,				EpigramPointerTypeId,			typeIdA>::type						typeIdX;
 			type_if <std::is_pointer <T>::value and
-					 is_class <Tnp>::value,				EpigramObjPointerTypeId,		typeIdX>::type						typeIdY;
+					 std::is_class <Tnp>::value,				EpigramObjPointerTypeId,		typeIdX>::type						typeIdY;
 			
-			type_if <jd::is_cstring <T>::value,			EpigramStringTypeId,			typeIdY>::type						typeIdZ;
+			type_if <jd::is_cstring <T>::value,					EpigramStringTypeId,			typeIdY>::type						typeIdZ;
 			
-			type_if <is_base_of <IIEpigram, T>::value,	EpigramEpigramTypeId,			typeIdZ>::type						typeIdB;
+			type_if <std::is_base_of <IIEpigram, T>::value,		EpigramEpigramTypeId,			typeIdZ>::type						typeIdB;
 			
-			type_if <is_base_of <string, T>::value,		EpigramStringTypeId,			typeIdB>::type						typeIdE;
+			type_if <std::is_base_of <std::string, T>::value,	EpigramStringTypeId,			typeIdB>::type						typeIdE;
 
-			type_if <is_enum <T>::value,				EpigramEnumTypeId,				typeIdE>::type						typeIdF;
+			type_if <std::is_enum <T>::value,					EpigramEnumTypeId,				typeIdE>::type						typeIdF;
 
-			type_if <is_same <Jd::NoType, T>::value,	NoTypeId,						typeIdF>::type						typeIdG;
+			type_if <std::is_same <Jd::NoType, T>::value,		NoTypeId,						typeIdF>::type						typeIdG;
 
-			type_if <is_base_of <Typed, T>::value,		T,								typeIdG>::type						type;
+			type_if <std::is_base_of <Typed, T>::value,			T,								typeIdG>::type						type;
 		};
 	}
 
@@ -609,8 +606,8 @@ class JdTypeId
 		return (i_typeId == c_jdTypeId::versionedObject or i_typeId == c_jdTypeId::object);
 	}
 
-	string			GetTypeName		() const 	{ return Jd::TypeIdToName (m_typeId); }
-	string			GetLongTypeName	() const 	{ return Jd::TypeIdToFullName (m_typeId); }
+	std::string		GetTypeName		() const 	{ return Jd::TypeIdToName (m_typeId); }
+	std::string		GetLongTypeName	() const 	{ return Jd::TypeIdToFullName (m_typeId); }
 	char			GetTypeChar		() const	{ return Jd::TypeIdToChar (m_typeId); }
 	
 	protected:

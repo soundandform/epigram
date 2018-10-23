@@ -35,7 +35,7 @@ class JdRandom
 	{
 		u64 Generate ()
 		{
-			lock_guard <mutex> lock (m_lock);
+			std::lock_guard <std::mutex> lock (m_lock);
 			
 			return dis (gen);
 		}
@@ -45,7 +45,7 @@ class JdRandom
 		
 		std::uniform_int_distribution <u64> dis;
 
-		mutex m_lock;
+		std::mutex m_lock;
 	};
 	
 	static Generator64 s_64;

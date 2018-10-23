@@ -1,13 +1,12 @@
 //
 //  JdStopwatch.hpp
-//  Jigidesign
 //
 //  Created by Steven Massey on 10/18/12.
 //  Copyright (c) 2012 Jigidesign. All rights reserved.
 //
 
-#ifndef Jigidesign_JdCycles_h
-#define Jigidesign_JdCycles_h
+#ifndef JdStopwatch_h
+#define JdStopwatch_h
 
 #include <iomanip>
 #include <iostream>
@@ -19,42 +18,14 @@ class JdStopwatch
 {
 	public:
 	
-	JdStopwatch	(cstr_t i_label, bool i_display = false)
-	:
-	m_label		(i_label),
-	m_display 	(i_display)
-	{ }
-	
-	operator bool () const
-    {
-		auto self = const_cast <JdStopwatch *> (this);
-		self->m_timer.start ();
-        return true;
-    }
-	
-	void Start ()
-	{
-		m_timer.start ();
-	}
-	
-	f64 End ()
-	{
-		m_timer.stop ();
-		f64 elapsed = m_timer.elapsed ().wall;
-		elapsed /= 1e9;
-		return elapsed;
-	}
-	
-	~ JdStopwatch ()
-	{
-		m_timer.stop ();
+	JdStopwatch	(cstr_t i_label, bool i_display = false);
 
-		if (m_display)
-		{
-			string t = m_timer.format (boost::timer::default_places, "%w"); // don't seem to get user/system time on mac
-			cout << setw (14) << m_label << ": " << t << "s" << endl;
-		}
-	}
+	operator bool () const;
+	
+	void 	Start ();
+	f64 	End ();
+	
+	~ JdStopwatch ();
 	
 	protected:
 	
@@ -62,8 +33,8 @@ class JdStopwatch
     bool            			m_display;
 	boost::timer::cpu_timer		m_timer;
 };
-//
-//
+
+
 //class JdTimeFormatter
 //{
 //	public:

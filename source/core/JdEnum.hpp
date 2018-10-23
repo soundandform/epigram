@@ -16,7 +16,7 @@
 namespace Jd
 {
 	template <typename E>
-	inline string EnumToString (const E & i_enum, cstr_t i_enums)
+	inline std::string EnumToString (const E & i_enum, cstr_t i_enums)
 	{
 		auto strings = Jd::SplitString (i_enums, ",");
 		

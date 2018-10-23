@@ -19,8 +19,6 @@
 #include <type_traits>
 #include "JdTypeId.hpp"
 
-using namespace std;
-
 
 
 namespace EpSerialization
@@ -123,7 +121,7 @@ namespace EpSerialization
 					
 					if (c == ' ' || c == '*' || c == '&')
 					{
-						uint32_t length = (uint32_t) min (nameLength, (int32_t) (colons-ptr));
+						uint32_t length = (uint32_t) std::min (nameLength, (int32_t) (colons-ptr));
 						strncpy (dest, ptr+1, length);
 						dest [length] = 0;
 						break;

@@ -23,7 +23,7 @@ namespace Jd
 		u8 * b = (u8 *) &io_value + sizeof (T);
 		
 		for (u32 i = 0; i < (sizeof (T) >> 1); ++i)
-			swap (*a++, *--b);
+			std::swap (*a++, *--b);
 	}
 
   	template <typename T>
@@ -185,9 +185,9 @@ namespace Jd
 			numBytes = Encode7bRE <T> (bytes, i_value);
 		}
 		
-		vector <u8> Get ()
+		std::vector <u8> Get ()
 		{
-			vector <u8> v;
+			std::vector <u8> v;
 			
 			u32 i = 0;
 			while (i < numBytes)

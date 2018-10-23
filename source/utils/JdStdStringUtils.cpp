@@ -9,6 +9,7 @@
 #include "JdStdStringUtils.hpp"
 
 #include <fstream>
+using namespace std;
 
 namespace Jd
 {
