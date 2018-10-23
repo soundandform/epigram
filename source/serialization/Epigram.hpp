@@ -301,7 +301,7 @@ struct EpigramCast
 {
 	struct Auto
 	{
-		static T Cast (const S & i_value) { return i_value; }
+		static T Cast (const S & i_value) { return (T) i_value; }
 	};
 
 	struct Null
