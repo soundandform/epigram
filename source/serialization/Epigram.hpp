@@ -2783,7 +2783,7 @@ class EpigramT : public interface_t
 			m_allocator.EraseRange ((void *) i_item->start, (void *) i_item->end);
 	}
 
-	friend class EpigramDumper;
+	friend struct EpigramDumper;
 	
 
 	//public:
