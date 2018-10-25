@@ -469,11 +469,19 @@ struct GraphT : T
 	~GraphT ()
 	{
 		if (m_up.size () == 0)
-		{
-			auto down = m_down;
-			for (auto d : down)
-				detach (*d);
-		}
+			clear ();
+	}
+	
+	void 	clear ()
+	{
+		auto down = m_down;
+		for (auto d : down)
+			detach (*d);
+		
+		d_jdAssert (m_down.size () == 0, "right");
+		
+		T * _this = this;
+		*_this = T ();
 	}
 
 	GraphT (const T & i_element)
