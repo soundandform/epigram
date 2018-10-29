@@ -112,6 +112,9 @@ class EpMsgSerializerOut : public Epigram
 #define d_msgSerialize5Args(...)
 #define d_msgSerialize6Args(ARG0,...)
 
+#define d_get8thArg(ARG0, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ARG8, ...) ARG8
+#define d_get7thArg(ARG0, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ...) ARG7
+#define d_get6thArg(ARG0, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ...)	ARG6
 
 #define d_msgSerializeChooser(...) d_get6thArg(__VA_ARGS__, d_msgSerialize6Args, d_msgSerialize5Args, d_msgSerialize4Args, d_msgSerialize3Args, d_msgSerialize2Args, d_msgSerialize1Args, )
 

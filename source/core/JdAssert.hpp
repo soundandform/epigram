@@ -18,7 +18,6 @@
 #include "JdResult.hpp"
 
 
-
 class JdException : public std::exception, public JdResult
 {
 	public:
@@ -119,7 +118,7 @@ JdResult JdResert (bool i_shouldBeTrue, cstr_t i_truthfulOrLyingStatement, cstr_
 			std::ostringstream oss;
 			if (i_format) Jd::SSPrintF (oss, i_format, i_args...);
 			
-			result = JdResult (oss.str().c_str(), i_filePath, i_lineNum, 0, true);
+			result = JdResult (oss.str().c_str(), i_filePath, i_lineNum);
 		}
 	}
 	

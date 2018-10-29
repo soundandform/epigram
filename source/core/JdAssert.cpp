@@ -10,7 +10,7 @@
 
 JdException::JdException (cstr_t i_message, cstr_t i_location, u32 i_line)
 :
-JdResult (i_message, i_location, i_line, 0 /* column */, true)
+JdResult (i_message, i_location, i_line)
 {
 	if (i_location)
 	{
