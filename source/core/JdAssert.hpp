@@ -18,7 +18,6 @@
 #include "JdResult.hpp"
 
 
-
 class JdException : public std::exception, public JdResult
 {
 	public:

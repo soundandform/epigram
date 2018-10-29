@@ -42,9 +42,46 @@ tuple <T1> jd_return (T1 && i_return1) { return tuple <T1> (i_return1); }
 
 struct JdR {};
 
-template <typename t_location = cstr_t, typename R1 = JdR>
-class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 1, /* epigram name: */ JdR>
+struct JdResultLocation
 {
+//	JdResultLocation ()
+//	{
+//		m_columnNum = 0;
+//		m_lineNum = 0;
+//	}
+//
+//	JdResultLocation ()
+//	{
+//		m_columnNum = 0;
+//		m_lineNum = 0;
+//	}
+
+	
+	typedef cstr_t type;
+	
+	void		SetLocation		(voidptr_t i_location)
+	{
+		m_location = (cstr_t) i_location;
+	}
+
+	void		SetColumnNum	(u32 i_column)		{ m_columnNum = i_column; }
+	void		SetLineNum		(u32 i_line)		{ m_lineNum = i_line; }
+
+	u32			GetColumnNum	()					{ return m_columnNum; }
+	u32			GetLineNum		()					{ return m_lineNum; }
+	
+	cstr_t		m_location				= nullptr;
+	
+	u32			m_columnNum				: 11;
+	u32			m_lineNum				: 21;
+};
+
+
+template <typename t_locationInfo = JdResultLocation, typename R1 = JdR>
+class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 1, /* epigram name: */ JdR>
+{
+	typedef typename t_locationInfo::type location_t;
+	
 	template <typename, typename> friend class JdResultT;
 
 	public:
@@ -64,21 +101,22 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 							{ }
 
 	
-							JdResultT 				(const JdResultT <JdR> & i_return)
+							JdResultT 				(const JdResultT <JdResultLocation> & i_return)
 							:
-							m_location				(i_return.m_location),
-//							m_info					(i_return.m_info),
+							t_locationInfo			(i_return),
 							m_resultCode			(i_return.m_resultCode),
 							m_message				(i_return.m_message)
 							{ }
 	
 
-							JdResultT				(const JdResultT &i_result, t_location i_location, u32 i_lineNum, u32 i_columnNum = 0)
-							:
-							m_location				(i_location),
-							m_lineNum				(i_lineNum),
-							m_columnNum				(i_columnNum)
+							JdResultT				(const JdResultT &i_result, location_t i_location, u32 i_lineNum, u32 i_columnNum = 0)
+//							:
+//							m_location				(i_location),
+//							m_lineNum				(i_lineNum),
+//							m_columnNum				(i_columnNum)
 							{
+								
+								
 								m_resultCode = i_result.m_resultCode;
 								m_message = i_result.m_message;
 							}
@@ -86,54 +124,56 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 							JdResultT				(stringRef_t i_message)
 							:
 							m_message				(i_message),
-							m_columnNum				(0),
-							m_lineNum				(0)
+//							m_columnNum				(0),
+//							m_lineNum				(0)
 							{
 								m_resultCode = -1;
 							}
 
 	
-							JdResultT				(cstr_t i_message, t_location i_location, u32 i_lineNum, u32 i_columnNum, i32 i_resultCode)
+							JdResultT				(cstr_t i_message, location_t i_location, u32 i_lineNum, u32 i_columnNum, i32 i_resultCode)
 							:
 							m_message				(i_message),
 							m_resultCode			(i_resultCode),
-							m_location				(i_location),
-							m_lineNum				(i_lineNum),
-							m_columnNum				(i_columnNum)
+//							m_location				(i_location),
+//							m_lineNum				(i_lineNum),
+//							m_columnNum				(i_columnNum)
 							{ }
 	
 							
-							JdResultT				(i32 i_result, t_location i_location = 0, u32 i_lineNum = 0, u32 i_columnNum = 0)
+							JdResultT				(i32 i_result, location_t i_location = 0, u32 i_lineNum = 0, u32 i_columnNum = 0)
 							:
 							m_resultCode			(i_result),
-							m_location				(i_location),
-							m_lineNum				(i_lineNum),
-							m_columnNum				(i_columnNum)
+//							m_location				(i_location),
+//							m_lineNum				(i_lineNum),
+//							m_columnNum				(i_columnNum)
 							{ }
 
 	
 							JdResultT				(cstr_t i_message, bool i_isError, bool) // use this to define constants (d_jdResult)
 							:
 							m_message				(i_message),
-							m_columnNum				(0),
-							m_lineNum				(0)
+//							m_columnNum				(0),
+//							m_lineNum				(0)
 	{
 		i32 hash = Jd::HashCString31 (i_message);
 		hash |= (0x80000000 * (i32) i_isError);
 		m_resultCode = (i32) hash;
 	}
 	
-	JdResultT &				operator =				(const JdResultT <t_location, R1> & i_other)
+	JdResultT &				operator =				(const JdResultT <t_locationInfo, R1> & i_other)
 	{
 		if ((voidptr_t) & i_other != this)
 		{
-			m_resultCode	= i_other.m_resultCode;
-//			m_info		 	= i_other.m_info;
-			m_lineNum		= i_other.m_lineNum;
-			m_columnNum		= i_other.m_columnNum;
-			m_location 		= i_other.m_location;
-			m_message		= i_other.m_message;
-			m_return 		= i_other.m_return;
+			m_resultCode		= i_other.m_resultCode;
+
+			* (t_locationInfo *) this = i_other;
+
+//			m_lineNum			= i_other.m_lineNum;
+//			m_columnNum			= i_other.m_columnNum;
+//			this->m_location 	= i_other.m_location;
+			m_message			= i_other.m_message;
+			m_return 			= i_other.m_return;
 		}
 		return * this;
 	}
@@ -143,12 +183,14 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 	{
 		if ((voidptr_t) & i_other != this)
 		{
-			m_resultCode	= i_other.m_resultCode;
-			//			m_info		 	= i_other.m_info;
-			m_lineNum		= i_other.m_lineNum;
-			m_columnNum		= i_other.m_columnNum;
-			m_location 		= t_location ();
-			m_message		= i_other.m_message;
+			m_resultCode		= i_other.m_resultCode;
+			
+			* (t_locationInfo *) this = i_other;
+			
+//			m_lineNum			= i_other.m_lineNum;
+//			m_columnNum			= i_other.m_columnNum;
+//			this->m_location	= t_locationInfo ();
+			m_message			= i_other.m_message;
 			get <0> (m_return)	= R1 ();
 		}
 		return * this;
@@ -172,8 +214,7 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 		if (m_resultCode == 0)
 		{
 			m_resultCode = i_result.m_resultCode;
-//			m_info = i_result.m_info;
-			m_location = i_result.m_location;
+			this->m_location = i_result.m_location;
 			m_message = i_result.m_message;
 		}
 		
@@ -225,35 +266,35 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 		return m_message;
 	}
 	
-	t_location				GetLocation				() const
-	{
-		return m_location;
-	}
-	
-	u32						GetLineNum				() const
-	{
-		return m_lineNum;
-	}
+//	t_location				GetLocation				() const
+//	{
+//		return m_location;
+//	}
+//
+//	u32						GetLineNum				() const
+//	{
+//		return m_lineNum;
+//	}
+//
+//	void					SetLineNum				(u32 i_lineNum)
+//	{
+//		m_lineNum = i_lineNum;
+//	}
+//
+//	u32						GetColumnNum			() const
+//	{
+//		return m_columnNum;
+//	}
+//
+//	void					SetColumnNum			(u32 i_lineNum)
+//	{
+//		m_columnNum = i_lineNum;
+//	}
 
-	void					SetLineNum				(u32 i_lineNum)
-	{
-		m_lineNum = i_lineNum;
-	}
-
-	u32						GetColumnNum			() const
-	{
-		return m_columnNum;
-	}
-	
-	void					SetColumnNum			(u32 i_lineNum)
-	{
-		m_columnNum = i_lineNum;
-	}
-
-	void					SetLocationInfo			(t_location i_location)
-	{
-		m_location = i_location;
-	}
+//	void					SetLocationInfo			(t_location i_location)
+//	{
+//		m_location = i_location;
+//	}
 	
 	bool					IsError () const
 	{
@@ -265,10 +306,6 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 		return (m_resultCode > 0);
 	}
 	
-//	bool					IsEpMsg () const
-//	{
-//		return (GetType() == 'm');
-//	}
 	
 	operator bool			() const		{ return m_resultCode != 0; }
 
@@ -284,20 +321,8 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 	}
 	
 	protected:
-//		u8						GetType () const
-//		{
-//			u32 type = (m_info >> 16) & 0x000000FF;
-//			return (u8) type;
-//		}
 
-	
 	i32							m_resultCode			= 0;
-//	u32							m_info					= 0;						// [ 8: reserved | 8: kind | 16: lineNum ]
-	
-	u32							m_columnNum				: 10;
-	u32							m_lineNum				: 22;
-	
-	t_location					m_location				= t_location ();
 	JdFlatString <112>			m_message;
 	
 	tuple <R1>					m_return;
@@ -306,12 +331,12 @@ class JdResultT : public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 
 
 	template <typename ST> void Serializer (ST &o) const
 	{
-		o (m_resultCode, m_location).CString (m_message.CString (), m_message.Capacity ());		/// FIX: line/column
+		o (m_resultCode, this->m_location).CString (m_message.CString (), m_message.Capacity ());		/// FIX: line/column
 	}
 
 	template <typename ST> void Serializer (ST &i)
 	{
-		i (m_resultCode, m_location).CString (m_message.CString (), m_message.Capacity ());		/// FIX: line/column
+		i (m_resultCode, this->m_location).CString (m_message.CString (), m_message.Capacity ());		/// FIX: line/column
 	}
 };
 
