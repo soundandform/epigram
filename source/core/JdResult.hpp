@@ -47,9 +47,10 @@ struct JdResultLocation
 	typedef cstr_t type;
 	
 	void		SetLocation		(voidptr_t i_location)		{ m_location = (cstr_t) i_location; }
+	cstr_t		GetLocation		() const					{ return m_location; }
 
 	void		SetLineNum		(u32 i_line)				{ m_lineNum = i_line; }
-	u32			GetLineNum		()							{ return m_lineNum; }
+	u32			GetLineNum		() const					{ return m_lineNum; }
 	
 	cstr_t		m_location				= nullptr;
 	u32			m_lineNum				= 0;
@@ -101,6 +102,12 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 							:
 							m_message				(i_message),
 							m_resultCode			(-1)
+							{ }
+
+	
+							JdResultT				(i32 i_resultCode)
+							:
+							m_resultCode			(i_resultCode)
 							{ }
 
 	
