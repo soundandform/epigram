@@ -44,36 +44,15 @@ struct JdR {};
 
 struct JdResultLocation
 {
-//	JdResultLocation ()
-//	{
-//		m_columnNum = 0;
-//		m_lineNum = 0;
-//	}
-//
-//	JdResultLocation ()
-//	{
-//		m_columnNum = 0;
-//		m_lineNum = 0;
-//	}
-
-	
 	typedef cstr_t type;
 	
-	void		SetLocation		(voidptr_t i_location)
-	{
-		m_location = (cstr_t) i_location;
-	}
+	void		SetLocation		(voidptr_t i_location)		{ m_location = (cstr_t) i_location; }
 
-	void		SetColumnNum	(u32 i_column)		{ m_columnNum = i_column; }
-	void		SetLineNum		(u32 i_line)		{ m_lineNum = i_line; }
-
-	u32			GetColumnNum	()					{ return m_columnNum; }
-	u32			GetLineNum		()					{ return m_lineNum; }
+	void		SetLineNum		(u32 i_line)				{ m_lineNum = i_line; }
+	u32			GetLineNum		()							{ return m_lineNum; }
 	
 	cstr_t		m_location				= nullptr;
-	
-	u32			m_columnNum				: 11;
-	u32			m_lineNum				: 21;
+	u32			m_lineNum				= 0;
 };
 
 
@@ -109,13 +88,10 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 							{ }
 	
 
-							JdResultT				(const JdResultT &i_result, location_t i_location, u32 i_lineNum, u32 i_columnNum = 0)
-//							:
-//							m_location				(i_location),
-//							m_lineNum				(i_lineNum),
-//							m_columnNum				(i_columnNum)
+							JdResultT				(const JdResultT &i_result, location_t i_location, u32 i_lineNum)
 							{
-								
+								t_locationInfo::SetLocation (i_location);
+								t_locationInfo::SetLineNum (i_lineNum);
 								
 								m_resultCode = i_result.m_resultCode;
 								m_message = i_result.m_message;
@@ -124,37 +100,33 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 							JdResultT				(stringRef_t i_message)
 							:
 							m_message				(i_message),
-//							m_columnNum				(0),
-//							m_lineNum				(0)
+							m_resultCode			(-1)
+							{ }
+
+	
+							JdResultT				(i32 i_resultCode, cstr_t i_message, location_t i_location, u32 i_lineNum = 0)
+							:
+							m_resultCode			(i_resultCode),
+							m_message				(i_message)
 							{
-								m_resultCode = -1;
+								t_locationInfo::SetLocation (i_location);
+								t_locationInfo::SetLineNum (i_lineNum);
 							}
 
 	
-							JdResultT				(cstr_t i_message, location_t i_location, u32 i_lineNum, u32 i_columnNum, i32 i_resultCode)
+							JdResultT				(cstr_t i_message, location_t i_location, u32 i_lineNum = 0)
 							:
 							m_message				(i_message),
-							m_resultCode			(i_resultCode),
-//							m_location				(i_location),
-//							m_lineNum				(i_lineNum),
-//							m_columnNum				(i_columnNum)
-							{ }
-	
-							
-							JdResultT				(i32 i_result, location_t i_location = 0, u32 i_lineNum = 0, u32 i_columnNum = 0)
-							:
-							m_resultCode			(i_result),
-//							m_location				(i_location),
-//							m_lineNum				(i_lineNum),
-//							m_columnNum				(i_columnNum)
-							{ }
+							m_resultCode			(-1)
+							{
+								t_locationInfo::SetLocation (i_location);
+								t_locationInfo::SetLineNum (i_lineNum);
+							}
 
 	
 							JdResultT				(cstr_t i_message, bool i_isError, bool) // use this to define constants (d_jdResult)
 							:
-							m_message				(i_message),
-//							m_columnNum				(0),
-//							m_lineNum				(0)
+							m_message				(i_message)
 	{
 		i32 hash = Jd::HashCString31 (i_message);
 		hash |= (0x80000000 * (i32) i_isError);
@@ -165,13 +137,9 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 	{
 		if ((voidptr_t) & i_other != this)
 		{
-			m_resultCode		= i_other.m_resultCode;
-
 			* (t_locationInfo *) this = i_other;
 
-//			m_lineNum			= i_other.m_lineNum;
-//			m_columnNum			= i_other.m_columnNum;
-//			this->m_location 	= i_other.m_location;
+			m_resultCode		= i_other.m_resultCode;
 			m_message			= i_other.m_message;
 			m_return 			= i_other.m_return;
 		}
@@ -185,11 +153,12 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 		{
 			m_resultCode		= i_other.m_resultCode;
 			
-			* (t_locationInfo *) this = i_other;
+//			* (t_locationInfo *) this = i_other;
 			
 //			m_lineNum			= i_other.m_lineNum;
 //			m_columnNum			= i_other.m_columnNum;
 //			this->m_location	= t_locationInfo ();
+			
 			m_message			= i_other.m_message;
 			get <0> (m_return)	= R1 ();
 		}
@@ -265,37 +234,7 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 	{
 		return m_message;
 	}
-	
-//	t_location				GetLocation				() const
-//	{
-//		return m_location;
-//	}
-//
-//	u32						GetLineNum				() const
-//	{
-//		return m_lineNum;
-//	}
-//
-//	void					SetLineNum				(u32 i_lineNum)
-//	{
-//		m_lineNum = i_lineNum;
-//	}
-//
-//	u32						GetColumnNum			() const
-//	{
-//		return m_columnNum;
-//	}
-//
-//	void					SetColumnNum			(u32 i_lineNum)
-//	{
-//		m_columnNum = i_lineNum;
-//	}
-
-//	void					SetLocationInfo			(t_location i_location)
-//	{
-//		m_location = i_location;
-//	}
-	
+		
 	bool					IsError () const
 	{
 		return (m_resultCode < 0);
@@ -402,7 +341,7 @@ const JdResult c_jdNoErr;
 #define d_get6thArg(ARG0, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ...)	ARG6
 	
 #define d_jdResult(...)											JdResult ((JdFormatter() << __VA_ARGS__), __FILE__, __LINE__, 0, false)
-#define d_jdError(...)											JdResult ((JdFormatter() << __VA_ARGS__), __FILE__, __LINE__, 0, true)
-#define d_jdError2(...)											JdResult (Jd::SPrintF(__VA_ARGS__).c_str(), __FILE__, __LINE__, 0, true)
+#define d_jdError(...)											JdResult ((JdFormatter() << __VA_ARGS__), __FILE__, __LINE__)
+#define d_jdError2(...)											JdResult (Jd::SPrintF(__VA_ARGS__).c_str(), __FILE__, __LINE__)
 
 #endif /* defined(__Jigidesign__JdResult__) */
