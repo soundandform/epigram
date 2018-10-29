@@ -234,7 +234,7 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 	{
 		return m_message;
 	}
-		
+	
 	bool					IsError () const
 	{
 		return (m_resultCode < 0);
@@ -335,10 +335,6 @@ bool operator != (const JdResultT <R1A>  &i_a, const JdResultT <R1B> &i_b)
 #define d_jdReturn(...) return jd_return (__VA_ARGS__)
 
 const JdResult c_jdNoErr;
-
-#define d_get8thArg(ARG0, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ARG8, ...) ARG8
-#define d_get7thArg(ARG0, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ...) ARG7
-#define d_get6thArg(ARG0, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ...)	ARG6
 	
 #define d_jdResult(...)											JdResult ((JdFormatter() << __VA_ARGS__), __FILE__, __LINE__, 0, false)
 #define d_jdError(...)											JdResult ((JdFormatter() << __VA_ARGS__), __FILE__, __LINE__)
