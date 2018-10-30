@@ -66,11 +66,22 @@ namespace Jd
                 }
             }
 #elif _MSC_VER
-			cstr_t start = strstr(__FUNCSIG__, "[T = ");
+			cstr_t sig = __FUNCSIG__;
+
+			cstr_t start = strstr (sig, "<struct "); //0x00007ff8348d9600 "const char *__cdecl Jd::ParseObjectName<struct IIUpf::Plugin>(struct IIUpf::Plugin *)"
 			if (start)
 			{
-				start += 5;
-				end = strstr(start, "]");
+				start += 8;
+				end = strstr(start, ">");
+			}
+			else
+			{
+				start = strstr (sig, "<class ");
+				if (start)
+				{
+					start += 7;
+					end = strstr(start, ">");
+				}
 			}
 #endif
 			
