@@ -486,59 +486,25 @@ struct JdListT
 		:
 		m_item (i_item)					{ }
 		
-//		IterT &		operator	=		(const IterT & i_other)
-//		{
-//			if (& i_other != this)
-//				m_item = i_other.m_item;
-//
-//			return *this;
-//		}
-		
-		
-//		T &			operator	()		() const
-//		{
-//			return * m_item;
-//		}
 		
 		T &			operator	*		() const
 		{
 			return * const_cast <Item *> (m_item);
 		}
 
-//		T &			operator	*		()
-//		{
-//			return * m_item;
-//		}
-
 		T * 		operator 	->		() const
 		{
 			return m_item;
 		}
 		
-//		operator	bool				() const
 		bool		isValid				() const
 		{
-			if (m_item)
-			{
-				auto next = m_item->_next;
-				if (next) // could be at m_end
-					return (next->_next);
-			}
-			
-			return false; // def. at m_end
+			return m_item;
 		}
 		
 		void		invalidate			()
 		{
-			if (m_item)
-			{
-				auto next = m_item->_next;
-				while (next)
-				{
-					m_item = next;
-					next = m_item->_next;
-				}
-			}
+			m_item = nullptr;
 		}
 		
 		bool		operator ==			(const IterT & i_iter) const
@@ -568,7 +534,7 @@ struct JdListT
 				i = m_item->_next;
 				while (i)
 				{
-					if (i == m_item)
+					if (i == i_iter.m_item)
 						return true;
 
 					i = i->_next;
@@ -604,8 +570,7 @@ struct JdListT
 		IterT 		insert	 			(const T & i_item) const
 		{
 			auto i = new Item (i_item);
-			cout << "insert: " << i << " " << Jd::ParseClassName <T> () <<  endl;
-			
+//			cout << "insert: " << i << " " << Jd::ParseClassName <T> () <<  endl;
 			
 			auto previous = m_item->_previous;
 			i->_previous = previous;
@@ -626,7 +591,7 @@ struct JdListT
 			m_item->_previous->_next = next;
 			next->_previous = m_item->_previous;
 			
-			cout << "delete: " << m_item << endl;
+//			cout << "delete: " << m_item << endl;
 			delete m_item;
 			
 			m_item = next;
