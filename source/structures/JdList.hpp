@@ -130,7 +130,7 @@ struct JdList1T
 };
 
 
-
+#if 0
 template <typename T>
 struct JdListT
 {
@@ -447,6 +447,264 @@ struct JdListT
 	
 	size_t			m_size			= 0;
 };
+#endif
+
+
+
+template <typename T>
+struct JdListT
+{
+	struct Item : T
+	{
+		Item		()
+		:
+		T () 		{}
+		
+		Item		(const T & i_item)
+		:
+		T			(i_item)
+		{ }
+		
+		u64			_refCount		= 0;
+		Item * 		_next			= nullptr;
+		Item *		_previous		= nullptr;
+	};
+	
+	template <typename IT>
+	struct IterT
+	{
+		IterT							(const IterT & i_other)
+		:
+		m_item (i_other.m_item)			{ }
+
+		
+		IterT							()
+		:
+		m_item (nullptr)				{ }
+		
+		IterT							(IT * i_item)
+		:
+		m_item (i_item)					{ }
+		
+//		IterT &		operator	=		(const IterT & i_other)
+//		{
+//			if (& i_other != this)
+//				m_item = i_other.m_item;
+//
+//			return *this;
+//		}
+		
+		
+//		T &			operator	()		() const
+//		{
+//			return * m_item;
+//		}
+		
+		T &			operator	*		() const
+		{
+			return * const_cast <Item *> (m_item);
+		}
+
+//		T &			operator	*		()
+//		{
+//			return * m_item;
+//		}
+
+		T * 		operator 	->		() const
+		{
+			return m_item;
+		}
+		
+//		operator	bool				() const
+		bool		isValid				() const
+		{
+			if (m_item)
+			{
+				auto next = m_item->_next;
+				if (next) // could be at m_end
+					return (next->_next);
+			}
+			
+			return false; // def. at m_end
+		}
+		
+		void		invalidate			()
+		{
+			if (m_item)
+			{
+				auto next = m_item->_next;
+				while (next)
+				{
+					m_item = next;
+					next = m_item->_next;
+				}
+			}
+		}
+		
+		bool		operator ==			(const IterT & i_iter) const
+		{
+			return m_item == i_iter.m_item;
+		}
+		
+		bool		operator !=			(const IterT & i_iter) const
+		{
+			return m_item != i_iter.m_item;
+		}
+		
+		bool		operator <			(const IterT & i_iter) const
+		{
+			auto i = i_iter.m_item;
+
+			if (m_item and i)
+			{
+				while (i)
+				{
+					if (i == m_item)
+						return false;
+
+					i = i->_next;
+				}
+				
+				i = m_item->_next;
+				while (i)
+				{
+					if (i == m_item)
+						return true;
+
+					i = i->_next;
+				}
+				
+				return false;
+			}
+			
+			return false;
+		}
+		
+		IterT & 	operator 	++		()				{ m_item = m_item->_next; return * this; }
+		IterT & 	operator 	--		()				{ m_item = m_item->_previous; return *this; }
+		
+		IterT 	 	operator 	+		(size_t i_offset) const
+		{
+			IterT i (* this);
+			while (i_offset--)
+				++i;
+			return i;
+		}
+
+		
+		IterT 	 	operator 	-		(size_t i_offset) const
+		{
+			IterT i (* this);
+			while (i_offset--)
+				--i;
+			return i;
+		}
+
+		
+		IterT 		insert	 			(const T & i_item) const
+		{
+			auto i = new Item (i_item);
+			cout << "insert: " << i << " " << Jd::ParseClassName <T> () <<  endl;
+			
+			
+			auto previous = m_item->_previous;
+			i->_previous = previous;
+			i->_next = m_item;
+			
+			m_item->_previous = i;
+			previous->_next = i;
+			
+			return i;
+		}
+		
+		void		erase				()
+		{
+			//			d_jdAssert (m_item->_refCount != -1, "attempting to erase begin/end");
+			
+			auto next = m_item->_next;
+			
+			m_item->_previous->_next = next;
+			next->_previous = m_item->_previous;
+			
+			cout << "delete: " << m_item << endl;
+			delete m_item;
+			
+			m_item = next;
+		}
+		
+		mutable IT *		m_item		= nullptr;
+	};
+	
+	typedef IterT <Item> 				iterator;
+	typedef IterT <const Item> 			constIterator;
+	
+	static iterator 	getIterator		(T * i_item)
+	{
+		return static_cast <Item *> (i_item);
+	}
+	
+	iterator 			begin			()			{ return m_begin._next; }
+	iterator			end				()			{ return & m_end; }
+
+	constIterator 		begin			() const	{ return m_begin._next; }
+	constIterator		end				() const	{ return & m_end; }
+
+	constIterator 		cbegin			() const	{ return m_begin._next; }
+	constIterator		cend			() const	{ return & m_end; }
+
+	
+	iterator 			pushBack 		(const T & i_item)
+	{
+		return end ().insert (i_item);
+	}
+	
+	iterator 			pushFront 		(const T & i_item)
+	{
+		return begin ().insert (i_item);
+	}
+	
+	void			clear			()
+	{
+		auto i = begin ();
+		while (i != end ())
+			i.erase ();
+	}
+	
+	bool			isEmpty			() const
+	{
+		return m_begin._next == & m_end;
+	}
+	
+	size_t			size			() const
+	{
+		size_t size = 0;
+		auto i = cbegin ();
+		while (i != cend ())
+		{
+			++i;
+			++size;
+		}
+
+		return size;
+	}
+	
+	JdListT		()
+	{
+		m_begin._next 	= & m_end;
+		m_end._previous = & m_begin;
+		
+		m_begin._refCount = m_end._refCount = -1;
+	}
+	
+	~JdListT		()
+	{
+		clear ();
+	}
+	
+	Item		m_begin;
+	Item 		m_end;
+};
+
 
 
 

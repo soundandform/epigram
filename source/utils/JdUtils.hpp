@@ -9,10 +9,10 @@
 #ifndef __Jigidesign__JdUtils__
 #define __Jigidesign__JdUtils__
 
-#include "JdNucleus.hpp"
-
-#include <string.h>
 #include <vector>
+
+//#include <string.h>
+#include "JdNucleus.hpp"
 
 namespace Jd
 {
@@ -194,6 +194,13 @@ namespace Jd
 		_7bRE (const T & i_value)
 		{
 			numBytes = Encode7bRE <T> (bytes, i_value);
+		}
+		
+		void AppendTo (std::vector <u8> & io_vector)
+		{
+			u32 i = 0;
+			while (i < numBytes)
+				io_vector.push_back (bytes [i++]);
 		}
 		
 		std::vector <u8> Get ()
