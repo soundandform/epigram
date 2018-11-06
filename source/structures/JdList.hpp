@@ -494,7 +494,7 @@ struct JdListT
 		
 		T &			operator	*		() const
 		{
-			return * const_cast <Item *> (static_cast <Item *> (m_item));
+			return * const_cast <Item *> (static_cast <const Item *> (m_item));
 		}
 
 		T * 		operator 	->		() const
@@ -608,7 +608,8 @@ struct JdListT
 	typedef IterT <Header> 					iterator;
 	typedef IterT <const Header> 			constIterator;
 	
-	static iterator 	getIterator		(T * i_item)
+	template <typename I>
+	static iterator 	getIterator		(I * i_item)
 	{
 		return static_cast <Item *> (i_item);
 	}
