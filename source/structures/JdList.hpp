@@ -206,25 +206,39 @@ struct JdListT
 		
 		bool		operator <			(const IterT & i_iter) const
 		{
-			auto i = i_iter.m_item;
+			auto o = i_iter.m_item;
+			auto i = m_item;			// i searches <--
+			auto j = m_item->_next;		// j searches -->
 
-			if (m_item and i)
+			if (i and o)
 			{
-				while (i)
+				// search in both directions simultaneously
+				while (i and j)
 				{
-					if (i == m_item)
-						return false;
-
-					i = i->_next;
-				}
-				
-				i = m_item->_next;
-				while (i)
-				{
-					if (i == i_iter.m_item)
+					if (j == o)
 						return true;
 
-					i = i->_next;
+					if (i == o)
+						return false;
+
+					i = i->_previous;
+					j = j->_next;
+				}
+				
+				while (i)
+				{
+					if (i == o)
+						return false;
+
+					i = i->_previous;
+				}
+				
+				while (j)
+				{
+					if (j == o)
+						return true;
+
+					j = j->_next;
 				}
 				
 				return false;
