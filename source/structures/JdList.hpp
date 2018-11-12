@@ -203,7 +203,16 @@ struct JdListT
 		{
 			return m_item != i_iter.m_item;
 		}
-		
+
+		bool		operator >			(const IterT & i_iter) const
+		{
+			if (operator != (i_iter))
+			{
+				return not operator < (i_iter);
+			}
+			else return false;
+		}
+
 		bool		operator <			(const IterT & i_iter) const
 		{
 			auto o = i_iter.m_item;
