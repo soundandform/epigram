@@ -183,7 +183,7 @@ struct JdListT
 		{
 			return static_cast <Item *> (m_item);
 		}
-		
+				
 		bool		isValid				() const
 		{
 			return m_item;
@@ -256,8 +256,19 @@ struct JdListT
 			return false;
 		}
 		
-		IterT & 	operator 	++		()				{ m_item = m_item->_next; return * this; }
-		IterT & 	operator 	--		()				{ m_item = m_item->_previous; return *this; }
+		IterT & 	operator 	++		()
+		{
+			if (m_item)
+				m_item = m_item->_next;
+			return * this;
+		}
+		
+		IterT & 	operator 	--		()
+		{
+			if (m_item)
+				m_item = m_item->_previous;
+			return *this;
+		}
 		
 		IterT 	 	operator 	+		(size_t i_offset) const
 		{
