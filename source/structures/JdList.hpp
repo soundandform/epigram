@@ -204,6 +204,17 @@ struct JdListT
 			return m_item != i_iter.m_item;
 		}
 
+		
+		bool		operator >=			(const IterT & i_iter) const
+		{
+			return (operator == (i_iter) or operator > (i_iter));
+		}
+
+		bool		operator <=			(const IterT & i_iter) const
+		{
+			return (operator == (i_iter) or operator < (i_iter));
+		}
+
 		bool		operator >			(const IterT & i_iter) const
 		{
 			if (operator != (i_iter))
