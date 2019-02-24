@@ -22,9 +22,15 @@ void JdTimer::Restart()
 }
 
 
-u64 JdTimer::GetSeconds ()
+//u64 JdTimer::GetSeconds ()
+//{
+//	return m_timer.elapsed ().wall / 1000000000;
+//}
+
+
+f64 JdTimer::GetSeconds ()
 {
-	return m_timer.elapsed ().wall / 1000000000;
+	return f64 (m_timer.elapsed ().wall) * 1e-9;
 }
 
 
@@ -44,11 +50,6 @@ u64 JdTimer::GetNanoseconds ()
 	return m_timer.elapsed ().wall;
 }
 
-
-f64 JdTimer::GetTimeInSeconds ()
-{
-	return f64 (m_timer.elapsed ().wall) * 1e-9;
-}
 
 
 namespace Jd

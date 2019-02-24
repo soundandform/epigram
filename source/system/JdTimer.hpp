@@ -20,13 +20,12 @@ class JdTimer
 
 	void		Restart				();
 	
-	u64			GetSeconds			();
+	f64			GetSeconds			();
+	
 	u64			GetMilliseconds		();
 	u64			GetMicroseconds		();
 	u64			GetNanoseconds		();
 
-	f64			GetTimeInSeconds	();
-	
 	protected:
 	boost::timer::cpu_timer			m_timer;
 };

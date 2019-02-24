@@ -367,8 +367,10 @@ struct JdEnum
 // This eliminates 10,000 superfluous asterisks in the code
 
 
+struct IIJdInterface { virtual ~IIJdInterface () {} };
+
 #define d_jdForwardInterface(IFACE) struct I##IFACE; typedef I##IFACE * IFACE;
-#define d_jdInterface(IFACE) d_jdForwardInterface (IFACE) struct I##IFACE
+#define d_jdInterface(IFACE) d_jdForwardInterface (IFACE) struct I##IFACE : virtual IIJdInterface
 
 
 
