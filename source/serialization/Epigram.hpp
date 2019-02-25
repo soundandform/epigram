@@ -171,11 +171,11 @@
 	 - Fetch of objects is screwed up it seems. Casted fetch for objects shouldn't actually "cast" but instead check that they are the same.
 	Unless a casting system is added.
 	 
-		MGfxPoint p = m_["rect"];  // rect is MGfxRect
+		MuiPoint p = m_["rect"];  // rect is MGfxRect
 	
 	 - TODO: object registration at init.  (note: would require mutex lock at lookup-time)
 	 
-		e.g. Epigram::RegisterClass <MGfxPoint> ();  This would allow for:
+		e.g. Epigram::RegisterClass <MuiPoint> ();  This would allow for:
 			- object recognition and casting. See above
 			- and smarter Dumps ()
 		

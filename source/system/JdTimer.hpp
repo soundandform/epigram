@@ -34,7 +34,6 @@ class JdTimer
 
 namespace Jd
 {
-//	u64 GetTimestamp ();
 	u64 GetMicroseconds ();
 };
 
