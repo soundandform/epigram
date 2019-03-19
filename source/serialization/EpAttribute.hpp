@@ -9,12 +9,14 @@
 
 #pragma once
 
+#include <map>
+#include <string_view>
+
 #include "Epigram.hpp"
 #include "JdAssert.hpp"
 #include "JdTypeId.hpp"
 #include "EpArgs.hpp"
 
-#include <map>
 
 class EpAttributes
 {
@@ -143,7 +145,7 @@ class EpHash32 : public Jd::TypedT <c_jdTypeId::hash>
 	public:
 	
 //	EpHash32 (cstr_t i_name) : m_key (CityHash32 (i_name, strlen (i_name))) {}
-	EpHash32 (cstr_t i_name) : m_key ((u32) std::hash <std::string_view> () (string_view (i_name, strlen (i_name)))) {}
+	EpHash32 (cstr_t i_name) : m_key ((u32) std::hash <std::string_view> () (std::string_view (i_name, strlen (i_name)))) {}
 	
 	EpHash32 () {}
 	
@@ -161,7 +163,7 @@ class EpHash64 : public Jd::TypedT <c_jdTypeId::hash>
 	public:
 	
 //	EpHash64 (cstr_t i_name) : m_key (CityHash64 (i_name, strlen (i_name))) {}
-	EpHash64 (cstr_t i_name) : m_key (std::hash <std::string_view> () (string_view (i_name, strlen (i_name)))) {}
+	EpHash64 (cstr_t i_name) : m_key (std::hash <std::string_view> () (std::string_view (i_name, strlen (i_name)))) {}
 
 	EpHash64 () {}
 //	EpHash64 (const EpHash64 & i_value) : m_key (i_value.m_key) {}

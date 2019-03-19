@@ -205,6 +205,7 @@
 #include <list>
 #include <deque>
 #include <set>
+#include <functional>
 
 #include "JdCore.hpp"
 #include "JdTypeId.hpp"

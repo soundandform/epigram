@@ -9,12 +9,16 @@
 #ifndef __Jigidesign__JdUUID__
 #define __Jigidesign__JdUUID__
 
-#include <boost/uuid/uuid.hpp>
-#include <boost/uuid/uuid_generators.hpp>
-#include <boost/uuid/uuid_io.hpp>
+# ifndef d_epigramDisableUuidGeneration
+#	include <mutex>
+#	include <boost/uuid/uuid_generators.hpp>
+# endif
 
 #include "EpSerializationRaw.hpp"
 #include "JdResult.hpp"
+
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 #if __APPLE__
 	#include <objc/runtime.h>
@@ -25,7 +29,6 @@
 class JdUUID : public Jd::TypedT <c_jdTypeId::uuid>
 {
 	public:
-//	static atomic <u32> s_numGenerated;
 	
 	boost::uuids::uuid uuid;
 	
@@ -73,14 +76,18 @@ class JdUUID : public Jd::TypedT <c_jdTypeId::uuid>
 	protected:
 	struct Generator
 	{
-		void Generate (boost::uuids::uuid & o_uuid)
-		{
-			lock_guard <mutex> lock (m_lock);
-			o_uuid = m_uuid ();
-		}
+		# ifndef d_epigramDisableUuidGeneration
+			void Generate (boost::uuids::uuid & o_uuid)
+			{
+				std::lock_guard <std::mutex> lock (m_lock);
+				o_uuid = m_uuid ();
+			}
 		
-		mutex m_lock;
-		boost::uuids::random_generator m_uuid;
+			std::mutex m_lock;
+			boost::uuids::random_generator m_uuid;
+		#else
+			void Generate (boost::uuids::uuid & o_uuid) {}
+		# endif
 	};
 	
 	static Generator m_boost;
@@ -115,7 +122,7 @@ bool operator < (JdUUID const& lhs, JdUUID const& rhs);
 	
 const JdUUID c_jdNullId;
 
-d_jdResultConst (Uuid, isExtant, "UUID is extant");
+d_jdResultConst (Uuid, isExtant, "UUID is extant")
 
 
 namespace std

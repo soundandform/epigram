@@ -11,14 +11,18 @@
 
 #include "JdNucleus.hpp"
 #include "JdUtils.hpp"
+#include "JdTypeId.hpp"
 
-#include "city.h"
 #include <iostream>
 #include <assert.h>
 #include <algorithm>
 #include <type_traits>
-#include "JdTypeId.hpp"
+#include <cstring>
+#include <string.h>
 
+#ifdef d_epigramUseCityHash
+#	include "city.h"
+#endif
 
 
 namespace EpSerialization
@@ -100,7 +104,7 @@ namespace EpSerialization
 			name [1] = 0;
 			
 			char *dest = &name[1];
-			const int nameLength = t_nameLength - 2;
+			const size_t nameLength = t_nameLength - 2;
 
 			const char *colons = strstr (i_prettyFunction, "::ClassName()");
 
@@ -121,7 +125,7 @@ namespace EpSerialization
 					
 					if (c == ' ' || c == '*' || c == '&')
 					{
-						uint32_t length = (uint32_t) std::min (nameLength, (int32_t) (colons-ptr));
+						uint32_t length = (uint32_t) std::min (nameLength, (size_t) (colons-ptr));
 						strncpy (dest, ptr+1, length);
 						dest [length] = 0;
 						break;
@@ -143,13 +147,15 @@ namespace EpSerialization
 	{
 		ClassNameHasher (const char *i_className)
 		{
-			m_hash = CityHash64 (i_className, *(i_className-1));
+			#ifdef d_epigramUseCityHash
+				m_hash = CityHash64 (i_className, *(i_className-1));
+			#endif
 		}
 		
 		uint64_t operator () () { return m_hash; }
 		
 		protected:
-		uint64_t	 m_hash;
+		uint64_t	 m_hash			= 0;
 	};
 
 } // namespace EpSerialization
@@ -325,7 +331,8 @@ class EpDeserializer
 
 	EpDeserializer &				CString				(char * o_string, u32 i_maxStringLength)
 	{
-		size_t numBytes = strnlen ((cstr_t) m_ptr, m_numBytes);
+		size_t numBytes = Strnlen ((cstr_t) m_ptr, m_numBytes);		// strnlen wasn't avail on arm gcc for some reason
+		
 		numBytes = std::min (numBytes, (size_t) i_maxStringLength);
 		
 		memcpy (o_string, m_ptr, numBytes);
@@ -336,6 +343,19 @@ class EpDeserializer
 		m_ptr += numBytes;
 
 		return * this;
+	}
+	
+	size_t							Strnlen				(cstr_t i_cstring, size_t i_maxBytes)
+	{
+		size_t s = 0;
+		while (i_maxBytes--)
+		{
+			if (i_cstring [s] == 0)
+				break;
+			++s;
+		}
+		
+		return s;
 	}
 
 

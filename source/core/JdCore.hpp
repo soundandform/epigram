@@ -25,7 +25,12 @@
 #include <string>
 #include <limits>
 #include <type_traits>
-#include <mutex>
+
+# ifndef d_epigramDisableMutex
+#	include <mutex>
+	typedef std::lock_guard <std::mutex> mutex_lock;
+	typedef std::lock_guard <std::recursive_mutex> rmutex_lock;
+# endif
 
 #include "JdTypeTraits.hpp"
 
@@ -371,11 +376,6 @@ struct IIJdInterface { virtual ~IIJdInterface () {} };
 
 #define d_jdForwardInterface(IFACE) struct I##IFACE; typedef I##IFACE * IFACE;
 #define d_jdInterface(IFACE) d_jdForwardInterface (IFACE) struct I##IFACE : virtual IIJdInterface
-
-
-
-typedef std::lock_guard <std::mutex> mutex_lock;
-typedef std::lock_guard <std::recursive_mutex> rmutex_lock;
 
 
 struct JdPreconditions

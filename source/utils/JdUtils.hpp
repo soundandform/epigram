@@ -10,8 +10,8 @@
 #define __Jigidesign__JdUtils__
 
 #include <vector>
+#include <cstring>
 
-//#include <string.h>
 #include "JdNucleus.hpp"
 
 namespace Jd
@@ -32,7 +32,7 @@ namespace Jd
 		static cstr_t namePtr = nullptr;
 		if (namePtr == nullptr)
 		{
-			const int c_maxNameLength = 127;
+			const size_t c_maxNameLength = 127;
 			static char storedName [c_maxNameLength + 1];	// name [0] stores length
 
 			u8 & nameLength = * ((u8 *) storedName);
@@ -87,7 +87,7 @@ namespace Jd
 			
 			if (end)
 			{
-				i32 length = (i32) (end - start);
+				size_t length = (i32) (end - start);
 				strncpy (name, start, std::min (length, c_maxNameLength));
 				name [c_maxNameLength-1] = 0;
 				nameLength = length;
