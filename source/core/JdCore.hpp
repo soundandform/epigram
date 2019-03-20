@@ -153,7 +153,9 @@ namespace Jd
 			o_oss << *i_format++;
 		}
 		
-		throw std::logic_error ("extra arguments provided to SSPrintF");
+		# if __cpp_exceptions
+			throw std::logic_error ("extra arguments provided to SSPrintF");
+		# endif
 	}
 	
 	template <typename T, typename... Args>

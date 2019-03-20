@@ -310,7 +310,11 @@ struct TypeIdsMap
 			if (c)
 			{
 				if (not names [c])
-					throw (std::string ("no name for JdTypeId"));
+					# if __cpp_exceptions
+						throw (std::string ("no name for JdTypeId"));
+					#else
+						abort ();
+					# endif
 				
 				namesToIds [names [c]] = i;
 				
@@ -650,7 +654,9 @@ class JdCasterT
 			case c_jdTypeId::i64: m_caster = & Cast <i64>; break;
 			case c_jdTypeId::u64: m_caster = & Cast <u64>; break;
 
-			default: throw ("finish implementation"); break;
+			# if __cpp_exceptions
+				default: throw ("finish implementation"); break;
+			# endif
 		}
 	}
 	

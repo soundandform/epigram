@@ -67,7 +67,11 @@ void JdAssert (bool i_shouldBeTrue, cstr_t i_truthfulOrLyingStatement, cstr_t i_
 //			raise (SIGTRAP);
 		}
 		
-		throw JdException (oss.str().c_str(), i_filePath, i_lineNum);
+		# if __cpp_exceptions
+			throw JdException (oss.str().c_str(), i_filePath, i_lineNum);
+		# else
+			abort ();
+		# endif
 	}
 }
 
@@ -111,7 +115,11 @@ JdResult JdResert (bool i_shouldBeTrue, cstr_t i_truthfulOrLyingStatement, cstr_
 //				raise (SIGTRAP);
 			}
 			
-			throw JdException (oss.str().c_str(), i_filePath, i_lineNum);
+			# if __cpp_exceptions
+				throw JdException (oss.str().c_str(), i_filePath, i_lineNum);
+			# else
+				abort ();
+			# endif
 		}
 		else
 		{

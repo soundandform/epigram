@@ -99,7 +99,9 @@ static void EpilogF (std::ostringstream & o_oss, cstr_t i_format)
 				string msg = "invalid epilog: '";
 				(msg += format) += "' is missing argument(s)";
 				
-				throw std::runtime_error (msg);
+				# if __cpp_exceptions
+					throw std::runtime_error (msg);
+				# endif
 			}
 		}
 		
@@ -129,7 +131,9 @@ void EpilogF (std::ostringstream & o_oss, cstr_t i_format, T value, Args... i_ar
 		o_oss << *i_format++;
 	}
 	
-	throw std::logic_error ("extra arguments provided to EpilogF");
+	# if __cpp_exceptions
+		throw std::logic_error ("extra arguments provided to EpilogF");
+	# endif
 }
 
 template <typename... t_args>

@@ -82,7 +82,11 @@ namespace Jd
 					string msg = "invalid ssprintf: '";
 					(msg += format) += "' is missing argument(s)";
 					
-					throw std::runtime_error (msg);
+					# if __cpp_exceptions
+						throw std::runtime_error (msg);
+					# else
+						abort ();
+					# endif
 				}
 			}
 			

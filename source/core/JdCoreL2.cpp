@@ -7,16 +7,17 @@
 //
 
 #include "JdCoreL2.hpp"
-//#include <city.h>
 #include <cstring>
 
+# ifdef d_epigramUseCityHash
+# 	include <city.h>
+# endif
 
 namespace Jd
 {
-    i32 HashCString31 (const char *i_string)
+    i32 HashCString31 (cstr_t i_string)
     {
-		//u64 hash = std::hash <std::string_view> () (string_view (i_string, strlen (i_string)));
-		u64 hash = std::hash <std::string>() (i_string);
+		u64 hash = std::hash <std::string> () (i_string);
 		hash &= 0x000000007FFFFFFF;
         return (i32) hash;
     }
