@@ -8,6 +8,10 @@
 
 #include "JdUUID.hpp"
 
+#include <boost/uuid/string_generator.hpp>
+#include <boost/uuid/uuid_io.hpp>
+#include <boost/detail/endian.hpp>
+
 // JdUUID ------------------------------------------------------------------------------------------------------------
 
 JdUUID::Generator JdUUID::m_boost;
@@ -36,8 +40,6 @@ JdUUID::JdUUID (cstr_t i_cStringUuid)
 	uuid = gen (i_cStringUuid);
 }
 
-
-#include <boost/detail/endian.hpp>
 
 JdUUID::JdUUID (u32 a, u16 b, u16 c, u16 d, u64 e)
 {

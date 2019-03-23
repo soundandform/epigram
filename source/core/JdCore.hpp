@@ -174,14 +174,22 @@ namespace jd
 {
 	inline void out (cstr_t i_format)
 	{
-		cout << i_format << endl;
+		cout << i_format << "\r" << endl;
 	}
 
 	template <typename T, typename... Args>
 	void out (cstr_t i_format, T i_value, Args... i_args)
 	{
-		cout << Jd::SPrintF (i_format, i_value, i_args...) << endl;
+		cout << Jd::SPrintF (i_format, i_value, i_args...) << "\r" << endl;
 	}
+	
+	template <typename A, typename B>
+	auto max (const A & a, const B & b)
+	{
+		typedef decltype (a*b) fused;
+		return ::max ((fused) a, (fused) b);
+	}
+	
 }
 
 #define debug(OUTPUT) std::cout << OUTPUT << endl

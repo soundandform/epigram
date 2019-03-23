@@ -11,14 +11,13 @@
 
 # ifndef d_epigramDisableUuidGeneration
 #	include <mutex>
-#	include <boost/uuid/uuid_generators.hpp>
+#	include <boost/uuid/random_generator.hpp>
 # endif
 
 #include "EpSerializationRaw.hpp"
 #include "JdResult.hpp"
 
 #include <boost/uuid/uuid.hpp>
-#include <boost/uuid/uuid_io.hpp>
 
 #if __APPLE__
 	#include <objc/runtime.h>
