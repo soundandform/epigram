@@ -19,7 +19,7 @@ void Func (EpigramRef i_args)
 {
     using namespace a_args;
 
-    f64 smoothing = i_args [smoothingCoeff];        
+    double smoothing = i_args [smoothingCoeff];        
         cout << "smoothing: " << smoothing;
         cout << ", interpolation: " << (int) i_args [interpolationFactor] << endl;
 }
