@@ -1,7 +1,8 @@
 # epigram
 
-includes Epigram: a type-smart, ergnomonic, key/value data structure for serialization, marshalling, named arguments, etc.
+Includes Epigram: a type-smart, ergnomonic, fast key/value data structure for serialization, persistence, marshalling, named arguments, etc.
 
+Some of the functionality is demonstrated below. Objects can also be serialized. 
 
 
 ```C++
