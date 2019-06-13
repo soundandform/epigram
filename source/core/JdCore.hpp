@@ -184,12 +184,18 @@ namespace jd
 	}
 	
 	template <typename A, typename B>
+	auto min (const A & a, const B & b)
+	{
+		typedef decltype (a*b) fused;
+		return ::min ((fused) a, (fused) b);
+	}
+
+	template <typename A, typename B>
 	auto max (const A & a, const B & b)
 	{
 		typedef decltype (a*b) fused;
 		return ::max ((fused) a, (fused) b);
 	}
-	
 }
 
 #define debug(OUTPUT) std::cout << OUTPUT << endl
