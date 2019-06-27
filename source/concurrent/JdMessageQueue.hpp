@@ -10,8 +10,6 @@
 
 #include "JdAssert.hpp"
 #include "JdSemaphore.hpp"
-//#include "Epigram.hpp"
-//#include "JdTimer.hpp"
 
 #include <boost/interprocess/detail/atomic.hpp>
 #include <boost/interprocess/sync/interprocess_semaphore.hpp>
