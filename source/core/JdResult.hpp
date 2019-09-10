@@ -111,7 +111,7 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 							{ }
 
 	
-							JdResultT				(i32 i_resultCode, cstr_t i_message, location_t i_location, u32 i_lineNum = 0)
+							JdResultT				(i32 i_resultCode, cstr_t i_message, location_t i_location = 0, u32 i_lineNum = 0)
 							:
 							m_resultCode			(i_resultCode),
 							m_message				(i_message)
