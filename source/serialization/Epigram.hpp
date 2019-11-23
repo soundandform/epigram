@@ -625,7 +625,8 @@ class EpigramT : public interface_t
 			
 			if (availableBytes >= sizeof (T))
 			{
-				o_value = * ((T *) i_iterator);
+//				o_value = * ((T *) i_iterator);
+				memcpy (& o_value, i_iterator, sizeof (T));
 				return i_iterator + sizeof (T);
 			}
 			else
