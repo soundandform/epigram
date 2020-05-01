@@ -31,14 +31,15 @@ fi
 
 mv stage/lib/libboost_*.a ../../lib
 
-cd ..
+# back to external
+cd .. 
 
 # put it side-by-side
-mv boost ..
+mv boost ../..
 
 # CityHash ----------------------------------------------------------------------------------------------------------------
 
-cd ../cityhash
+cd cityhash
 ./configure
 make
 
