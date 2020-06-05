@@ -835,7 +835,7 @@ struct JdThreadPort2 : public JdMessagePortT <t_thread, t_argSize>, public IJdTh
 	
 	
 	// QUE: add IThreadInfo NeedsIdle () ?  Or IdlePeriod ()
-    virtual JdResult                Run             (const Epigram & i_args, IThreadInfo & i_info)
+    virtual JdResult                Run             (const Epigram & i_args, IJdThread::ThreadInfo & i_info)
     {
 		bool waitOnNewMessages = false;
         

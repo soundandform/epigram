@@ -21,7 +21,7 @@
 
  How to use:
  
- 1. Derive from JdThread
+ 1. Derive from IJdThread
  2A. Implement Run ().  Use IsAlive () to test whether the thread loop should continue executing.  Or:
  2B. Implement Break () if necessary to signal your Run () loop that it should return.
  3. Optionally, implement Terminated () for any post-Run () cleanup
@@ -64,7 +64,7 @@ const u8 c_jdThread_defaultPriority = 0;
 
 struct IJdThread
 {
-    struct IThreadInfo
+    struct ThreadInfo
     {
         virtual bool                IsAlive         () = 0;
 		virtual cstr_t				GetName			() const = 0;
@@ -72,7 +72,7 @@ struct IJdThread
     
     virtual ~                       IJdThread       () { };
     virtual JdResult                Setup           () 												{ return c_jdNoErr; }		// Setup happens in creator thread (which is probably main)
-    virtual JdResult                Run             (EpigramRef i_args, IThreadInfo & i_info)	 	= 0;
+    virtual JdResult                Run             (EpigramRef i_args, ThreadInfo & i_info)	 	= 0;
     virtual JdResult                Break           () 												{ return c_jdNoErr; };
 	virtual JdResult                Finalize        (const JdResult &i_runResult) 					{ return i_runResult; };	// Finalize happens in-thread
     virtual JdResult                Teardown        (const JdResult &i_runResult)					{ return i_runResult; };	// Teardown happens in creator thread (which is probably main)
@@ -140,7 +140,7 @@ class JdThreadT
 		
 //		i_owner->m_state = c_jdThreadState::running;
 		
-		struct ThreadInfo : IJdThread::IThreadInfo
+		struct ThreadInfo : IJdThread::ThreadInfo
 		{
 			ThreadInfo (EJdThreadState &i_state, cstr_t i_name)
 			: m_state (i_state), m_name (i_name)												{ }

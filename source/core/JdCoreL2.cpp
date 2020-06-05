@@ -24,9 +24,20 @@ namespace Jd
 	
 	u64 HashString64 (const std::string &i_string)
 	{
-		//		return CityHash64 (i_string.c_str(), i_string.size());
-		return std::hash <std::string> () (i_string);
+#		ifdef d_epigramUseCityHash
+			return CityHash64 (i_string.c_str(), i_string.size());
+#		else
+			return std::hash <std::string> () (i_string);
+#		endif
 	}
 
+	u64 HashString64 (cstr_t i_string)
+	{
+#		ifdef d_epigramUseCityHash
+			return CityHash64 (i_string, strlen (i_string));
+#		else
+			return std::hash <std::string_view> () (i_string);
+#		endif
+	}
 
 }; // end-namespace Jd
