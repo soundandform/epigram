@@ -1,6 +1,6 @@
 #ifndef __doctest_hpp
 
-#	include "doctest.h"
+#	include <doctest/doctest.h>
 #	define test_suite(NAME) TEST_SUITE(#NAME)
 #	define doctest(NAME) TEST_CASE(NAME)
 #	define subcase(...) SUBCASE(__VA_ARGS__)
