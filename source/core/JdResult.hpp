@@ -314,7 +314,7 @@ std::ostream & operator << (std::ostream &output, const JdResultT <L, R1> & i_re
 		if (pos != string::npos)
 			location = location.substr (pos + 2);
 		
-		output << "<" << location << ":" << i_result.GetLineNum () << ">";
+		output << " <" << location << ":" << i_result.GetLineNum () << ">";
 	}
 	
 	return output;

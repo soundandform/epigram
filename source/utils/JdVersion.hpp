@@ -16,22 +16,21 @@
 const uint16_t c_jdVersionNumDontCare = 0xffff;
 const uint32_t c_jdRevisionNumDontCare = 0xffffffff;
 
+
 struct JdVersion
 {
-	u16		major;
-	u16		minor;
-	u32		revision;
+	u16		major		= 0;
+	u16		minor		= c_jdVersionNumDontCare;
+	u32		revision	= c_jdRevisionNumDontCare;
 	
 	JdVersion (uint64_t i_compactVersion)
 	{
-		major = (u16) (i_compactVersion >> 48);
-		minor = (u16) ((i_compactVersion >> 32) & 0x000000000000FFFF);
-		revision = (u32) (i_compactVersion & 0x00000000FFFFFFFF);
+		major =		(u16)  (i_compactVersion >> 48);
+		minor =		(u16) ((i_compactVersion >> 32) & 0x000000000000FFFF);
+		revision =	(u32)  (i_compactVersion & 0x00000000FFFFFFFF);
 	}
 	
-	JdVersion (const char *i_versionString)
-	:
-	major (0), minor (c_jdVersionNumDontCare), revision (c_jdRevisionNumDontCare)
+	JdVersion (cstr_t i_versionString)
 	{
 		std::string temp = i_versionString;
 		
@@ -53,7 +52,7 @@ struct JdVersion
 	
 	JdVersion (const char *i_versionString, uint32_t i_revision)
 	:
-	major (0), minor (c_jdVersionNumDontCare), revision (i_revision)
+	revision (i_revision)
 	{
 		std::string temp = i_versionString;
 		
@@ -72,18 +71,17 @@ struct JdVersion
 		minor = b & 0x0000ffff;
 	}
 	
-	JdVersion (uint16_t i_major, uint16_t i_minor)
-	: major (i_major), minor (i_minor), revision (c_jdRevisionNumDontCare)
-	{
-	}
+	JdVersion (u16 i_major, u16 i_minor)
+	:
+	major (i_major), minor (i_minor)
+	{ }
 	
-	JdVersion () : major (c_jdVersionNumDontCare), minor (c_jdVersionNumDontCare), revision (c_jdRevisionNumDontCare)
-	{
-	}
+	JdVersion ()
+	{ }
 	
 	bool IsSet () const
 	{
-		return (major != c_jdVersionNumDontCare || minor != c_jdVersionNumDontCare || revision != c_jdRevisionNumDontCare);
+		return (major != c_jdVersionNumDontCare or minor != c_jdVersionNumDontCare or revision != c_jdRevisionNumDontCare);
 	}
 	
 	operator u64 () const
@@ -92,15 +90,13 @@ struct JdVersion
 	}
 };
 
+typedef const JdVersion & 	JdVersionRef;
+
 bool operator == (const JdVersion &i_versionA, const JdVersion &i_versionB);
 bool operator >= (const JdVersion &i_versionA, const JdVersion &i_versionB);
 bool operator <= (const JdVersion &i_versionA, const JdVersion &i_versionB);
 bool operator  < (const JdVersion &i_versionA, const JdVersion &i_versionB);
 
 std::ostream & operator<< (std::ostream & output, const JdVersion & i_version);
-
-
-
-#include "Epilog.hpp"
 
 
