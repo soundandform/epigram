@@ -18,7 +18,7 @@
 using boost::asio::ip::tcp;
 
 #include "EpilogLib.hpp"
-#include "IJdPlatform.h"
+#include "IJdPlatform.hpp"
 #include "JdUtils.hpp"
 
 
@@ -245,7 +245,7 @@ u32 CEpigramConnection::Connect (const char * i_serviceNameOrLocation, uint16_t 
         }
         
 		CEpigramRunner runner (i_serviceNameOrLocation, i_portNumber, m_queue, m_queueMessages, m_logFile, i_handler, this);
-		m_thread = boost::thread (runner);
+		m_thread = std::thread (runner);
 	}
 	
 	return ++m_sessionId;

@@ -107,7 +107,6 @@ protected:
 };
 
 
-#include <boost/thread.hpp>
 struct EpilogEvent;
 
 #include "JdThreadPort.hpp"
@@ -181,7 +180,7 @@ protected:
 	
 	queue_t								m_queue;
 	
-	boost::thread						m_thread;
+	std::thread							m_thread;
 	bool								m_queueMessages		= true;
 	bool								m_enabled			= false;
     bool                                m_logFileEnabled	= false;

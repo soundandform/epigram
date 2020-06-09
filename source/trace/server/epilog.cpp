@@ -7,12 +7,12 @@
 #include <deque>
 #include <list>
 #include <set>
+#include <thread>
 
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
-#include <boost/thread.hpp>
 
 #include "EpilogCliServer.hpp"
 
@@ -97,7 +97,8 @@ void StartServer (boost::asio::io_service& io_service, short port, EpilogMsgQueu
 		
 		a.accept (*socket);
 
-		boost::thread t (boost::bind (RunSession, socket, i_queue));
+		std::thread t (boost::bind (RunSession, socket, i_queue));
+		t.join ();
 	}
 }
 
@@ -377,7 +378,7 @@ int main(int argc, char* argv[])
 		EpilogMsgQueue queue (1024);
 		
 		TcpServer server (&queue, port);
-		boost::thread t (server);
+		std::thread t (server);
 		
 		if (! useCurses)
 		{
@@ -424,6 +425,8 @@ int main(int argc, char* argv[])
 //			CEpilogServer server (&queue, damn, vm.count ("log"));
 //			server.Run();
 //		}
+		
+		t.join ();
 	}
 
 	catch (std::exception& e)

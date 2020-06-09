@@ -8,48 +8,56 @@
 
 /* Begin PBXBuildFile section */
 		B50B2EFB20BE11540043139F /* libepilogger.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5D09CED20AE740C0036BB57 /* libepilogger.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		B53878101FB54D550071B682 /* JdFiber.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B538780F1FB54D550071B682 /* JdFiber.cpp */; };
-		B538781B1FB54E170071B682 /* JdCoreL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878121FB54E160071B682 /* JdCoreL2.cpp */; };
-		B538781C1FB54E170071B682 /* JdConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878141FB54E160071B682 /* JdConfig.cpp */; };
-		B538781D1FB54E170071B682 /* JdAssert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878161FB54E160071B682 /* JdAssert.cpp */; };
-		B538781E1FB54E170071B682 /* JdCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878181FB54E160071B682 /* JdCore.cpp */; };
-		B53878211FB54E410071B682 /* JdStdStringUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878201FB54E410071B682 /* JdStdStringUtils.cpp */; };
-		B53878271FB54EA40071B682 /* JdUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878261FB54EA30071B682 /* JdUtils.cpp */; };
-		B538782A1FB54EB70071B682 /* JdTypeId.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878281FB54EB70071B682 /* JdTypeId.cpp */; };
-		B53878301FB54F040071B682 /* EpigramDump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B538782E1FB54F040071B682 /* EpigramDump.cpp */; };
-		B53878331FB54F3A0071B682 /* JdUUID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878321FB54F3A0071B682 /* JdUUID.cpp */; };
+		B52A13162490143400B8F3F6 /* JdConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12CD2490143400B8F3F6 /* JdConfig.cpp */; };
+		B52A13172490143400B8F3F6 /* JdCoreL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12D22490143400B8F3F6 /* JdCoreL2.cpp */; };
+		B52A13182490143400B8F3F6 /* JdCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12D32490143400B8F3F6 /* JdCore.cpp */; };
+		B52A13192490143400B8F3F6 /* JdAssert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12D82490143400B8F3F6 /* JdAssert.cpp */; };
+		B52A131A2490143400B8F3F6 /* JdUUID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12DE2490143400B8F3F6 /* JdUUID.cpp */; };
+		B52A131B2490143400B8F3F6 /* JdRandom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12E12490143400B8F3F6 /* JdRandom.cpp */; };
+		B52A131C2490143400B8F3F6 /* EpigramAppleUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12E82490143400B8F3F6 /* EpigramAppleUtil.cpp */; };
+		B52A131D2490143400B8F3F6 /* EpigramDump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12EE2490143400B8F3F6 /* EpigramDump.cpp */; };
+		B52A131E2490143400B8F3F6 /* JdUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12F42490143400B8F3F6 /* JdUtils.cpp */; };
+		B52A131F2490143400B8F3F6 /* JdVersion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12F52490143400B8F3F6 /* JdVersion.cpp */; };
+		B52A13202490143400B8F3F6 /* JdStdStringUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12F62490143400B8F3F6 /* JdStdStringUtils.cpp */; };
+		B52A13212490143400B8F3F6 /* JdTypeId.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12F92490143400B8F3F6 /* JdTypeId.cpp */; };
+		B52A13222490143400B8F3F6 /* JdStopwatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12FC2490143400B8F3F6 /* JdStopwatch.cpp */; };
+		B52A13242490143400B8F3F6 /* JdMacPlatform.mm in Sources */ = {isa = PBXBuildFile; fileRef = B52A13022490143400B8F3F6 /* JdMacPlatform.mm */; };
+		B52A13252490143400B8F3F6 /* JdTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A13042490143400B8F3F6 /* JdTimer.cpp */; };
+		B52A13262490143400B8F3F6 /* JdThreadPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A13072490143400B8F3F6 /* JdThreadPort.cpp */; };
+		B52A13272490143400B8F3F6 /* JdAtomicBankSwitch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A130B2490143400B8F3F6 /* JdAtomicBankSwitch.cpp */; };
+		B52A13282490143400B8F3F6 /* JdThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A130C2490143400B8F3F6 /* JdThread.cpp */; };
+		B52A13292490143400B8F3F6 /* JdFiber.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A130F2490143400B8F3F6 /* JdFiber.cpp */; };
+		B52A132A2490148300B8F3F6 /* epilog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12C82490143400B8F3F6 /* epilog.cpp */; };
+		B52A132B2490148600B8F3F6 /* EpilogCliServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12C92490143400B8F3F6 /* EpilogCliServer.cpp */; };
+		B52A132C2490149300B8F3F6 /* EpilogLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12CA2490143400B8F3F6 /* EpilogLib.cpp */; };
+		B52A132D249014A900B8F3F6 /* JdAssert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12D82490143400B8F3F6 /* JdAssert.cpp */; };
+		B52A132E249014B300B8F3F6 /* JdTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A13042490143400B8F3F6 /* JdTimer.cpp */; };
+		B52A132F249014C400B8F3F6 /* JdUUID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12DE2490143400B8F3F6 /* JdUUID.cpp */; };
+		B52A1330249014DB00B8F3F6 /* JdMacPlatform.mm in Sources */ = {isa = PBXBuildFile; fileRef = B52A13022490143400B8F3F6 /* JdMacPlatform.mm */; };
+		B52A1331249014E900B8F3F6 /* EpigramAppleUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12E82490143400B8F3F6 /* EpigramAppleUtil.cpp */; };
+		B52A13322490150000B8F3F6 /* JdCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12D32490143400B8F3F6 /* JdCore.cpp */; };
+		B52A13332490150800B8F3F6 /* JdCoreL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12D22490143400B8F3F6 /* JdCoreL2.cpp */; };
+		B52A13342490152600B8F3F6 /* JdConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12CD2490143400B8F3F6 /* JdConfig.cpp */; };
+		B52A13352490153700B8F3F6 /* JdAssert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12D82490143400B8F3F6 /* JdAssert.cpp */; };
+		B52A13362490165200B8F3F6 /* JdConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12CD2490143400B8F3F6 /* JdConfig.cpp */; };
+		B52A13372490165B00B8F3F6 /* JdCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12D32490143400B8F3F6 /* JdCore.cpp */; };
 		B562BD771FB55D9500FDE277 /* test.epigram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B562BD761FB55D9500FDE277 /* test.epigram.cpp */; };
-		B580E2401FB64C8B00DD177B /* JdTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B580E23D1FB64C8B00DD177B /* JdTimer.cpp */; };
 		B580E2431FB64CF100DD177B /* libboost_timer-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2411FB64CF100DD177B /* libboost_timer-clang-darwin42-mt-x64-1_67.a */; };
 		B580E2441FB64CF100DD177B /* libboost_chrono-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2421FB64CF100DD177B /* libboost_chrono-clang-darwin42-mt-x64-1_67.a */; };
 		B580E2461FB64D0B00DD177B /* libboost_system-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2451FB64D0A00DD177B /* libboost_system-clang-darwin42-mt-x64-1_67.a */; };
 		B583D0941FA97E85007C07F0 /* test.core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B583D0931FA97E85007C07F0 /* test.core.cpp */; };
 		B583D0C11FA97F0D007C07F0 /* libboost_context-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B583D0C01FA97F0D007C07F0 /* libboost_context-clang-darwin42-mt-x64-1_67.a */; };
 		B583D0C31FA97F20007C07F0 /* city.o in Frameworks */ = {isa = PBXBuildFile; fileRef = B583D0C21FA97F20007C07F0 /* city.o */; };
-		B5C695C32029E4AA001DC0F3 /* EpilogCliServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C695C02029E4AA001DC0F3 /* EpilogCliServer.cpp */; };
-		B5C695C42029E4AA001DC0F3 /* epilog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C695C12029E4AA001DC0F3 /* epilog.cpp */; };
 		B5C695C8202A1552001DC0F3 /* libboost_system-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2451FB64D0A00DD177B /* libboost_system-clang-darwin42-mt-x64-1_67.a */; };
 		B5C695CE202A1553001DC0F3 /* libboost_program_options-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C695CB202A1553001DC0F3 /* libboost_program_options-clang-darwin42-mt-x64-1_67.a */; };
 		B5C695CF202A1553001DC0F3 /* libboost_thread-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C695CC202A1553001DC0F3 /* libboost_thread-clang-darwin42-mt-x64-1_67.a */; };
-		B5C695D0202A1612001DC0F3 /* JdAssert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878161FB54E160071B682 /* JdAssert.cpp */; };
-		B5C695D1202A161E001DC0F3 /* JdConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878141FB54E160071B682 /* JdConfig.cpp */; };
-		B5C695D2202A164F001DC0F3 /* JdCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878181FB54E160071B682 /* JdCore.cpp */; };
-		B5D09CF820AE741A0036BB57 /* EpilogLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5DB7A5E20AE3E6500FB25CD /* EpilogLib.cpp */; };
 		B5D09CF920AE742B0036BB57 /* libboost_timer-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2411FB64CF100DD177B /* libboost_timer-clang-darwin42-mt-x64-1_67.a */; };
-		B5D09CFA20AE74310036BB57 /* JdTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B580E23D1FB64C8B00DD177B /* JdTimer.cpp */; };
 		B5D09CFB20AE743A0036BB57 /* libboost_system-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2451FB64D0A00DD177B /* libboost_system-clang-darwin42-mt-x64-1_67.a */; };
-		B5D09CFC20AE74490036BB57 /* JdMacPlatform.mm in Sources */ = {isa = PBXBuildFile; fileRef = B5DB7A6120AE3E9E00FB25CD /* JdMacPlatform.mm */; };
-		B5D09CFD20AE74580036BB57 /* JdAssert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878161FB54E160071B682 /* JdAssert.cpp */; };
-		B5D09CFE20AE74770036BB57 /* EpigramAppleUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5DB7A6320AE3EC300FB25CD /* EpigramAppleUtil.cpp */; };
-		B5D09D0020AE74810036BB57 /* JdUUID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878321FB54F3A0071B682 /* JdUUID.cpp */; };
-		B5D09D0120AE748C0036BB57 /* JdConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878141FB54E160071B682 /* JdConfig.cpp */; };
-		B5D09D0220AE74910036BB57 /* JdCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878181FB54E160071B682 /* JdCore.cpp */; };
 		B5D09D0420AE74A30036BB57 /* libboost_thread-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C695CC202A1553001DC0F3 /* libboost_thread-clang-darwin42-mt-x64-1_67.a */; };
 		B5D09D0620AE74B50036BB57 /* libboost_chrono-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2421FB64CF100DD177B /* libboost_chrono-clang-darwin42-mt-x64-1_67.a */; };
-		B5D09D0720AE74C60036BB57 /* JdCoreL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B53878121FB54E160071B682 /* JdCoreL2.cpp */; };
 		B5D09D0820AE74D10036BB57 /* city.o in Frameworks */ = {isa = PBXBuildFile; fileRef = B583D0C21FA97F20007C07F0 /* city.o */; };
 		B5D09D0920AE76200036BB57 /* libepilogger.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B5D09CED20AE740C0036BB57 /* libepilogger.dylib */; };
-		B5DB7A5C20AE3D9000FB25CD /* epilog in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5C695B82029E42A001DC0F3 /* epilog */; };
+		B5DB7A5C20AE3D9000FB25CD /* epilog in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5C695B82029E42A001DC0F3 /* epilog */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		B5DB7A6020AE3E7900FB25CD /* libboost_thread-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C695CC202A1553001DC0F3 /* libboost_thread-clang-darwin42-mt-x64-1_67.a */; };
 /* End PBXBuildFile section */
 
@@ -76,7 +84,7 @@
 		B5C695B62029E42A001DC0F3 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 12;
-			dstPath = "~";
+			dstPath = "/Users/$(INSTALL_OWNER)";
 			dstSubfolderSpec = 0;
 			files = (
 				B5DB7A5C20AE3D9000FB25CD /* epilog in CopyFiles */,
@@ -86,38 +94,76 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		B538780E1FB54D550071B682 /* JdFiber.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JdFiber.hpp; path = concurrent/JdFiber.hpp; sourceTree = "<group>"; };
-		B538780F1FB54D550071B682 /* JdFiber.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JdFiber.cpp; path = concurrent/JdFiber.cpp; sourceTree = "<group>"; };
-		B53878111FB54E160071B682 /* JdEnum.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JdEnum.hpp; path = core/JdEnum.hpp; sourceTree = "<group>"; };
-		B53878121FB54E160071B682 /* JdCoreL2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JdCoreL2.cpp; path = core/JdCoreL2.cpp; sourceTree = "<group>"; };
-		B53878131FB54E160071B682 /* JdCore.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JdCore.hpp; path = core/JdCore.hpp; sourceTree = "<group>"; };
-		B53878141FB54E160071B682 /* JdConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JdConfig.cpp; path = core/JdConfig.cpp; sourceTree = "<group>"; };
-		B53878151FB54E160071B682 /* JdAssert.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JdAssert.hpp; path = core/JdAssert.hpp; sourceTree = "<group>"; };
-		B53878161FB54E160071B682 /* JdAssert.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JdAssert.cpp; path = core/JdAssert.cpp; sourceTree = "<group>"; };
-		B53878171FB54E160071B682 /* JdCoreL2.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JdCoreL2.hpp; path = core/JdCoreL2.hpp; sourceTree = "<group>"; };
-		B53878181FB54E160071B682 /* JdCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JdCore.cpp; path = core/JdCore.cpp; sourceTree = "<group>"; };
-		B53878191FB54E170071B682 /* JdResult.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JdResult.hpp; path = core/JdResult.hpp; sourceTree = "<group>"; };
-		B538781A1FB54E170071B682 /* JdConfig.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JdConfig.hpp; path = core/JdConfig.hpp; sourceTree = "<group>"; };
-		B538781F1FB54E410071B682 /* JdStdStringUtils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JdStdStringUtils.hpp; path = utils/JdStdStringUtils.hpp; sourceTree = "<group>"; };
-		B53878201FB54E410071B682 /* JdStdStringUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JdStdStringUtils.cpp; path = utils/JdStdStringUtils.cpp; sourceTree = "<group>"; };
-		B53878221FB54E5C0071B682 /* JdNucleus.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = JdNucleus.hpp; path = core/JdNucleus.hpp; sourceTree = "<group>"; };
-		B53878231FB54E850071B682 /* EpSerializationRaw.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = EpSerializationRaw.hpp; path = serialization/EpSerializationRaw.hpp; sourceTree = "<group>"; };
-		B53878241FB54E920071B682 /* JdFlatString.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = JdFlatString.hpp; path = utils/JdFlatString.hpp; sourceTree = "<group>"; };
-		B53878251FB54EA30071B682 /* JdUtils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JdUtils.hpp; path = utils/JdUtils.hpp; sourceTree = "<group>"; };
-		B53878261FB54EA30071B682 /* JdUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JdUtils.cpp; path = utils/JdUtils.cpp; sourceTree = "<group>"; };
-		B53878281FB54EB70071B682 /* JdTypeId.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JdTypeId.cpp; path = utils/JdTypeId.cpp; sourceTree = "<group>"; };
-		B53878291FB54EB70071B682 /* JdTypeId.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JdTypeId.hpp; path = utils/JdTypeId.hpp; sourceTree = "<group>"; };
-		B538782B1FB54EC40071B682 /* IEpigram.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = IEpigram.hpp; path = serialization/IEpigram.hpp; sourceTree = "<group>"; };
-		B538782C1FB54ECD0071B682 /* Epigram.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Epigram.hpp; path = serialization/Epigram.hpp; sourceTree = "<group>"; };
-		B538782D1FB54EE70071B682 /* EpArgs.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = EpArgs.hpp; path = serialization/EpArgs.hpp; sourceTree = "<group>"; };
-		B538782E1FB54F040071B682 /* EpigramDump.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EpigramDump.cpp; path = serialization/EpigramDump.cpp; sourceTree = "<group>"; };
-		B538782F1FB54F040071B682 /* EpigramDump.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = EpigramDump.hpp; path = serialization/EpigramDump.hpp; sourceTree = "<group>"; };
-		B53878311FB54F2C0071B682 /* JdUUID.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = JdUUID.hpp; path = hash/JdUUID.hpp; sourceTree = "<group>"; };
-		B53878321FB54F3A0071B682 /* JdUUID.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JdUUID.cpp; path = hash/JdUUID.cpp; sourceTree = "<group>"; };
+		B52A12C22490143400B8F3F6 /* Epilog.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Epilog.hpp; sourceTree = "<group>"; };
+		B52A12C32490143400B8F3F6 /* EpilogStructs.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EpilogStructs.hpp; sourceTree = "<group>"; };
+		B52A12C42490143400B8F3F6 /* EpilogLib.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EpilogLib.hpp; sourceTree = "<group>"; };
+		B52A12C52490143400B8F3F6 /* Epilog_ObjC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Epilog_ObjC.h; sourceTree = "<group>"; };
+		B52A12C72490143400B8F3F6 /* EpilogCliServer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EpilogCliServer.hpp; sourceTree = "<group>"; };
+		B52A12C82490143400B8F3F6 /* epilog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = epilog.cpp; sourceTree = "<group>"; };
+		B52A12C92490143400B8F3F6 /* EpilogCliServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EpilogCliServer.cpp; sourceTree = "<group>"; };
+		B52A12CA2490143400B8F3F6 /* EpilogLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EpilogLib.cpp; sourceTree = "<group>"; };
+		B52A12CB2490143400B8F3F6 /* Epilog_Cpp.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Epilog_Cpp.hpp; sourceTree = "<group>"; };
+		B52A12CD2490143400B8F3F6 /* JdConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdConfig.cpp; sourceTree = "<group>"; };
+		B52A12CE2490143400B8F3F6 /* JdAssert.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdAssert.hpp; sourceTree = "<group>"; };
+		B52A12CF2490143400B8F3F6 /* JdCoreL2.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdCoreL2.hpp; sourceTree = "<group>"; };
+		B52A12D02490143400B8F3F6 /* JdNucleus.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdNucleus.hpp; sourceTree = "<group>"; };
+		B52A12D12490143400B8F3F6 /* JdCore.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdCore.hpp; sourceTree = "<group>"; };
+		B52A12D22490143400B8F3F6 /* JdCoreL2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdCoreL2.cpp; sourceTree = "<group>"; };
+		B52A12D32490143400B8F3F6 /* JdCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdCore.cpp; sourceTree = "<group>"; };
+		B52A12D42490143400B8F3F6 /* JdTypeTraits.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdTypeTraits.hpp; sourceTree = "<group>"; };
+		B52A12D52490143400B8F3F6 /* JdResult.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdResult.hpp; sourceTree = "<group>"; };
+		B52A12D62490143400B8F3F6 /* JdEnum.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdEnum.hpp; sourceTree = "<group>"; };
+		B52A12D72490143400B8F3F6 /* JdConfig.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdConfig.hpp; sourceTree = "<group>"; };
+		B52A12D82490143400B8F3F6 /* JdAssert.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdAssert.cpp; sourceTree = "<group>"; };
+		B52A12DA2490143400B8F3F6 /* JdGraph.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdGraph.hpp; sourceTree = "<group>"; };
+		B52A12DB2490143400B8F3F6 /* JdCache.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdCache.hpp; sourceTree = "<group>"; };
+		B52A12DC2490143400B8F3F6 /* JdList.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdList.hpp; sourceTree = "<group>"; };
+		B52A12DE2490143400B8F3F6 /* JdUUID.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdUUID.cpp; sourceTree = "<group>"; };
+		B52A12DF2490143400B8F3F6 /* JdRandom.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdRandom.hpp; sourceTree = "<group>"; };
+		B52A12E02490143400B8F3F6 /* JdUUID.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdUUID.hpp; sourceTree = "<group>"; };
+		B52A12E12490143400B8F3F6 /* JdRandom.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdRandom.cpp; sourceTree = "<group>"; };
+		B52A12E32490143400B8F3F6 /* M3Token.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = M3Token.hpp; sourceTree = "<group>"; };
+		B52A12E52490143400B8F3F6 /* EpigramDump.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EpigramDump.hpp; sourceTree = "<group>"; };
+		B52A12E62490143400B8F3F6 /* EpSerializationRaw.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EpSerializationRaw.hpp; sourceTree = "<group>"; };
+		B52A12E72490143400B8F3F6 /* EpigramAppleUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EpigramAppleUtil.h; sourceTree = "<group>"; };
+		B52A12E82490143400B8F3F6 /* EpigramAppleUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EpigramAppleUtil.cpp; sourceTree = "<group>"; };
+		B52A12E92490143400B8F3F6 /* EpAttribute.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EpAttribute.hpp; sourceTree = "<group>"; };
+		B52A12EA2490143400B8F3F6 /* EpSerialization.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EpSerialization.hpp; sourceTree = "<group>"; };
+		B52A12EB2490143400B8F3F6 /* IEpigram.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = IEpigram.hpp; sourceTree = "<group>"; };
+		B52A12EC2490143400B8F3F6 /* EpArgs.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EpArgs.hpp; sourceTree = "<group>"; };
+		B52A12ED2490143400B8F3F6 /* Epigram.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Epigram.hpp; sourceTree = "<group>"; };
+		B52A12EE2490143400B8F3F6 /* EpigramDump.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EpigramDump.cpp; sourceTree = "<group>"; };
+		B52A12F02490143400B8F3F6 /* JdTypeId.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdTypeId.hpp; sourceTree = "<group>"; };
+		B52A12F12490143400B8F3F6 /* JdUtils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdUtils.hpp; sourceTree = "<group>"; };
+		B52A12F22490143400B8F3F6 /* JdStdStringUtils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdStdStringUtils.hpp; sourceTree = "<group>"; };
+		B52A12F32490143400B8F3F6 /* JdVersion.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdVersion.hpp; sourceTree = "<group>"; };
+		B52A12F42490143400B8F3F6 /* JdUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdUtils.cpp; sourceTree = "<group>"; };
+		B52A12F52490143400B8F3F6 /* JdVersion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdVersion.cpp; sourceTree = "<group>"; };
+		B52A12F62490143400B8F3F6 /* JdStdStringUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdStdStringUtils.cpp; sourceTree = "<group>"; };
+		B52A12F72490143400B8F3F6 /* JdFlatString.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdFlatString.hpp; sourceTree = "<group>"; };
+		B52A12F82490143400B8F3F6 /* JdSignalSlot.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdSignalSlot.hpp; sourceTree = "<group>"; };
+		B52A12F92490143400B8F3F6 /* JdTypeId.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdTypeId.cpp; sourceTree = "<group>"; };
+		B52A12FB2490143400B8F3F6 /* JdTimer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdTimer.hpp; sourceTree = "<group>"; };
+		B52A12FC2490143400B8F3F6 /* JdStopwatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdStopwatch.cpp; sourceTree = "<group>"; };
+		B52A12FD2490143400B8F3F6 /* IJdPlatform.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = IJdPlatform.hpp; sourceTree = "<group>"; };
+		B52A12FF2490143400B8F3F6 /* JdiOSPlatform.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JdiOSPlatform.mm; sourceTree = "<group>"; };
+		B52A13002490143400B8F3F6 /* JdiOSPlatform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JdiOSPlatform.h; sourceTree = "<group>"; };
+		B52A13022490143400B8F3F6 /* JdMacPlatform.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JdMacPlatform.mm; sourceTree = "<group>"; };
+		B52A13032490143400B8F3F6 /* JdMacPlatform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JdMacPlatform.h; sourceTree = "<group>"; };
+		B52A13042490143400B8F3F6 /* JdTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdTimer.cpp; sourceTree = "<group>"; };
+		B52A13052490143400B8F3F6 /* JdStopwatch.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdStopwatch.hpp; sourceTree = "<group>"; };
+		B52A13072490143400B8F3F6 /* JdThreadPort.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdThreadPort.cpp; sourceTree = "<group>"; };
+		B52A13082490143400B8F3F6 /* JdFiber.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdFiber.hpp; sourceTree = "<group>"; };
+		B52A13092490143400B8F3F6 /* JdAtomicBankSwitch.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdAtomicBankSwitch.hpp; sourceTree = "<group>"; };
+		B52A130A2490143400B8F3F6 /* JdThread.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdThread.hpp; sourceTree = "<group>"; };
+		B52A130B2490143400B8F3F6 /* JdAtomicBankSwitch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdAtomicBankSwitch.cpp; sourceTree = "<group>"; };
+		B52A130C2490143400B8F3F6 /* JdThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdThread.cpp; sourceTree = "<group>"; };
+		B52A130D2490143400B8F3F6 /* JdThreadPort.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdThreadPort.hpp; sourceTree = "<group>"; };
+		B52A130E2490143400B8F3F6 /* JdMessageQueue.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdMessageQueue.hpp; sourceTree = "<group>"; };
+		B52A130F2490143400B8F3F6 /* JdFiber.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdFiber.cpp; sourceTree = "<group>"; };
+		B52A13102490143400B8F3F6 /* JdSemaphore.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdSemaphore.hpp; sourceTree = "<group>"; };
+		B52A13122490143400B8F3F6 /* JdTable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdTable.hpp; sourceTree = "<group>"; };
 		B562BD761FB55D9500FDE277 /* test.epigram.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = test.epigram.cpp; path = ../../test/test.epigram.cpp; sourceTree = "<group>"; };
-		B580E23D1FB64C8B00DD177B /* JdTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JdTimer.cpp; path = system/JdTimer.cpp; sourceTree = "<group>"; };
-		B580E23E1FB64C8B00DD177B /* JdTimer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JdTimer.hpp; path = system/JdTimer.hpp; sourceTree = "<group>"; };
-		B580E23F1FB64C8B00DD177B /* JdStopwatch.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JdStopwatch.hpp; path = system/JdStopwatch.hpp; sourceTree = "<group>"; };
 		B580E2411FB64CF100DD177B /* libboost_timer-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_timer-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_timer-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
 		B580E2421FB64CF100DD177B /* libboost_chrono-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_chrono-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_chrono-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
 		B580E2451FB64D0A00DD177B /* libboost_system-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_system-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_system-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
@@ -126,21 +172,11 @@
 		B583D0C01FA97F0D007C07F0 /* libboost_context-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_context-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_context-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
 		B583D0C21FA97F20007C07F0 /* city.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = city.o; path = ../../external/cityhash/src/city.o; sourceTree = "<group>"; };
 		B584EF391FA97E2E00A8B431 /* epitest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = epitest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B5906271204A11EC00E3D77D /* JdMessageQueue.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JdMessageQueue.hpp; path = concurrent/JdMessageQueue.hpp; sourceTree = "<group>"; };
-		B5906272204A13C900E3D77D /* JdThreadPort.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JdThreadPort.hpp; path = concurrent/JdThreadPort.hpp; sourceTree = "<group>"; };
-		B5C695B32029E317001DC0F3 /* JdTable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JdTable.hpp; path = debug/JdTable.hpp; sourceTree = "<group>"; };
 		B5C695B82029E42A001DC0F3 /* epilog */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = epilog; sourceTree = BUILT_PRODUCTS_DIR; };
-		B5C695C02029E4AA001DC0F3 /* EpilogCliServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EpilogCliServer.cpp; path = ../../source/trace/server/EpilogCliServer.cpp; sourceTree = "<group>"; };
-		B5C695C12029E4AA001DC0F3 /* epilog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = epilog.cpp; path = ../../source/trace/server/epilog.cpp; sourceTree = "<group>"; };
-		B5C695C22029E4AA001DC0F3 /* EpilogCliServer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = EpilogCliServer.hpp; path = ../../source/trace/server/EpilogCliServer.hpp; sourceTree = "<group>"; };
 		B5C695CA202A1553001DC0F3 /* libboost_date_time-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_date_time-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_date_time-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
 		B5C695CB202A1553001DC0F3 /* libboost_program_options-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_program_options-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_program_options-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
 		B5C695CC202A1553001DC0F3 /* libboost_thread-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_thread-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_thread-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
 		B5D09CED20AE740C0036BB57 /* libepilogger.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libepilogger.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		B5DB7A5E20AE3E6500FB25CD /* EpilogLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EpilogLib.cpp; path = trace/EpilogLib.cpp; sourceTree = "<group>"; };
-		B5DB7A6120AE3E9E00FB25CD /* JdMacPlatform.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = JdMacPlatform.mm; path = system/mac/JdMacPlatform.mm; sourceTree = "<group>"; };
-		B5DB7A6320AE3EC300FB25CD /* EpigramAppleUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EpigramAppleUtil.cpp; path = serialization/EpigramAppleUtil.cpp; sourceTree = "<group>"; };
-		B5DB7A6520AE3F4700FB25CD /* Epilog.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Epilog.hpp; path = trace/Epilog.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -183,51 +219,186 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		B583D0951FA97E8F007C07F0 /* source */ = {
+		B52A12C02490143400B8F3F6 /* source */ = {
 			isa = PBXGroup;
 			children = (
-				B5DB7A6520AE3F4700FB25CD /* Epilog.hpp */,
-				B5DB7A6320AE3EC300FB25CD /* EpigramAppleUtil.cpp */,
-				B5DB7A6120AE3E9E00FB25CD /* JdMacPlatform.mm */,
-				B5DB7A5E20AE3E6500FB25CD /* EpilogLib.cpp */,
-				B5906272204A13C900E3D77D /* JdThreadPort.hpp */,
-				B5906271204A11EC00E3D77D /* JdMessageQueue.hpp */,
-				B5C695B32029E317001DC0F3 /* JdTable.hpp */,
-				B580E23F1FB64C8B00DD177B /* JdStopwatch.hpp */,
-				B580E23D1FB64C8B00DD177B /* JdTimer.cpp */,
-				B580E23E1FB64C8B00DD177B /* JdTimer.hpp */,
-				B53878321FB54F3A0071B682 /* JdUUID.cpp */,
-				B53878311FB54F2C0071B682 /* JdUUID.hpp */,
-				B538782E1FB54F040071B682 /* EpigramDump.cpp */,
-				B538782F1FB54F040071B682 /* EpigramDump.hpp */,
-				B538782D1FB54EE70071B682 /* EpArgs.hpp */,
-				B538782C1FB54ECD0071B682 /* Epigram.hpp */,
-				B538782B1FB54EC40071B682 /* IEpigram.hpp */,
-				B53878281FB54EB70071B682 /* JdTypeId.cpp */,
-				B53878291FB54EB70071B682 /* JdTypeId.hpp */,
-				B53878261FB54EA30071B682 /* JdUtils.cpp */,
-				B53878251FB54EA30071B682 /* JdUtils.hpp */,
-				B53878241FB54E920071B682 /* JdFlatString.hpp */,
-				B53878231FB54E850071B682 /* EpSerializationRaw.hpp */,
-				B53878221FB54E5C0071B682 /* JdNucleus.hpp */,
-				B53878201FB54E410071B682 /* JdStdStringUtils.cpp */,
-				B538781F1FB54E410071B682 /* JdStdStringUtils.hpp */,
-				B53878161FB54E160071B682 /* JdAssert.cpp */,
-				B53878151FB54E160071B682 /* JdAssert.hpp */,
-				B53878141FB54E160071B682 /* JdConfig.cpp */,
-				B538781A1FB54E170071B682 /* JdConfig.hpp */,
-				B53878181FB54E160071B682 /* JdCore.cpp */,
-				B53878131FB54E160071B682 /* JdCore.hpp */,
-				B53878121FB54E160071B682 /* JdCoreL2.cpp */,
-				B53878171FB54E160071B682 /* JdCoreL2.hpp */,
-				B53878111FB54E160071B682 /* JdEnum.hpp */,
-				B53878191FB54E170071B682 /* JdResult.hpp */,
-				B538780F1FB54D550071B682 /* JdFiber.cpp */,
-				B538780E1FB54D550071B682 /* JdFiber.hpp */,
+				B52A12C12490143400B8F3F6 /* trace */,
+				B52A12CC2490143400B8F3F6 /* core */,
+				B52A12D92490143400B8F3F6 /* structures */,
+				B52A12DD2490143400B8F3F6 /* hash */,
+				B52A12E22490143400B8F3F6 /* gestalt */,
+				B52A12E42490143400B8F3F6 /* serialization */,
+				B52A12EF2490143400B8F3F6 /* utils */,
+				B52A12FA2490143400B8F3F6 /* system */,
+				B52A13062490143400B8F3F6 /* concurrent */,
+				B52A13112490143400B8F3F6 /* debug */,
 			);
 			name = source;
 			path = ../../source;
-			sourceTree = SOURCE_ROOT;
+			sourceTree = "<group>";
+		};
+		B52A12C12490143400B8F3F6 /* trace */ = {
+			isa = PBXGroup;
+			children = (
+				B52A12C22490143400B8F3F6 /* Epilog.hpp */,
+				B52A12C32490143400B8F3F6 /* EpilogStructs.hpp */,
+				B52A12C42490143400B8F3F6 /* EpilogLib.hpp */,
+				B52A12C52490143400B8F3F6 /* Epilog_ObjC.h */,
+				B52A12C62490143400B8F3F6 /* server */,
+				B52A12CA2490143400B8F3F6 /* EpilogLib.cpp */,
+				B52A12CB2490143400B8F3F6 /* Epilog_Cpp.hpp */,
+			);
+			path = trace;
+			sourceTree = "<group>";
+		};
+		B52A12C62490143400B8F3F6 /* server */ = {
+			isa = PBXGroup;
+			children = (
+				B52A12C72490143400B8F3F6 /* EpilogCliServer.hpp */,
+				B52A12C82490143400B8F3F6 /* epilog.cpp */,
+				B52A12C92490143400B8F3F6 /* EpilogCliServer.cpp */,
+			);
+			path = server;
+			sourceTree = "<group>";
+		};
+		B52A12CC2490143400B8F3F6 /* core */ = {
+			isa = PBXGroup;
+			children = (
+				B52A12CD2490143400B8F3F6 /* JdConfig.cpp */,
+				B52A12CE2490143400B8F3F6 /* JdAssert.hpp */,
+				B52A12CF2490143400B8F3F6 /* JdCoreL2.hpp */,
+				B52A12D02490143400B8F3F6 /* JdNucleus.hpp */,
+				B52A12D12490143400B8F3F6 /* JdCore.hpp */,
+				B52A12D22490143400B8F3F6 /* JdCoreL2.cpp */,
+				B52A12D32490143400B8F3F6 /* JdCore.cpp */,
+				B52A12D42490143400B8F3F6 /* JdTypeTraits.hpp */,
+				B52A12D52490143400B8F3F6 /* JdResult.hpp */,
+				B52A12D62490143400B8F3F6 /* JdEnum.hpp */,
+				B52A12D72490143400B8F3F6 /* JdConfig.hpp */,
+				B52A12D82490143400B8F3F6 /* JdAssert.cpp */,
+			);
+			path = core;
+			sourceTree = "<group>";
+		};
+		B52A12D92490143400B8F3F6 /* structures */ = {
+			isa = PBXGroup;
+			children = (
+				B52A12DA2490143400B8F3F6 /* JdGraph.hpp */,
+				B52A12DB2490143400B8F3F6 /* JdCache.hpp */,
+				B52A12DC2490143400B8F3F6 /* JdList.hpp */,
+			);
+			path = structures;
+			sourceTree = "<group>";
+		};
+		B52A12DD2490143400B8F3F6 /* hash */ = {
+			isa = PBXGroup;
+			children = (
+				B52A12DE2490143400B8F3F6 /* JdUUID.cpp */,
+				B52A12DF2490143400B8F3F6 /* JdRandom.hpp */,
+				B52A12E02490143400B8F3F6 /* JdUUID.hpp */,
+				B52A12E12490143400B8F3F6 /* JdRandom.cpp */,
+			);
+			path = hash;
+			sourceTree = "<group>";
+		};
+		B52A12E22490143400B8F3F6 /* gestalt */ = {
+			isa = PBXGroup;
+			children = (
+				B52A12E32490143400B8F3F6 /* M3Token.hpp */,
+			);
+			path = gestalt;
+			sourceTree = "<group>";
+		};
+		B52A12E42490143400B8F3F6 /* serialization */ = {
+			isa = PBXGroup;
+			children = (
+				B52A12E52490143400B8F3F6 /* EpigramDump.hpp */,
+				B52A12E62490143400B8F3F6 /* EpSerializationRaw.hpp */,
+				B52A12E72490143400B8F3F6 /* EpigramAppleUtil.h */,
+				B52A12E82490143400B8F3F6 /* EpigramAppleUtil.cpp */,
+				B52A12E92490143400B8F3F6 /* EpAttribute.hpp */,
+				B52A12EA2490143400B8F3F6 /* EpSerialization.hpp */,
+				B52A12EB2490143400B8F3F6 /* IEpigram.hpp */,
+				B52A12EC2490143400B8F3F6 /* EpArgs.hpp */,
+				B52A12ED2490143400B8F3F6 /* Epigram.hpp */,
+				B52A12EE2490143400B8F3F6 /* EpigramDump.cpp */,
+			);
+			path = serialization;
+			sourceTree = "<group>";
+		};
+		B52A12EF2490143400B8F3F6 /* utils */ = {
+			isa = PBXGroup;
+			children = (
+				B52A12F02490143400B8F3F6 /* JdTypeId.hpp */,
+				B52A12F12490143400B8F3F6 /* JdUtils.hpp */,
+				B52A12F22490143400B8F3F6 /* JdStdStringUtils.hpp */,
+				B52A12F32490143400B8F3F6 /* JdVersion.hpp */,
+				B52A12F42490143400B8F3F6 /* JdUtils.cpp */,
+				B52A12F52490143400B8F3F6 /* JdVersion.cpp */,
+				B52A12F62490143400B8F3F6 /* JdStdStringUtils.cpp */,
+				B52A12F72490143400B8F3F6 /* JdFlatString.hpp */,
+				B52A12F82490143400B8F3F6 /* JdSignalSlot.hpp */,
+				B52A12F92490143400B8F3F6 /* JdTypeId.cpp */,
+			);
+			path = utils;
+			sourceTree = "<group>";
+		};
+		B52A12FA2490143400B8F3F6 /* system */ = {
+			isa = PBXGroup;
+			children = (
+				B52A12FB2490143400B8F3F6 /* JdTimer.hpp */,
+				B52A12FC2490143400B8F3F6 /* JdStopwatch.cpp */,
+				B52A12FD2490143400B8F3F6 /* IJdPlatform.hpp */,
+				B52A12FE2490143400B8F3F6 /* iOS */,
+				B52A13012490143400B8F3F6 /* mac */,
+				B52A13042490143400B8F3F6 /* JdTimer.cpp */,
+				B52A13052490143400B8F3F6 /* JdStopwatch.hpp */,
+			);
+			path = system;
+			sourceTree = "<group>";
+		};
+		B52A12FE2490143400B8F3F6 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				B52A12FF2490143400B8F3F6 /* JdiOSPlatform.mm */,
+				B52A13002490143400B8F3F6 /* JdiOSPlatform.h */,
+			);
+			path = iOS;
+			sourceTree = "<group>";
+		};
+		B52A13012490143400B8F3F6 /* mac */ = {
+			isa = PBXGroup;
+			children = (
+				B52A13022490143400B8F3F6 /* JdMacPlatform.mm */,
+				B52A13032490143400B8F3F6 /* JdMacPlatform.h */,
+			);
+			path = mac;
+			sourceTree = "<group>";
+		};
+		B52A13062490143400B8F3F6 /* concurrent */ = {
+			isa = PBXGroup;
+			children = (
+				B52A13072490143400B8F3F6 /* JdThreadPort.cpp */,
+				B52A13082490143400B8F3F6 /* JdFiber.hpp */,
+				B52A13092490143400B8F3F6 /* JdAtomicBankSwitch.hpp */,
+				B52A130A2490143400B8F3F6 /* JdThread.hpp */,
+				B52A130B2490143400B8F3F6 /* JdAtomicBankSwitch.cpp */,
+				B52A130C2490143400B8F3F6 /* JdThread.cpp */,
+				B52A130D2490143400B8F3F6 /* JdThreadPort.hpp */,
+				B52A130E2490143400B8F3F6 /* JdMessageQueue.hpp */,
+				B52A130F2490143400B8F3F6 /* JdFiber.cpp */,
+				B52A13102490143400B8F3F6 /* JdSemaphore.hpp */,
+			);
+			path = concurrent;
+			sourceTree = "<group>";
+		};
+		B52A13112490143400B8F3F6 /* debug */ = {
+			isa = PBXGroup;
+			children = (
+				B52A13122490143400B8F3F6 /* JdTable.hpp */,
+			);
+			path = debug;
+			sourceTree = "<group>";
 		};
 		B583D0BF1FA97F0D007C07F0 /* Frameworks */ = {
 			isa = PBXGroup;
@@ -247,8 +418,7 @@
 		B584EF301FA97E2E00A8B431 = {
 			isa = PBXGroup;
 			children = (
-				B5C695BF2029E44C001DC0F3 /* epilog */,
-				B583D0951FA97E8F007C07F0 /* source */,
+				B52A12C02490143400B8F3F6 /* source */,
 				B583D0921FA97E85007C07F0 /* doctest.hpp */,
 				B583D0931FA97E85007C07F0 /* test.core.cpp */,
 				B562BD761FB55D9500FDE277 /* test.epigram.cpp */,
@@ -265,16 +435,6 @@
 				B5D09CED20AE740C0036BB57 /* libepilogger.dylib */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		B5C695BF2029E44C001DC0F3 /* epilog */ = {
-			isa = PBXGroup;
-			children = (
-				B5C695C12029E4AA001DC0F3 /* epilog.cpp */,
-				B5C695C02029E4AA001DC0F3 /* EpilogCliServer.cpp */,
-				B5C695C22029E4AA001DC0F3 /* EpilogCliServer.hpp */,
-			);
-			name = epilog;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -389,19 +549,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B52A13192490143400B8F3F6 /* JdAssert.cpp in Sources */,
+				B52A131F2490143400B8F3F6 /* JdVersion.cpp in Sources */,
+				B52A13292490143400B8F3F6 /* JdFiber.cpp in Sources */,
+				B52A131C2490143400B8F3F6 /* EpigramAppleUtil.cpp in Sources */,
+				B52A13242490143400B8F3F6 /* JdMacPlatform.mm in Sources */,
+				B52A13272490143400B8F3F6 /* JdAtomicBankSwitch.cpp in Sources */,
+				B52A13212490143400B8F3F6 /* JdTypeId.cpp in Sources */,
+				B52A131B2490143400B8F3F6 /* JdRandom.cpp in Sources */,
+				B52A13202490143400B8F3F6 /* JdStdStringUtils.cpp in Sources */,
+				B52A13282490143400B8F3F6 /* JdThread.cpp in Sources */,
+				B52A13182490143400B8F3F6 /* JdCore.cpp in Sources */,
+				B52A13222490143400B8F3F6 /* JdStopwatch.cpp in Sources */,
 				B562BD771FB55D9500FDE277 /* test.epigram.cpp in Sources */,
-				B53878211FB54E410071B682 /* JdStdStringUtils.cpp in Sources */,
-				B53878101FB54D550071B682 /* JdFiber.cpp in Sources */,
-				B53878331FB54F3A0071B682 /* JdUUID.cpp in Sources */,
-				B538781D1FB54E170071B682 /* JdAssert.cpp in Sources */,
-				B53878301FB54F040071B682 /* EpigramDump.cpp in Sources */,
-				B538782A1FB54EB70071B682 /* JdTypeId.cpp in Sources */,
-				B53878271FB54EA40071B682 /* JdUtils.cpp in Sources */,
-				B538781C1FB54E170071B682 /* JdConfig.cpp in Sources */,
-				B538781B1FB54E170071B682 /* JdCoreL2.cpp in Sources */,
-				B538781E1FB54E170071B682 /* JdCore.cpp in Sources */,
-				B580E2401FB64C8B00DD177B /* JdTimer.cpp in Sources */,
+				B52A13252490143400B8F3F6 /* JdTimer.cpp in Sources */,
+				B52A13172490143400B8F3F6 /* JdCoreL2.cpp in Sources */,
+				B52A131D2490143400B8F3F6 /* EpigramDump.cpp in Sources */,
 				B583D0941FA97E85007C07F0 /* test.core.cpp in Sources */,
+				B52A13262490143400B8F3F6 /* JdThreadPort.cpp in Sources */,
+				B52A131A2490143400B8F3F6 /* JdUUID.cpp in Sources */,
+				B52A13162490143400B8F3F6 /* JdConfig.cpp in Sources */,
+				B52A131E2490143400B8F3F6 /* JdUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -409,11 +577,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B5C695D0202A1612001DC0F3 /* JdAssert.cpp in Sources */,
-				B5C695D1202A161E001DC0F3 /* JdConfig.cpp in Sources */,
-				B5C695C32029E4AA001DC0F3 /* EpilogCliServer.cpp in Sources */,
-				B5C695C42029E4AA001DC0F3 /* epilog.cpp in Sources */,
-				B5C695D2202A164F001DC0F3 /* JdCore.cpp in Sources */,
+				B52A13352490153700B8F3F6 /* JdAssert.cpp in Sources */,
+				B52A13362490165200B8F3F6 /* JdConfig.cpp in Sources */,
+				B52A132A2490148300B8F3F6 /* epilog.cpp in Sources */,
+				B52A132B2490148600B8F3F6 /* EpilogCliServer.cpp in Sources */,
+				B52A13372490165B00B8F3F6 /* JdCore.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -421,15 +589,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B5D09CFC20AE74490036BB57 /* JdMacPlatform.mm in Sources */,
-				B5D09D0120AE748C0036BB57 /* JdConfig.cpp in Sources */,
-				B5D09CFD20AE74580036BB57 /* JdAssert.cpp in Sources */,
-				B5D09CFE20AE74770036BB57 /* EpigramAppleUtil.cpp in Sources */,
-				B5D09D0220AE74910036BB57 /* JdCore.cpp in Sources */,
-				B5D09D0720AE74C60036BB57 /* JdCoreL2.cpp in Sources */,
-				B5D09CFA20AE74310036BB57 /* JdTimer.cpp in Sources */,
-				B5D09CF820AE741A0036BB57 /* EpilogLib.cpp in Sources */,
-				B5D09D0020AE74810036BB57 /* JdUUID.cpp in Sources */,
+				B52A132F249014C400B8F3F6 /* JdUUID.cpp in Sources */,
+				B52A132C2490149300B8F3F6 /* EpilogLib.cpp in Sources */,
+				B52A13342490152600B8F3F6 /* JdConfig.cpp in Sources */,
+				B52A13332490150800B8F3F6 /* JdCoreL2.cpp in Sources */,
+				B52A1331249014E900B8F3F6 /* EpigramAppleUtil.cpp in Sources */,
+				B52A132E249014B300B8F3F6 /* JdTimer.cpp in Sources */,
+				B52A13322490150000B8F3F6 /* JdCore.cpp in Sources */,
+				B52A132D249014A900B8F3F6 /* JdAssert.cpp in Sources */,
+				B52A1330249014DB00B8F3F6 /* JdMacPlatform.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -442,7 +610,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -485,7 +653,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../external/boost/",
+					"$(SRCROOT)/../../../boost/",
 					"$(SRCROOT)/../../external/cityhash/src",
 					"$(SRCROOT)/../../external/doctest/doctest",
 					"$(SRCROOT)/../../source/**",
@@ -504,7 +672,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -541,7 +709,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../external/boost/",
+					"$(SRCROOT)/../../../boost/",
 					"$(SRCROOT)/../../external/cityhash/src",
 					"$(SRCROOT)/../../external/doctest/doctest",
 					"$(SRCROOT)/../../source/**",
@@ -556,8 +724,13 @@
 		B584EF411FA97E2E00A8B431 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../boost/",
+					"$(SRCROOT)/../../external/cityhash/src",
+					"$(SRCROOT)/../../external/doctest",
+					"$(SRCROOT)/../../source/**",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -565,8 +738,13 @@
 		B584EF421FA97E2E00A8B431 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../boost/",
+					"$(SRCROOT)/../../external/cityhash/src",
+					"$(SRCROOT)/../../external/doctest",
+					"$(SRCROOT)/../../source/**",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
