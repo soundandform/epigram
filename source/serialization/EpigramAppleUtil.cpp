@@ -8,7 +8,7 @@
 
 #include "EpigramAppleUtil.h"
 
-CFDictionaryRef EpMsgToCFDictionary (EpDelivery i_msg)
+CFDictionaryRef EpigramToCFDictionary (EpDelivery i_msg)
 {
 	Epigram msg = i_msg;
 	
@@ -66,7 +66,7 @@ CFDictionaryRef EpMsgToCFDictionary (EpDelivery i_msg)
 		}
 		
 		if (++count == c_maxKeyValuePairs)
-			d_jdThrow ("EpMsgToCFDictionary overflow");
+			d_jdThrow ("EpigramToCFDictionary overflow");
 	}
 	
 	CFDictionaryRef dictionary = CFDictionaryCreate (NULL, (const void **) keys, (const void **) values, count, & kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);

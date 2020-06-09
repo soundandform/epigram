@@ -272,7 +272,7 @@ void JdMacPlatform::Notification::PostNotification (cstr_t i_name, JdId i_zone, 
 	
 	CFDictionaryRef dictionary = nullptr;
 	if (i_message)
-		dictionary = EpMsgToCFDictionary (i_message);
+		dictionary = EpigramToCFDictionary (i_message);
 	
 	NSString * name = [NSString stringWithUTF8String: zonePlusName.c_str()];
 	NSNotification * notification = [NSNotification notificationWithName: name object: nil userInfo: (__bridge NSDictionary *) dictionary];

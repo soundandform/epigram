@@ -14,7 +14,7 @@
 #include "Epigram.hpp"
 #include "JdUUID.hpp"
 
-CFDictionaryRef EpMsgToCFDictionary (EpDelivery i_msg);
+CFDictionaryRef EpigramToCFDictionary (EpDelivery i_msg);
 
 
 #endif /* defined(__Jigidesign__EpigramAppleUtil__) */

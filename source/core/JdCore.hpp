@@ -15,10 +15,15 @@
 #ifndef Jigidesign_JdCore_h
 #define Jigidesign_JdCore_h
 
-#ifndef d_objC
-#	define d_objC(STUFF) STUFF
-#endif
-
+#	ifndef d_objC
+#		if d_objCVersion
+#			define d_objC_(OBJ,VERSION)		OBJ ## _v ## VERSION
+#			define d_objC__(OBJ,VERSION)	d_objC_ (OBJ, VERSION)
+#			define d_objC(OBJ)				d_objC__ (OBJ, d_objCVersion)
+#		else
+#			define d_objC(OBJ) OBJ
+#		endif
+#	endif
 
 #include <iostream>
 #include <sstream>
