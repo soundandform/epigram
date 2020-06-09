@@ -9,7 +9,7 @@
 #ifndef __Jigidesign__JdMacPlatform__
 #define __Jigidesign__JdMacPlatform__
 
-#include "IJdPlatform.h"
+#include "IJdPlatform.hpp"
 #include "JdCore.hpp"
 
 #include <string>
