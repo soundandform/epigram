@@ -41,6 +41,7 @@
 		B52A13352490153700B8F3F6 /* JdAssert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12D82490143400B8F3F6 /* JdAssert.cpp */; };
 		B52A13362490165200B8F3F6 /* JdConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12CD2490143400B8F3F6 /* JdConfig.cpp */; };
 		B52A13372490165B00B8F3F6 /* JdCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12D32490143400B8F3F6 /* JdCore.cpp */; };
+		B530F95C2490212B009AB853 /* test.modules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B530F95B2490212B009AB853 /* test.modules.cpp */; };
 		B562BD771FB55D9500FDE277 /* test.epigram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B562BD761FB55D9500FDE277 /* test.epigram.cpp */; };
 		B580E2431FB64CF100DD177B /* libboost_timer-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2411FB64CF100DD177B /* libboost_timer-clang-darwin42-mt-x64-1_67.a */; };
 		B580E2441FB64CF100DD177B /* libboost_chrono-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2421FB64CF100DD177B /* libboost_chrono-clang-darwin42-mt-x64-1_67.a */; };
@@ -163,6 +164,7 @@
 		B52A130F2490143400B8F3F6 /* JdFiber.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdFiber.cpp; sourceTree = "<group>"; };
 		B52A13102490143400B8F3F6 /* JdSemaphore.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdSemaphore.hpp; sourceTree = "<group>"; };
 		B52A13122490143400B8F3F6 /* JdTable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdTable.hpp; sourceTree = "<group>"; };
+		B530F95B2490212B009AB853 /* test.modules.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = test.modules.cpp; path = ../../test/test.modules.cpp; sourceTree = "<group>"; };
 		B562BD761FB55D9500FDE277 /* test.epigram.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = test.epigram.cpp; path = ../../test/test.epigram.cpp; sourceTree = "<group>"; };
 		B580E2411FB64CF100DD177B /* libboost_timer-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_timer-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_timer-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
 		B580E2421FB64CF100DD177B /* libboost_chrono-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_chrono-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_chrono-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
@@ -418,6 +420,7 @@
 		B584EF301FA97E2E00A8B431 = {
 			isa = PBXGroup;
 			children = (
+				B530F95B2490212B009AB853 /* test.modules.cpp */,
 				B52A12C02490143400B8F3F6 /* source */,
 				B583D0921FA97E85007C07F0 /* doctest.hpp */,
 				B583D0931FA97E85007C07F0 /* test.core.cpp */,
@@ -555,6 +558,7 @@
 				B52A131C2490143400B8F3F6 /* EpigramAppleUtil.cpp in Sources */,
 				B52A13242490143400B8F3F6 /* JdMacPlatform.mm in Sources */,
 				B52A13272490143400B8F3F6 /* JdAtomicBankSwitch.cpp in Sources */,
+				B530F95C2490212B009AB853 /* test.modules.cpp in Sources */,
 				B52A13212490143400B8F3F6 /* JdTypeId.cpp in Sources */,
 				B52A131B2490143400B8F3F6 /* JdRandom.cpp in Sources */,
 				B52A13202490143400B8F3F6 /* JdStdStringUtils.cpp in Sources */,
