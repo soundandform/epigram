@@ -124,7 +124,7 @@ d_jdTrueFalse (MessagePort, waitForMessages, doNotWaitForMessages)
 // strategies: i think just adding a comsumer mutex would do the trick and/or mutiple channels of MessageQueues
 
 template <typename T>
-class JdMessageQueue
+class JdMessageQueue // (v2)
 {
 	public:
 	
@@ -177,10 +177,6 @@ class JdMessageQueue
 				break;
 			
 			this_thread::yield ();
-			// sleep (0);
-			// NOTE: for higher-performance throughput (nothing really ever needed for Jigi probably.)
-			// but this could spin, then backoff to a sleep/yield
-			// dunnno the diff between sleep (0) & yield... they may be equivalent
 			
 			if (++tries > 100000000)
 				d_jdThrow ("Deadlock. Or, more likely, you've blown out the queue. Each sequence (lock) can push up to 512 transactions (calls).");
@@ -195,7 +191,7 @@ class JdMessageQueue
 	{
 		m_pathway.commitSequence.Update (i_sequence + 1);	// update returns when all previous sequence numbers have been updated
 		
-		i32 previous = (i32) atomic_inc32 ((u32 *) &m_signalCount.value);
+		i32 previous = (i32) atomic_inc32 ((u32 *) & m_signalCount.value);
 		if (previous < 0)
 			m_signal.Signal ();
 	}
@@ -261,7 +257,7 @@ class JdMessageQueue
 		
 		if (m_acquiredPending == 0) // no previous timeout occurred...
 		{
-			available = atomic_read32 ((u32 *) &m_signalCount.value);	// available always monotonically increases from this perspective as the consumer
+			available = atomic_read32 ((u32 *) & m_signalCount.value);	// available always monotonically increases from this perspective as the consumer
 			
 			if (available == 0)
 			{
@@ -273,7 +269,7 @@ class JdMessageQueue
 			
 			available = std::min (available, i_maxMessagesToGrab);
 			
-			i32 previous = (i32) atomic_add32 ((u32 *) &m_signalCount.value, -available);
+			i32 previous = (i32) atomic_add32 ((u32 *) & m_signalCount.value, -available);
 			
 			if (previous < available)
 			{
@@ -350,6 +346,52 @@ class JdMessageQueue
 	JdThreadPortPathway <T>						m_pathway;
 };
 
+
+template <typename T>
+struct JdMpMcQueueT
+{
+	void Push (T && i_value)
+	{
+		lock_guard <mutex> lock (m_mutex);
+		m_queue.push_front (i_value);
+	}
+	
+	T Pop ()
+	{
+		unique_lock <mutex> lock (m_mutex);
+		
+		while (m_queue.empty ())
+			m_condition.wait (lock);
+		
+		T back = m_queue.back ();
+		m_queue.pop_back ();
+		
+		return back;
+	}
+	
+	
+	bool Pop (T & o_value, u32 i_microsecondsWait)
+	{
+		unique_lock <mutex> lock (m_mutex);
+		
+		while (m_queue.empty ())
+		{
+			auto waitTime = std::chrono::microseconds (i_microsecondsWait);
+			
+			if (m_condition.wait_for (lock, waitTime) == std::cv_status::timeout)
+				return false;
+		}
+		
+		o_value = m_queue.back ();
+		m_queue.pop_back ();
+		
+		return true;
+	}
+	
+	deque <T>									m_queue;
+	mutex										m_mutex;
+	condition_variable							m_condition;
+};
 
 
 // Hmm... does packetizing has more overhead than just pushing single values through the already efficient MessageQueue?
