@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include "JdVersion.hpp"
 
-bool operator == (const JdVersion &i_versionA, const JdVersion &i_versionB)
+bool operator == (JdVersionRef i_versionA, JdVersionRef i_versionB)
 {
 	if (i_versionA.major != i_versionB.major) return false;
 	
@@ -25,7 +25,7 @@ bool operator == (const JdVersion &i_versionA, const JdVersion &i_versionB)
 }
 
 
-bool operator >= (const JdVersion &i_versionA, const JdVersion &i_versionB)
+bool operator >= (JdVersionRef i_versionA, JdVersionRef i_versionB)
 {
 	if (i_versionA.major < i_versionB.major && i_versionB.major != c_jdVersionNumDontCare) return false;
 	
@@ -43,7 +43,7 @@ bool operator >= (const JdVersion &i_versionA, const JdVersion &i_versionB)
 }
 
 
-bool operator <= (const JdVersion &i_versionA, const JdVersion &i_versionB)
+bool operator <= (JdVersionRef i_versionA, JdVersionRef i_versionB)
 {
 	if (i_versionA.major > i_versionB.major) return false;
 	
@@ -61,7 +61,7 @@ bool operator <= (const JdVersion &i_versionA, const JdVersion &i_versionB)
 }
 
 
-bool operator < (const JdVersion &i_versionA, const JdVersion &i_versionB)
+bool operator < (JdVersionRef i_versionA, JdVersionRef i_versionB)
 {
 	if (i_versionA.major >= i_versionB.major) return false;
 	
@@ -79,7 +79,7 @@ bool operator < (const JdVersion &i_versionA, const JdVersion &i_versionB)
 }
 
 
-std::ostream& operator << (std::ostream &output, const JdVersion &i_version)
+std::ostream& operator << (std::ostream &output, JdVersionRef i_version)
 {
 	if (i_version.major == c_jdVersionNumDontCare) output << "x";
 	else output << i_version.major;

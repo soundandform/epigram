@@ -350,9 +350,18 @@ class JdMessageQueue // (v2)
 template <typename T>
 struct JdMpMcQueueT
 {
+	void SetMaxNumElements (u32 i_numElements)
+	{
+		m_maxNumElements = i_numElements;
+	}
+	
 	void Push (T && i_value)
 	{
-		lock_guard <mutex> lock (m_mutex);
+		unique_lock <mutex> lock (m_mutex);
+		
+		while (m_queue.size () >= m_maxNumElements)
+			m_queueNotFull.wait (lock);
+
 		m_queue.push_front (i_value);
 	}
 	
@@ -361,7 +370,7 @@ struct JdMpMcQueueT
 		unique_lock <mutex> lock (m_mutex);
 		
 		while (m_queue.empty ())
-			m_condition.wait (lock);
+			m_queueNotEmpty.wait (lock);
 		
 		T back = m_queue.back ();
 		m_queue.pop_back ();
@@ -372,25 +381,36 @@ struct JdMpMcQueueT
 	
 	bool Pop (T & o_value, u32 i_microsecondsWait)
 	{
-		unique_lock <mutex> lock (m_mutex);
+		bool notifyProducer;
 		
-		while (m_queue.empty ())
 		{
-			auto waitTime = std::chrono::microseconds (i_microsecondsWait);
+			unique_lock <mutex> lock (m_mutex);
 			
-			if (m_condition.wait_for (lock, waitTime) == std::cv_status::timeout)
-				return false;
+			while (m_queue.empty ())
+			{
+				auto waitTime = std::chrono::microseconds (i_microsecondsWait);
+				
+				if (m_queueNotEmpty.wait_for (lock, waitTime) == std::cv_status::timeout)
+					return false;
+			}
+			
+			notifyProducer = (m_queue.size () == m_maxNumElements);
+
+			o_value = m_queue.back ();
+			m_queue.pop_back ();
 		}
 		
-		o_value = m_queue.back ();
-		m_queue.pop_back ();
-		
+		if (notifyProducer)
+			m_queueNotFull.notify_one ();
+
 		return true;
 	}
 	
 	deque <T>									m_queue;
 	mutex										m_mutex;
-	condition_variable							m_condition;
+	condition_variable							m_queueNotEmpty;
+	condition_variable							m_queueNotFull;
+	u32											m_maxNumElements		= numeric_limits <u32>::max ();
 };
 
 

@@ -92,11 +92,11 @@ struct JdVersion
 
 typedef const JdVersion & 	JdVersionRef;
 
-bool operator == (const JdVersion &i_versionA, const JdVersion &i_versionB);
-bool operator >= (const JdVersion &i_versionA, const JdVersion &i_versionB);
-bool operator <= (const JdVersion &i_versionA, const JdVersion &i_versionB);
-bool operator  < (const JdVersion &i_versionA, const JdVersion &i_versionB);
+bool operator == (JdVersionRef i_versionA, JdVersionRef i_versionB);
+bool operator >= (JdVersionRef i_versionA, JdVersionRef i_versionB);
+bool operator <= (JdVersionRef i_versionA, JdVersionRef i_versionB);
+bool operator  < (JdVersionRef i_versionA, JdVersionRef i_versionB);
 
-std::ostream & operator<< (std::ostream & output, const JdVersion & i_version);
+std::ostream & operator<< (std::ostream & output, JdVersionRef i_version);
 
 
