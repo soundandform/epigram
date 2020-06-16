@@ -14,7 +14,7 @@
 struct JdModuleId
 {
 	const u64 c_moduleIdFlag		= 0x8000000000000000;
-	const u64 c_namedInstanceFlag	= 0x4000000000000000;
+//	const u64 c_namedInstanceFlag	= 0x4000000000000000;
 
 	JdModuleId (const JdModuleId & i_id)
 	{
@@ -29,15 +29,15 @@ struct JdModuleId
 		m_id = c_moduleIdFlag | Jd::HashString64 (i_moduleName);
 	}
 	
-	bool		IsInstanceId	() const
-	{
-		return ((m_id & c_moduleIdFlag) == 0);
-	}
+//	bool		IsInstanceId	() const
+//	{
+//		return ((m_id & c_moduleIdFlag) == 0);
+//	}
 
-	bool		IsModuleId		() const
-	{
-		return (m_id & c_moduleIdFlag);
-	}
+//	bool		IsModuleId		() const
+//	{
+//		return (m_id & c_moduleIdFlag);
+//	}
 	
 	void		SetModuleId		(u64 i_id)
 	{
@@ -70,8 +70,8 @@ typedef const JdModuleId & JdIdRef;
 inline std::ostream & operator << (std::ostream & output, JdIdRef i_moduleId)
 {
 	char temp [64];
-	if (i_moduleId.IsInstanceId ()) output << "i.";
-	sprintf (temp, "%016llX", (u64) i_moduleId);
+//	if (i_moduleId.IsInstanceId ()) output << "i.";
+	sprintf (temp, "i:%016llX", (u64) i_moduleId);
 	output << temp;
 	return output;
 }

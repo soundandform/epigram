@@ -409,6 +409,12 @@ struct JdPreconditions
 #define type_def typedef typename
 #define type_if typedef typename std::conditional
 
+# if DEBUG
+#	define d_jdIfDebug(STUFF) STUFF
+# else
+#	define d_jdIfDebug(STUFF)
+# endif
+
 #endif
 
 
