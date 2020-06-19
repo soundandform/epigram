@@ -9,7 +9,8 @@
 #ifndef JdCircularAllocator_hpp
 #define JdCircularAllocator_hpp
 
-#include "JdCore.cpp"
+#include "JdCore.hpp"
+#include "JdAssert.hpp"
 #include <condition_variable>
 #include <mutex>
 
