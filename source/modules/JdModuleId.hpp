@@ -13,20 +13,21 @@
 
 struct JdModuleId
 {
-	const u64 c_moduleIdFlag		= 0x8000000000000000;
-//	const u64 c_namedInstanceFlag	= 0x4000000000000000;
+	static const u64 c_instanceIdMask		= std::numeric_limits <u64>::max () >> 3;	// top bit unused + 2 flag bits
+//	const u64 c_moduleIdFlag				= 1LL << 63;
+	static const u64 c_namedInstanceFlag	= 1LL << 61;
 
-	JdModuleId (const JdModuleId & i_id)
-	{
-		m_id = i_id.m_id;
-	}
+//	JdModuleId (const JdModuleId & i_id)
+//	{
+//		m_id = i_id.m_id;
+//	}
 	
 	JdModuleId () { }
 	JdModuleId (u64 i_id) : m_id (i_id) { }
 
 	JdModuleId (cstr_t i_moduleName)
 	{
-		m_id = c_moduleIdFlag | Jd::HashString64 (i_moduleName);
+		m_id = c_namedInstanceFlag | Jd::HashString64 (i_moduleName);
 	}
 	
 //	bool		IsInstanceId	() const
@@ -39,14 +40,14 @@ struct JdModuleId
 //		return (m_id & c_moduleIdFlag);
 //	}
 	
-	void		SetModuleId		(u64 i_id)
-	{
-		m_id = i_id | c_moduleIdFlag;
-	}
+//	void		SetModuleId		(u64 i_id)
+//	{
+//		m_id = i_id | c_moduleIdFlag;
+//	}
 	
 	operator u64				() const
 	{
-		return m_id & ~c_moduleIdFlag;
+		return m_id;// & ~c_moduleIdFlag;
 	}
 	
 	JdModuleId & operator =		(const JdModuleId & i_moduleId)
@@ -58,16 +59,16 @@ struct JdModuleId
 	static
 	JdModuleId		New			()
 	{
-		return JdModuleId (JdRandom::GetPositive <i64> ());
+		return JdModuleId (JdRandom::Get <u64> () & c_instanceIdMask);
 	}
 
 	protected:
-	u64			m_id				= 0;
+	u64				m_id		= 0;
 };
 
-typedef const JdModuleId & JdIdRef;
+typedef const JdModuleId & JdInstanceIdRef;
 
-inline std::ostream & operator << (std::ostream & output, JdIdRef i_moduleId)
+inline std::ostream & operator << (std::ostream & output, JdInstanceIdRef i_moduleId)
 {
 	char temp [64];
 //	if (i_moduleId.IsInstanceId ()) output << "i.";

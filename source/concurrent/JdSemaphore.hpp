@@ -17,11 +17,21 @@
 class JdSemaphore
 {
 	public:
-    explicit JdSemaphore (u32 i_initialCount = 0)
+    explicit JdSemaphore (u64 i_initialCount = 0)
 	:
 	m_count				(i_initialCount)
-    {
-    }
+    { }
+	
+	
+	void Lock ()
+	{
+		m_mutex.lock ();
+	}
+	
+	void Unlock ()
+	{
+		m_mutex.unlock ();
+	}
 	
     unsigned int GetCount() const //for debugging/testing only
     {
@@ -38,6 +48,7 @@ class JdSemaphore
             m_condition.notify_one ();
     }
 
+	
     void Wait ()
     {
         std::unique_lock <std::mutex> lock (m_mutex);
@@ -47,6 +58,19 @@ class JdSemaphore
 		
         --m_count;
     }
+
+	
+	void WaitAndRemainLocked ()
+	{
+		std::unique_lock <std::mutex> lock (m_mutex);
+		
+		while (m_count == 0)
+			m_condition.wait (lock);
+		
+		--m_count;
+		
+		lock.release ();
+	}
 
 	
 	void WaitAll ()
@@ -80,6 +104,29 @@ class JdSemaphore
 		else return false;
 	}
 
+	
+	bool TimedWaitAndRemainLocked (u32 i_microseconds)						// returns true if semaphore acquired
+	{
+		auto waitTime = std::chrono::microseconds (i_microseconds);
+		
+		std::unique_lock <std::mutex> lock (m_mutex);
+		
+		while (m_count == 0)
+		{
+			if (m_condition.wait_for (lock, waitTime) == std::cv_status::timeout)
+				return false;
+		}
+		
+		if (m_count)
+		{
+			--m_count;
+			
+			lock.release ();
+			
+			return true;
+		}
+		else return false;
+	}
 	
 	protected:
 

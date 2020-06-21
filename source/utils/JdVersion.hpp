@@ -19,7 +19,7 @@ const uint32_t c_jdRevisionNumDontCare = 0xffffffff;
 
 struct JdVersion
 {
-	u16		major		= 0;
+	u16		major		= c_jdVersionNumDontCare;
 	u16		minor		= c_jdVersionNumDontCare;
 	u32		revision	= c_jdRevisionNumDontCare;
 	
@@ -78,6 +78,15 @@ struct JdVersion
 	
 	JdVersion ()
 	{ }
+	
+	void SetToMaxMajor ()
+	{
+		if (major != c_jdVersionNumDontCare)
+		{
+			minor = 	c_jdVersionNumDontCare - 1;
+			revision = 	c_jdRevisionNumDontCare - 1;
+		}
+	}
 	
 	bool IsSet () const
 	{
