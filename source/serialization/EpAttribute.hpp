@@ -7,13 +7,11 @@
  *
  */
 
-#pragma once
+#ifndef __EpAttribute_hpp__
+#define __EpAttribute_hpp__
 
 #include <map>
-#include <string_view>
 
-#include "Epigram.hpp"
-#include "JdAssert.hpp"
 #include "JdTypeId.hpp"
 #include "EpArgs.hpp"
 
@@ -55,54 +53,12 @@ class EpAttributes
 	}
 	
 	protected://-------------------------------------------------------------------------
-	u8 GetTypeForName_ (const string & i_attributeName)
-	{
-		return m_attributes [i_attributeName].type;
-	}
+	u8 GetTypeForName_ (const string & i_attributeName);
+	string GetHashAttributeName_ (u64 i_hash);
+	void RegisterAttribute_ (cstr_t i_name, u8 i_typeId, stringRef_t);
+	void RegisterAttribute_ (cstr_t i_name, u8 i_typeId, u64 i_hash);
 	
-	string GetHashAttributeName_ (u64 i_hash)
-	{
-		for (auto & i : m_attributes)
-		{
-			if (i.second.hash == i_hash)
-				return i.first;
-		}
-		
-		return "<unregistered>";
-	}
-
-	void RegisterAttribute_ (cstr_t i_name, u8 i_typeId, stringRef_t)
-	{
-		RegisterAttribute_ (i_name, i_typeId, (u64) 0);
-	}
-	
-	void RegisterAttribute_ (cstr_t i_name, u8 i_typeId, u64 i_hash)
-	{
-		u8 type = m_attributes [i_name].type;
-		
-		if (type)
-		{
-			d_jdAssert (type == i_typeId, "attribute type collision");		// this should never happen, cause there'd be a class name collission first.
-		}
-		
-//		cout << "register: " << std::hex << i_hash << "  " << i_name << endl;
-		
-		m_attributes [i_name] = { i_hash, i_typeId };
-	}
-	
-	void Dump_ ()
-	{
-		for (auto i : m_attributes)
-		{
-			cout << i.second.type << ": ";
-			cout << i.first;
-			
-			if (i.second.hash)
-				cout << " (hash: 0x" << std::hex << i.second.hash << std::dec << ")";
-			
-			cout << endl;
-		}
-	}
+	void Dump_ ();
 	
 	struct Info
 	{
@@ -145,9 +101,8 @@ class EpHash32 : public Jd::TypedT <c_jdTypeId::hash>
 	public:
 	
 //	EpHash32 (cstr_t i_name) : m_key (CityHash32 (i_name, strlen (i_name))) {}
-	EpHash32 (cstr_t i_name) : m_key ((u32) std::hash <std::string_view> () (std::string_view (i_name, strlen (i_name)))) {}
-	
-	EpHash32 () {}
+	EpHash32 (cstr_t i_name);
+	EpHash32 ();
 	
 //	EpHash32 (const EpHash32 & i_value) : m_key (i_value.m_key) {}
 	
@@ -158,13 +113,14 @@ class EpHash32 : public Jd::TypedT <c_jdTypeId::hash>
 	u32 m_key;
 };
 
+
 class EpHash64 : public Jd::TypedT <c_jdTypeId::hash>
 {
 	public:
 	
 //	EpHash64 (cstr_t i_name) : m_key (CityHash64 (i_name, strlen (i_name))) {}
-	EpHash64 (cstr_t i_name) : m_key (std::hash <std::string_view> () (std::string_view (i_name, strlen (i_name)))) {}
-
+	EpHash64 (cstr_t i_name);
+	
 	EpHash64 () {}
 //	EpHash64 (const EpHash64 & i_value) : m_key (i_value.m_key) {}
 
@@ -223,3 +179,5 @@ template <typename T> using EpHash64Attribute = EpAttribute <EpHash64, T>;
 #define d_attribute_enum(ENUM,NAME)									d_attribute (u32, NAME)
 
 #define d_attributeWithDefault_i32(NAME, DEFAULT)					d_attributeWithDefault(i32, NAME, DEFAULT)
+
+#endif

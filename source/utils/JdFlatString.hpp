@@ -9,7 +9,7 @@
 #ifndef Jigidesign_JdFlatString_h
 #define Jigidesign_JdFlatString_h
 
-#if __APPLE__
+#if __OBJC__
 	#include <CoreFoundation/CoreFoundation.h>
 #endif
 
@@ -40,13 +40,14 @@ class JdFlatString
 		}
 	}
 	
-	#if __APPLE__
-	JdFlatString					(CFStringRef i_cfString)
-	{
-		CFStringGetCString (i_cfString, m_cstring, t_length, kCFStringEncodingMacRoman);
-	}
-	#endif
+//	#if __OBJC__
+//	JdFlatString					(CFStringRef i_cfString)
+//	{
+//		CFStringGetCString (i_cfString, m_cstring, t_length, kCFStringEncodingMacRoman);
+//	}
+//	#endif
 
+	
 	JdFlatString					(cstr_t i_start, cstr_t i_end)
 	{
 		size_t length = i_end - i_start;
@@ -155,12 +156,11 @@ class JdFlatString
 
 
 template <int t_length>
-std::ostream& operator<< (std::ostream &output, const JdFlatString<t_length> &i_string)
+std::ostream & operator << (std::ostream &output, const JdFlatString <t_length> & i_string)
 {
 	output << i_string.CString();
 	return output;
 }
-
 
 typedef JdFlatString <256>	JdString256;
 typedef JdFlatString <128>	JdString128;
@@ -169,16 +169,13 @@ typedef JdFlatString <32>	JdString32;
 
 
 #if __OBJC__
-#import <Foundation/NSString.h>
 
-struct JdString256ObjC : public JdString256
-{
-	JdString256ObjC (NSString * i_nsString)
-	:
-	JdString256		((__bridge CFStringRef) i_nsString)
+#	import <Foundation/NSString.h>
+
+	struct JdString256ObjC : public JdString256
 	{
-	}
-};
+		JdString256ObjC (NSString * i_nsString);
+	};
 
 #endif
 
