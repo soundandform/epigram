@@ -19,10 +19,10 @@
 
 #include <boost/uuid/uuid.hpp>
 
-#if __APPLE__
-	#include <objc/runtime.h>
-	#include <CoreFoundation/CoreFoundation.h>
-#endif
+//#if __APPLE__
+//	#include <objc/runtime.h>
+//	#include <CoreFoundation/CoreFoundation.h>
+//#endif
 
 
 class JdUUID : public Jd::TypedT <c_jdTypeId::uuid>
@@ -39,9 +39,9 @@ class JdUUID : public Jd::TypedT <c_jdTypeId::uuid>
 	explicit	JdUUID (const u8 * i_bytes);
 				JdUUID (const JdUUID & i_uuid);
 
-    #if __APPLE__
-				JdUUID (id);	// convert from a JdUid
-    #endif
+//    #if __APPLE__
+//				JdUUID (id);	// convert from a JdUid
+//    #endif
 	
 	protected:
 	JdUUID (bool);	// DEPRECATED: Use JdNewUUID

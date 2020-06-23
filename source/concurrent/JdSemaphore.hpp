@@ -40,7 +40,7 @@ class JdSemaphore
 	
     void Signal (u32 i_count = 1)
     {
-        std::unique_lock <std::mutex> lock (m_mutex);
+		unique_lock <mutex> lock (m_mutex);
 
 		m_count += i_count;
 		
@@ -51,8 +51,8 @@ class JdSemaphore
 	
     void Wait ()
     {
-        std::unique_lock <std::mutex> lock (m_mutex);
-        
+		unique_lock <mutex> lock (m_mutex);
+
 		while (m_count == 0)
 			m_condition.wait (lock);
 		
@@ -60,10 +60,39 @@ class JdSemaphore
     }
 
 	
+	bool Acquire ()
+	{
+		unique_lock <mutex> lock (m_mutex);
+		
+		if (m_count)
+		{
+			--m_count;
+			return true;
+		}
+		else return false;
+	}
+
+	bool AcquireAndRemainLocked ()
+	{
+		m_mutex.lock ();
+		
+		if (m_count)
+		{
+			--m_count;
+			return true;
+		}
+		else
+		{
+			m_mutex.unlock ();
+			return false;
+		}
+	}
+
+	
 	void WaitAndRemainLocked ()
 	{
-		std::unique_lock <std::mutex> lock (m_mutex);
-		
+		unique_lock <mutex> lock (m_mutex);
+
 		while (m_count == 0)
 			m_condition.wait (lock);
 		
@@ -75,8 +104,8 @@ class JdSemaphore
 	
 	void WaitAll ()
 	{
-		std::unique_lock <std::mutex> lock (m_mutex);
-		
+		unique_lock <mutex> lock (m_mutex);
+
 		while (m_count == 0)
 			m_condition.wait (lock);
 		
@@ -88,8 +117,8 @@ class JdSemaphore
 	{
 		auto waitTime = std::chrono::microseconds (i_microseconds);
 		
-		std::unique_lock <std::mutex> lock (m_mutex);
-		
+		unique_lock <mutex> lock (m_mutex);
+
 		while (m_count == 0)
 		{
 			if (m_condition.wait_for (lock, waitTime) == std::cv_status::timeout)
@@ -109,8 +138,8 @@ class JdSemaphore
 	{
 		auto waitTime = std::chrono::microseconds (i_microseconds);
 		
-		std::unique_lock <std::mutex> lock (m_mutex);
-		
+		unique_lock <mutex> lock (m_mutex);
+
 		while (m_count == 0)
 		{
 			if (m_condition.wait_for (lock, waitTime) == std::cv_status::timeout)

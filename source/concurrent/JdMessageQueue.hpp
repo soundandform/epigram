@@ -11,14 +11,9 @@
 #include "JdAssert.hpp"
 #include "JdSemaphore.hpp"
 
+// TODO: std'ize
 #include <boost/interprocess/detail/atomic.hpp>
-#include <boost/interprocess/sync/interprocess_semaphore.hpp>
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/condition_variable.hpp>
-#include <boost/thread/locks.hpp>
-
 using namespace boost::interprocess::ipcdetail;
-
 
 typedef u32 seq_t;
 
