@@ -11,6 +11,7 @@
 
 #include "JdEnum.hpp"
 
+
 d_jdEnum_(Platform, macOS, linux, windows)
 
 struct JdConfig

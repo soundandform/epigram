@@ -9,8 +9,6 @@
 #ifndef __Jigidesign__JdCoreL2__
 #define __Jigidesign__JdCoreL2__
 
-#include <sstream>
-
 #include "JdNucleus.hpp"
 
 

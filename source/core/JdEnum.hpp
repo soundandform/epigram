@@ -12,6 +12,8 @@
 #include "JdStdStringUtils.hpp"
 #include "JdCoreL2.hpp"
 
+#include <ostream>
+
 
 namespace Jd
 {
