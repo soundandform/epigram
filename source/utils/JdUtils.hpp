@@ -242,16 +242,8 @@ namespace Jd
 
 struct JdByteSize
 {
-	JdByteSize (size_t i_size)
-	:
-	m_size (i_size)
-	{
-	}
-	
-	operator size_t () const
-	{
-		return m_size;
-	}
+	JdByteSize (size_t i_size);
+	operator size_t () const;
 	
 	protected:
 	size_t m_size;

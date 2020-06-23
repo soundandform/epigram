@@ -122,3 +122,51 @@ namespace Jd
 	}
 
 }
+
+
+
+
+JdTypeId::JdTypeId		(u8 i_typeId) : m_typeId (i_typeId) { }
+JdTypeId::JdTypeId		() {}
+	
+u8 JdTypeId::Id				() const { return m_typeId; }
+
+bool JdTypeId::operator !=		(const JdTypeId & i_rhs)
+{
+	return m_typeId != i_rhs.m_typeId;
+}
+
+bool JdTypeId::Is				(u8 i_typeId) const
+{
+	return (m_typeId == i_typeId);
+}
+
+bool JdTypeId::IsArray			() const
+{
+	return (m_typeId & c_jdTypeId::isArray);
+}
+
+bool JdTypeId::IsAny			() const
+{
+	return (m_typeId == c_jdTypeId::any);
+}
+
+bool JdTypeId::IsFunction		() const
+{
+	return (m_typeId == c_jdTypeId::function);
+}
+
+bool JdTypeId::IsObject		() const
+{
+	return IsObject (m_typeId);
+}
+
+//static
+bool  JdTypeId::IsObject		(u8 i_typeId)
+{
+	return (i_typeId == c_jdTypeId::versionedObject or i_typeId == c_jdTypeId::object);
+}
+
+std::string		 JdTypeId::GetTypeName		() const 	{ return Jd::TypeIdToName (m_typeId); }
+std::string		 JdTypeId::GetLongTypeName	() const 	{ return Jd::TypeIdToFullName (m_typeId); }
+char			 JdTypeId::GetTypeChar		() const	{ return Jd::TypeIdToChar (m_typeId); }

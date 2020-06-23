@@ -14,7 +14,8 @@
 #include "JdEnum.hpp"
 #include <thread>
 #include <pthread.h>
-//#include "Epilog.hpp"
+#include <unistd.h>
+
 #define d_epilogBuild 1
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------

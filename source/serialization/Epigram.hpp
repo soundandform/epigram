@@ -207,7 +207,7 @@
 #include <set>
 #include <functional>
 
-#include "JdCore.hpp"
+//#include "JdCore.hpp"
 #include "JdTypeId.hpp"
 #include "JdAssert.hpp"
 #include "IEpigram.hpp"

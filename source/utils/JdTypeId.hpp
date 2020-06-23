@@ -13,9 +13,6 @@
 #include "JdUtils.hpp"
 
 #include <unordered_map>
-#include <list>
-#include <deque>
-#include <set>
 
 
 #define type_def typedef typename
@@ -558,18 +555,15 @@ namespace Jd
 	u8 TypeNameToId (stringRef_t i_typeName);
 }
 
+
 class JdTypeId
 {
 	public:
-					JdTypeId		(u8 i_typeId) : m_typeId (i_typeId) { }
-					JdTypeId		() {}
+					JdTypeId		(u8 i_typeId);
+					JdTypeId		();
 	
-	u8				Id				() const { return m_typeId; }
-	
-	bool			operator !=		(const JdTypeId & i_rhs)
-	{
-		return m_typeId != i_rhs.m_typeId;
-	}
+	u8				Id				() const;
+	bool			operator !=		(const JdTypeId & i_rhs);
 	
 	template <typename T>
 	void			Set				() { m_typeId = Jd::TypeId <T> (); }
@@ -580,39 +574,17 @@ class JdTypeId
 	template <typename T>
 	bool			Is				() const { return Jd::TypeId <T> () == m_typeId; }
 	
-	bool			Is				(u8 i_typeId) const
-	{
-		return (m_typeId == i_typeId);
-	}
-	
-	bool 			IsArray			() const
-	{
-		return (m_typeId & c_jdTypeId::isArray);
-	}
+	bool			Is				(u8 i_typeId) const;
+	bool 			IsArray			() const;
+	bool			IsAny			() const;
+	bool			IsFunction		() const;
+	bool 			IsObject		() const;
 
-	bool			IsAny			() const
-	{
-		return (m_typeId == c_jdTypeId::any);
-	}
+	static bool		IsObject		(u8 i_typeId);
 
-	bool			IsFunction		() const
-	{
-		return (m_typeId == c_jdTypeId::function);
-	}
-
-	bool 			IsObject		() const
-	{
-		return IsObject (m_typeId);
-	}
-
-	static bool		IsObject		(u8 i_typeId)
-	{
-		return (i_typeId == c_jdTypeId::versionedObject or i_typeId == c_jdTypeId::object);
-	}
-
-	std::string		GetTypeName		() const 	{ return Jd::TypeIdToName (m_typeId); }
-	std::string		GetLongTypeName	() const 	{ return Jd::TypeIdToFullName (m_typeId); }
-	char			GetTypeChar		() const	{ return Jd::TypeIdToChar (m_typeId); }
+	std::string		GetTypeName		() const;
+	std::string		GetLongTypeName	() const;
+	char			GetTypeChar		() const;
 	
 	protected:
 	

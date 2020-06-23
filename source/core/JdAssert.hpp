@@ -9,10 +9,6 @@
 #ifndef JdAssert_hpp
 #define JdAssert_hpp
 
-# if __APPLE__
-#	include <signal.h>
-#	include <unistd.h>
-# endif
 
 #include "JdConfig.hpp"
 #include "JdResult.hpp"
@@ -28,52 +24,24 @@ class JdException : public std::exception, public JdResult
 };
 
 
+void JdAssert (cstr_t i_truthfulOrLyingStatement, cstr_t i_filePath, u32 i_lineNum, stringRef_t i_message);
+
 template <typename... args_t>
 void JdAssert (bool i_shouldBeTrue, cstr_t i_truthfulOrLyingStatement, cstr_t i_filePath, u32 i_lineNum, cstr_t i_format, args_t... i_args)
 {
-	if (! i_shouldBeTrue)
+	if (not i_shouldBeTrue)
 	{
-		std::ostringstream oss;
-		// FIX: this should probably be wrapped in a JdException. Upper level code that catches the exception will log, display, or cerr the .what()
-		if (strcmp (i_truthfulOrLyingStatement, "0") == 0)
-			oss << "\n| throw: ";
-		else
-			oss << "\n| '" << i_truthfulOrLyingStatement << "' assertion failed. ";
-		
+		string message;
+
 		if (i_format)
-		{
-			Jd::SSPrintF (oss, i_format, i_args...);
-		}
+			message = Jd::SPrintF (i_format, i_args...);
 		
-		cstr_t file = strstr (i_filePath, "../");
-		if (! file) file = i_filePath;
-		else file += 2;
-		
-		if (file)
-		{
-			oss << "\n+" << string (strlen (file) + 7, '-');
-			oss << "\n| " << file << ":" << i_lineNum;
-		}
-		
-		//epilog_(fatal, "%s", epistr (oss.str()));
-		std::cout << oss.str() << std::endl << std::endl;
-		
-		// Break into the debugger
-		if (not JdConfig::IsUnitTest () and JdConfig::IsDebug ())
-		{
-			#if __APPLE__
-				usleep (50000);		// give epilog 50ms to flush.
-			#endif
-//			raise (SIGTRAP);
-		}
-		
-		# if __cpp_exceptions
-			throw JdException (oss.str().c_str(), i_filePath, i_lineNum);
-		# else
-			abort ();
-		# endif
+		JdAssert (i_truthfulOrLyingStatement, i_filePath, i_lineNum, message);
 	}
 }
+
+
+JdResult JdResert (cstr_t i_truthfulOrLyingStatement, cstr_t i_filePath, u32 i_lineNum, stringRef_t i_message);
 
 
 template <typename... args_t>
@@ -81,53 +49,14 @@ JdResult JdResert (bool i_shouldBeTrue, cstr_t i_truthfulOrLyingStatement, cstr_
 {
 	JdResult result;
 	
-	if (! i_shouldBeTrue)
+	if (not i_shouldBeTrue)
 	{
-		if (JdConfig::IsDebug ())
-		{
-			std::ostringstream oss;
-			// FIX: this should probably be wrapped in a JdException. Upper level code that catches the exception will log, display, or cerr the .what()
-			if (strcmp (i_truthfulOrLyingStatement, "0") == 0)
-				oss << "\n| throw: ";
-			else
-				oss << "\n| '" << i_truthfulOrLyingStatement << "' assertion failed. ";
-			
-			if (i_format)
-			{
-				Jd::SSPrintF (oss, i_format, i_args...);
-			}
-			
-			cstr_t file = strstr (i_filePath, "../");
-			if (! file) file = i_filePath;
-			else file += 2;
-			
-			if (file) oss << "\n| " << file << ":" << i_lineNum;
-			
-			//epilog_(fatal, "%s", epistr (oss.str()));
-			std::cout << oss.str() << std::endl << std::endl;
-			
-			// Break into the debugger
-			if (not JdConfig::IsUnitTest () and JdConfig::IsDebug ())
-			{
-				#if __APPLE__
-					usleep (50000);		// give epilog 50ms to flush.
-				#endif
-//				raise (SIGTRAP);
-			}
-			
-			# if __cpp_exceptions
-				throw JdException (oss.str().c_str(), i_filePath, i_lineNum);
-			# else
-				abort ();
-			# endif
-		}
-		else
-		{
-			std::ostringstream oss;
-			if (i_format) Jd::SSPrintF (oss, i_format, i_args...);
-			
-			result = JdResult (oss.str().c_str(), i_filePath, i_lineNum);
-		}
+		string message;
+		
+		if (i_format)
+			message = Jd::SPrintF (i_format, i_args...);
+		
+		result = JdResert (i_truthfulOrLyingStatement, i_filePath, i_lineNum, message);
 	}
 	
 	return result;

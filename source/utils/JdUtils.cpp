@@ -7,15 +7,20 @@
 //
 
 #include "JdUtils.hpp"
+#include <iomanip>
 
-#include <fstream>
 
-namespace Jd
+JdByteSize::JdByteSize (size_t i_size)
+:
+m_size (i_size)
 {
 }
 
+JdByteSize::operator size_t () const
+{
+	return m_size;
+}
 
-#include <iomanip>
 
 std::ostream& operator<< (std::ostream &output, const JdByteSize &i_size)
 {
