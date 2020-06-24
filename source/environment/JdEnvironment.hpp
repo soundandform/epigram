@@ -27,7 +27,7 @@ class JdEnvironment
 	m_server					(m_libraries),
 	m_timersEnabled				(i_enableTimers)
 	{
-		Setup ();
+//		Setup ();
 	}
 	
 	virtual ~ JdEnvironment		()
@@ -90,7 +90,7 @@ class JdEnvironment
 					
 					scheduler->AddTimerThread (driver);
 				}
-				
+//				else
 //				scheduler->AddThreads (1);
 				
 				scheduler->Start ();
@@ -160,172 +160,5 @@ class JdEnvironment
 
 struct JdLinkBasic		{ static void Setup (); };
 struct JdLinkSimple		{ static void Setup (); };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#if 0
-class JdEnvironmentX
-{
-	public:
-									JdEnvironmentX			(Epigram i_configuration = Epigram ())
-	:
-	m_configuration					(i_configuration)
-	{
-		m_server = JdServerX::Get ();
-		
-		m_setupResult = m_server->Setup ();
-		
-		if (m_server)
-		{
-//			m_mainQueue = m_server->m_scheduler.GetMainThreadQueue ();
-		}
-		
-		jd_notifications = m_server->AcquireModule ("JdNotifications");
-
-		if (not jd_notifications)
-			d_jdThrow ("couldn't connect to JdNotifications");
-		
-		bool runTimers = true;
-		
-		if (runTimers)
-		{
-			auto timerQueue = m_server->AcquireQueue ("timers");
-
-			jd_timers = m_server->AcquireModule ("JdTimers");
-
-			m_timerThread->Connect (jd_timers.GetDirectInterface (), timerQueue);
-
-			if (not jd_timers)
-				d_jdThrow ("couldn't connect to JdTimers");
-
-			jd_timers.BindToQueue (timerQueue);
-			jd_notifications.BindToQueue (timerQueue);
-
-			m_timerThread.Start ();
-		}
-	}
-	
-	virtual							~ JdEnvironmentX			()
-	{
-		Jd::EnforceMainThread ();
-		
-		m_mainQueue->Run (10.);		// FIX: need a Flush () method
-		
-		epilog (normal, "~JdEnvironment -----------------------------------------------------");
-
-#if 0
-		jd_notifications.send <JdE::StopAllNotifications> ();
-		jd_timers.send <JdE::StopAllTimers> ();
-#endif
-		m_timerThread.Stop ();
-
-		jd_notifications.Release ();
-		jd_timers.Release ();
-
-		if (m_server)
-			m_server->Teardown ();
-		
-		JdServerX::Reset ();	// for Unit tests
-	}
-	
-	void							Run						()
-	{
-		m_mainQueue->Run (.01);
-	}
-	
-	
-	IJdEnvironmentServer 			GetServer				()		{ return m_server; }
-	
-	IJdEnvironmentServer			operator ->				()		{ return m_server; }
-	
-	
-//	u32								TriggerTimers			()
-//	{
-////		return jd_timers.call <JdE::RunTimers> ();
-//		return jd_timers->RunTimers ();
-//	}
-
-	
-	struct TimerDriver : public IJdThread
-	{
-		void						Connect				(IJdTimers i_timers, IJdServerQueue i_timerQueue)
-		{
-			m_timers = i_timers;
-			m_timerQueue = i_timerQueue;
-		}
-	
-		virtual JdResult                Run             (EpigramRef i_args, IJdThread::ThreadInfo & i_info)
-		{
-//			JdScheduler::SetCurrentThreadQueue (m_timerQueue);
-			
-			u32 sleepIntervalInMicroseconds = 1000;
-			
-			u32 wakes = 0;
-			while (i_info.IsAlive ())
-			{
-				m_timerQueue->WaitRun (sleepIntervalInMicroseconds * 1e-6);
-				++ wakes;
-				
-				sleepIntervalInMicroseconds = m_timers->RunTimers ();
-			}
-
-			m_timerQueue->Run (.1);
-			
-			return c_jdNoErr;
-		}
-		
-		virtual JdResult                Break           ()
-		{
-			m_timerQueue->Exit (); // not sure this matters
-			return c_jdNoErr;
-		}
-
-		//		virtual JdResult                Finalize        (const JdResult &i_runResult) { return i_runResult; }
-		//		virtual JdResult                Teardown        (const JdResult &i_runResult) { return i_runResult; }
-		
-		f64							m_sleepInterval				= .25;
-		IJdServerQueue				m_timerQueue				= nullptr;
-
-		IJdTimers					m_timers					= nullptr;
-	};
-	
-	
-	protected: //--------------------------------------------------------------------------------------------
-	Epigram							m_configuration;
-	
-	JdServerX *						m_server;
-	JdSchedulerXQueue *				m_mainQueue					= nullptr;
-	
-	JdModuleXT <IJdTimers>			jd_timers;
-	JdModule						jd_notifications;
-	
-//	JdModule						jd_moduleManager;
-//	JdModule						jd_factory;
-	
-	JdResult						m_setupResult;
-	
-	JdThreadT <TimerDriver>			m_timerThread				{ "timers" };
-};
-#endif
 
 #endif /* JdEnvironment_h */
