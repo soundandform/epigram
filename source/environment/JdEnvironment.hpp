@@ -22,12 +22,13 @@ class JdEnvironment
 {
 	public:
 	
-	JdEnvironment				(bool i_enableTimers = false)
+	JdEnvironment				(bool i_enableTimers = false, bool i_deferSetup = true)
 	:
 	m_server					(m_libraries),
 	m_timersEnabled				(i_enableTimers)
 	{
-//		Setup ();
+		if (not i_deferSetup)
+			Setup ();
 	}
 	
 	virtual ~ JdEnvironment		()

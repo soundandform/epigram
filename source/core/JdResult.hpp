@@ -286,7 +286,8 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 	}
 };
 
-typedef JdResultT <> JdResult;
+typedef JdResultT <> 			JdResult;
+typedef const JdResult & 		JdResultRef;
 
 template <typename L, typename R1>
 std::ostream & operator << (std::ostream &output, const JdResultT <L, R1> & i_result)

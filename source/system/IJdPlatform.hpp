@@ -40,7 +40,7 @@ struct IJdCallback
 
 struct JdTimerRef
 {
-	void *	ref;
+	void *	ref		= 0;
 };
 
 
