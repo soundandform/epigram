@@ -11,6 +11,7 @@
 #include "JdAssert.hpp"
 
 #import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
 
 namespace JdPlatform
 {
@@ -220,16 +221,15 @@ i32 JdMacPlatform::FileSystem::RemoveFile (const std::string & i_path)
 	auto wrapper = [d_objC (JdTimerBridgeCallbackWrapper) alloc];
 	wrapper->m_callback = i_callback;
 	
-	NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval: i_seconds
-													  target: self
-													selector: @selector (timerFired:)
-													userInfo: wrapper
-													 repeats: YES];
 	
-	return (__bridge void *) timer;
-	//	cout << "inserting timer!\n";
-	//	[m_timers insertObject: timer atIndex: [m_timers count] ];
+	NSTimer * timer = [NSTimer timerWithTimeInterval: i_seconds
+											  target: self
+											selector: @selector (timerFired:)
+											userInfo: wrapper
+											 repeats: YES];
 	
+	[[NSRunLoop mainRunLoop] addTimer:timer forMode: NSRunLoopCommonModes];
+
 	return (__bridge void *) timer;
 }
 
@@ -237,6 +237,8 @@ i32 JdMacPlatform::FileSystem::RemoveFile (const std::string & i_path)
 
 JdTimerRef JdMacPlatform::Notification::ScheduleTimer (f64 i_periodInSeconds, IJdCallback * i_callback, void * i_refData)
 {
+//	TODO: Jd::EnforceMainThread ();
+	
 	if (! m_timerBridge) m_timerBridge = [[ d_objC (JdTimerBridge) alloc ] init];
 	
 	void * timer = [m_timerBridge ScheduleTimer: i_periodInSeconds callback: i_callback ];
