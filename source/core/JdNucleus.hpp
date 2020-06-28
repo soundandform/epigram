@@ -31,4 +31,8 @@ typedef const void * voidptr_t;
 typedef const std::string & stringRef_t;
 
 
+#define d_jdRef(CLASS) typedef const CLASS & CLASS##Ref;
+#define d_jdStruct(STRUCT) struct STRUCT; typedef const STRUCT & STRUCT##Ref; struct STRUCT
+#define d_jdClass(CLASS) class CLASS; typedef const CLASS & CLASS##Ref; class CLASS
+
 #endif
