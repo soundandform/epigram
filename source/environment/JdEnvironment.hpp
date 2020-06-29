@@ -22,7 +22,7 @@ class JdEnvironment
 {
 	public:
 	
-	JdEnvironment				(bool i_enableTimers = false, bool i_deferSetup = true)
+	JdEnvironment				(bool i_enableTimers = false, bool i_deferSetup = false)
 	:
 	m_server					(m_libraries),
 	m_timersEnabled				(i_enableTimers)
