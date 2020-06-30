@@ -25,7 +25,7 @@
 //#endif
 
 
-class JdUUID : public Jd::TypedT <c_jdTypeId::uuid>
+d_jdClass (JdUUID) : public Jd::TypedT <c_jdTypeId::uuid>
 {
 	public:
 	
@@ -106,7 +106,6 @@ class JdNewUUID : public JdUUID
 	JdNewUUID (): JdUUID (true) { }
 };
 
-typedef const JdUUID&	JdId;
 
 std::ostream& operator << (std::ostream &output, const JdUUID & i_uuid);
 std::istream& operator >> (std::istream &input, JdUUID &o_uuid);
@@ -139,7 +138,7 @@ namespace std
 namespace Jd
 {
 	string JdEncodeBitsToString (const u8 * i_bits, i32 i_numBits, bool i_lowercase);
-	string IdToFriendlyString (JdId i_uuid);
+	string IdToFriendlyString (JdUUIDRef i_uuid);
 }
 
 

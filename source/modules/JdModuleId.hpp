@@ -11,7 +11,7 @@
 #include "JdRandom.hpp"
 #include "JdCoreL2.hpp"
 
-struct JdModuleId
+d_jdStruct (JdModuleId)
 {
 	static const u64 c_instanceIdMask		= std::numeric_limits <u64>::max () >> 3;	// top bit unused + 2 flag bits
 //	const u64 c_moduleIdFlag				= 1LL << 63;
@@ -66,9 +66,12 @@ struct JdModuleId
 	u64				m_id		= 0;
 };
 
-typedef const JdModuleId & JdInstanceIdRef;
 
-inline std::ostream & operator << (std::ostream & output, JdInstanceIdRef i_moduleId)
+typedef JdModuleId 		JdId;
+typedef JdModuleIdRef 	JdIdRef;
+
+
+inline std::ostream & operator << (std::ostream & output, JdIdRef i_moduleId)
 {
 	char temp [64];
 //	if (i_moduleId.IsInstanceId ()) output << "i.";

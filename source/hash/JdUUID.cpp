@@ -242,7 +242,7 @@ namespace Jd
 	}
 
 	
-	string IdToFriendlyString (JdId i_uuid)
+	string IdToFriendlyString (JdUUIDRef i_uuid)
 	{
 		string s;
 		
@@ -260,7 +260,7 @@ namespace Jd
 	}
 }
 
-std::ostream& operator << (std::ostream &output, JdId i_uuid)
+std::ostream& operator << (std::ostream &output, JdUUIDRef i_uuid)
 {
 #undef d_jdShowFriendlyUuidNames
 #if d_jdShowFriendlyUuidNames

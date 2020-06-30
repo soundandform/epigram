@@ -11,7 +11,7 @@
 
 #include "IEpigram.hpp"
 #include "JdCore.hpp"
-#include "JdUUID.hpp"
+#include "JdModuleId.hpp"
 #include "JdEnum.hpp"
 
 /*
@@ -73,7 +73,7 @@ struct Notification //----------------------------------------------------------
 	virtual void				DestroyTimer				(const JdTimerRef &i_timerRef) = 0;
 
 //	"1DE70882-2676-40A8-A002-6A2B03F77429.progress"
-	virtual void				PostNotification			(cstr_t i_name, JdId i_zone = JdUUID (), EpDelivery i_message = nullptr) = 0;
+	virtual void				PostNotification			(cstr_t i_name, JdId i_zone = JdId (), EpDelivery i_message = nullptr) = 0;
 //	virtual void *				GetNotifier					(c_str i_name, JdId i_zone) = 0;
 	
 //	virtual void				PingApplication			() = 0;

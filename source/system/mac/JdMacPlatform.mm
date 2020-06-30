@@ -264,7 +264,7 @@ void JdMacPlatform::Notification::PostNotification (cstr_t i_name, JdId i_zone, 
 {
 	string zonePlusName;
 	
-	if (i_zone.IsSet())
+	if (i_zone)
 	{
 		zonePlusName = Jd::ToString (i_zone);
 		zonePlusName += ".";
