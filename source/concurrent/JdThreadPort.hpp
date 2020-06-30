@@ -50,6 +50,9 @@
 #include "JdTimer.hpp"
 #include "JdMessageQueue.hpp"
 
+#include <boost/interprocess/detail/atomic.hpp>
+using namespace boost::interprocess::ipcdetail;
+
 
 template <u32 t_maxSize>
 class JdPortDataType

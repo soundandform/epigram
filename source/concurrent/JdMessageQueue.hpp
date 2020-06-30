@@ -11,11 +11,7 @@
 #include "JdAssert.hpp"
 #include "JdSemaphore.hpp"
 
-// TODO: std'ize
-#include <boost/interprocess/detail/atomic.hpp>
-using namespace boost::interprocess::ipcdetail;
-
-typedef u32 seq_t;
+typedef u64 seq_t;
 
 const int c_jdCacheLineBytes = 64;
 
@@ -23,14 +19,14 @@ const int c_jdCacheLineBytes = 64;
 template <typename T>
 struct alignas (c_jdCacheLineBytes) JdCacheLinePadded
 {
-	JdCacheLinePadded () { d_jdAssert (sizeof (JdCacheLinePadded) == c_jdCacheLineBytes, "JdCacheLinePadded not aligned properly"); }
+	JdCacheLinePadded () {	d_jdAssert (sizeof (JdCacheLinePadded) == c_jdCacheLineBytes, "JdCacheLinePadded not aligned properly"); }
 
-	T					value	= T ();
+	T					value	{ 0 };
     volatile			u8 		_cacheLinePadding [c_jdCacheLineBytes - sizeof (T)];
 };
 
 
-class JdPortSequence : protected JdCacheLinePadded <seq_t>
+class JdPortSequence : protected JdCacheLinePadded <atomic <seq_t>>
 {
 	public:
 					JdPortSequence		(seq_t i_initTo)
@@ -42,7 +38,7 @@ class JdPortSequence : protected JdCacheLinePadded <seq_t>
 	
 	seq_t				Acquire				()
 	{
-		return atomic_inc32 (& value);
+		return value++; //atomic_inc32 (& value);
 	}
 	
 	
@@ -51,24 +47,26 @@ class JdPortSequence : protected JdCacheLinePadded <seq_t>
 		while (true)
 		{
 			seq_t previousSeq = i_newSequenceNum - 1;
-			seq_t previous = atomic_cas32 (&value, i_newSequenceNum, previousSeq);
-			if (previous == previousSeq) return;
+			if (value.compare_exchange_strong (previousSeq, i_newSequenceNum))
+				return;
 			
-			sleep (0); // FIX: improve!
-//			usleep (10);
+			sleep (0); // FIX: improve
 		}
 	}
 	
-	seq_t			Value				()
+	seq_t				Value				()
 	{
-		return atomic_read32 (& value);
+		return value;
+	}
+	
+	operator seq_t							()
+	{
+		return value;
 	}
 };
 
 
-// 64-bit atomics seem a tad faster... should switch.
-
-const u32 c_jdThreadPort_startIndex = 0xffffff71;	// to prove these mechanisms are integer wrap-around safe
+const u32 c_jdThreadPort_startIndex = 0xffffffffffffff71;	// to prove these mechanisms are integer wrap-around safe
 
 
 template <typename MessageRecord>
@@ -114,7 +112,7 @@ struct JdThreadPortPathway
 
 d_jdTrueFalse (MessagePort, waitForMessages, doNotWaitForMessages)
 
-// JdMessageQueue2 (and all prior works) *aren't* multiple consumer safe nor easily compatible because of the disconnected atomic signal variable
+// JdMessageQueue isn't multiple consumer safe nor easily compatible because of the disconnected atomic signal variable
 // and the sporadically triggered semaphore.  one thread might be expecting the signal but a different thread takes it. Two multiple consumer
 // strategies: i think just adding a comsumer mutex would do the trick and/or mutiple channels of MessageQueues
 
@@ -128,50 +126,66 @@ class JdMessageQueue // (v2)
 		m_pathway.SetPathwaySize (i_numMessagesInQueue);
 	}
 	
+	~ JdMessageQueue ()
+	{
+		cout << "numSleeps: " << m_numSleeps << endl;
+	}
+	
 	u32 GetQueueSizeInBytes ()
 	{
 		return m_pathway.GetPathwayNumBytes ();
 	}
 	
-	void QueueMessages (const T * i_messages, u32 i_count)
+	
+	// producer --------------------------------------------------------------------------------------------------------------------------------
+	// 1. AcquireMessageSlot ()
+	// 2. copy the message to the pointer
+	// 3. CommitMessage ()
+	//
+	// alternatively, use QueueMessage () which packages these three steps into one call
+	
+	void Push (const T * i_messages, u32 i_count)
 	{
-		u32 sequence;
+		seq_t sequence;
 		while (i_count--)
 		{
 			auto slot = AcquireMessageSlot (sequence);
-			*slot = *i_messages++;
+			*slot = * i_messages++;
 			CommitMessage (sequence);
 		}
 	}
 	
-	void QueueMessage (const T & i_message)
+	void Push (const T & i_message)
 	{
-		u32 sequence;
-		auto & slot = *AcquireMessageSlot (sequence);
+		seq_t sequence;
+		auto & slot = * AcquireMessageSlot (sequence);
 		slot = i_message;
 		CommitMessage (sequence);
 	}
 	
-	inline T * AcquireMessageSlot (u32 & o_sequence)
+	
+	inline T * AcquireMessageSlot (seq_t & o_sequence)
 	{
 		o_sequence = m_pathway.insertSequence.Acquire();
 		
-		u32 slotIndex = o_sequence & m_pathway.m_sequenceMask;
+		seq_t slotIndex = o_sequence & m_pathway.m_sequenceMask;
 		T * record = & m_pathway.m_queue [slotIndex];
 		
-		const u32 maxSequenceOffset = m_pathway.m_queue.size ();
+		const seq_t maxSequenceOffset = m_pathway.m_queue.size ();
 
 		u32 tries = 0;
 		
 		while (true)
 		{
 			// getting an offset here first, instead of doing a one-to-one comparison, solves the issue of wrap-around
-			u32 offset = o_sequence - m_pathway.claimSequence.Value ();
+			seq_t offset = o_sequence - m_pathway.claimSequence;
 			
 			if (offset < maxSequenceOffset)
 				break;
-			
+
+			// TODO: condition variable this?
 			this_thread::yield ();
+			++m_numSleeps;
 			
 			if (++tries > 100000000)
 				d_jdThrow ("Deadlock. Or, more likely, you've blown out the queue. Each sequence (lock) can push up to 512 transactions (calls).");
@@ -182,24 +196,28 @@ class JdMessageQueue // (v2)
 	
 	
 	inline
-	void CommitMessage (u32 i_sequence)
+	void CommitMessage (seq_t i_sequence)
 	{
 		m_pathway.commitSequence.Update (i_sequence + 1);	// update returns when all previous sequence numbers have been updated
 		
-		i32 previous = (i32) atomic_inc32 ((u32 *) & m_signalCount.value);
+		i64 previous = m_signalCount.value++;
+
 		if (previous < 0)
 			m_signal.Signal ();
 	}
 	
-	inline u32 ClaimMessages () // don't wait; grab all available
+	//-----------------------------------------------------------------------------------------------------------------------------------------------------
+	// consumer is similar to producer
+	// 1. ClaimMessages () returns a count of available messages
+	// 2. Use ViewMessage () to peak at the messages
+	// 3. ReleaseMessage/s () when done with them.
+	// alternatively,
+	
+	inline u32 ClaimAvailableMessages () // don't wait; grab all available
 	{
-		i32 available = atomic_read32 ((u32*) &m_signalCount.value);	// available always monotonically increases from this perspective as the consumer
+		i64 available = m_signalCount.value;	// available always monotonically increases from this perspective as the consumer
 
-		if (available)
-		{
-//			i32 previous = (i32)
-			atomic_add32 ((u32 *) &m_signalCount.value, -available);
-		}
+		m_signalCount.value -= available;
 		
 		return available;
 	}
@@ -207,12 +225,12 @@ class JdMessageQueue // (v2)
 	
 	inline u32 WaitForMessages (i32 i_maxMessagesToGrab)
 	{
-		i32 available = atomic_read32 ((u32 *) & m_signalCount.value);	// available always monotonically increases from this perspective as the consumer
+		i64 available = m_signalCount.value;	// available always monotonically increases from this perspective as the consumer
 		
-		available = std::max (available, (i32) 1); // wait for at least one
-		available = std::min (available, i_maxMessagesToGrab);
+		available = std::max (available, (i64) 1); // wait for at least one
+		available = std::min (available, (i64) i_maxMessagesToGrab);
 		
-		i32 previous = (i32) atomic_add32 ((u32 *) & m_signalCount.value, -available);
+		i64 previous = m_signalCount.value.fetch_sub (available);
 		
 		if (previous < available)
 			m_signal.Wait ();
@@ -225,7 +243,7 @@ class JdMessageQueue // (v2)
 	{
 		d_jdAssert (m_acquiredPending == 0, "implement");
 		
-		i32 available = atomic_read32 ((u32*) &m_signalCount.value);	// available always monotonically increases from this perspective as the consumer
+		i64 available = m_signalCount.value;	// available always monotonically increases from this perspective as the consumer
 		
 		if (available == 0)
 		{
@@ -235,9 +253,9 @@ class JdMessageQueue // (v2)
 				available = 1; // try to grab at least one, probably triggering a wait below
 		}
 		
-		available = std::min (available, i_maxMessagesToGrab);
+		available = std::min (available, (i64) i_maxMessagesToGrab);
 		
-		i32 previous = (i32) atomic_add32 ((u32 *) &m_signalCount.value, -available);
+		i64 previous = m_signalCount.value.fetch_sub (available);
 		
 		if (previous < available)
 			m_signal.Wait ();
@@ -248,11 +266,11 @@ class JdMessageQueue // (v2)
 	
 	inline u32 TimedWaitForMessages (u32 i_timeoutInMicroseconds, i32 i_maxMessagesToGrab = std::numeric_limits <i32>::max ())
 	{
-		i32 available;
+		i64 available;
 		
 		if (m_acquiredPending == 0) // no previous timeout occurred...
 		{
-			available = atomic_read32 ((u32 *) & m_signalCount.value);	// available always monotonically increases from this perspective as the consumer
+			available = m_signalCount.value; // available always monotonically increases from this perspective as the consumer
 			
 			if (available == 0)
 			{
@@ -262,9 +280,9 @@ class JdMessageQueue // (v2)
 					available = 1; // try to grab at least one, probably triggering a wait below
 			}
 			
-			available = std::min (available, i_maxMessagesToGrab);
+			available = std::min (available, (i64) i_maxMessagesToGrab);
 			
-			i32 previous = (i32) atomic_add32 ((u32 *) & m_signalCount.value, -available);
+			i64 previous = m_signalCount.value.fetch_sub (available);
 			
 			if (previous < available)
 			{
@@ -289,9 +307,9 @@ class JdMessageQueue // (v2)
 		return available;
 	}
 	
-	inline T * ViewMessage (u32 i_index = 0)
+	inline T * ViewMessage (seq_t i_index = 0)
 	{
-		u32 sequence = m_pathway.claimSequence.Value() + i_index;
+		seq_t sequence = m_pathway.claimSequence + i_index;
 		sequence &= m_pathway.m_sequenceMask;
 		
 		return & m_pathway.m_queue [sequence];
@@ -302,20 +320,23 @@ class JdMessageQueue // (v2)
 		m_pathway.claimSequence.Acquire ();
 	}
 	
-	inline void ReleaseMessages (u32 i_numMessages)
+	inline void ReleaseMessages (seq_t i_numMessages)
 	{
-		while (i_numMessages--)
-			m_pathway.claimSequence.Acquire ();
+		m_pathway.claimSequence.Acquire (i_numMessages);
 	}
 	
-	bool GetMessage (T & o_message)
+	
+	// TODO: validate that m_consumerLock makes these multiple-consumer safe. Seems reasonable on the surface.
+	bool Pop (T & o_message)
+	// no wait. claims and releases one message if it's available
 	{
-		i32 available = atomic_read32 ((u32*) &m_signalCount.value);
+		lock_guard <mutex> lock (m_consumerLock);
+		
+		i64 available = m_signalCount.value;
 		
 		if (available)
 		{
-			available = 1;
-			atomic_add32 ((u32 *) &m_signalCount.value, -available);
+			m_signalCount.value--;
 			o_message = * ViewMessage ();
 			ReleaseMessage ();
 
@@ -324,8 +345,11 @@ class JdMessageQueue // (v2)
 		else return false;
 	}
 
-	inline void WaitForMessage (T & o_message)
+	
+	inline void PopWait (T & o_message)
 	{
+		lock_guard <mutex> lock (m_consumerLock);
+		
 		WaitForMessages (1);
 		o_message = * ViewMessage ();
 		ReleaseMessage ();
@@ -334,10 +358,13 @@ class JdMessageQueue // (v2)
 	
 	protected:
 	
-	JdCacheLinePadded <i32>						m_signalCount;
+	mutex										m_consumerLock;
+	JdCacheLinePadded <atomic <i64>>			m_signalCount;
 	JdSemaphore									m_signal			{ 0 };
-	u32											m_acquiredPending	= 0;
-	
+	i64											m_acquiredPending	= 0;
+
+	u64											m_numSleeps			= 0;
+
 	JdThreadPortPathway <T>						m_pathway;
 };
 
@@ -354,10 +381,13 @@ struct JdMpMcQueueT
 	{
 		unique_lock <mutex> lock (m_mutex);
 		
-		while (m_queue.size () >= m_maxNumElements)
+		while (m_queue.size () == m_maxNumElements)
 			m_queueNotFull.wait (lock);
 
 		m_queue.push_front (i_value);
+		
+		if (m_queue.size () == 1)
+			m_queueNotEmpty.notify_one ();
 	}
 	
 	T Pop ()
@@ -366,10 +396,13 @@ struct JdMpMcQueueT
 		
 		while (m_queue.empty ())
 			m_queueNotEmpty.wait (lock);
-		
+
 		T back = m_queue.back ();
 		m_queue.pop_back ();
 		
+		if (m_queue.size () == m_maxNumElements - 1)
+			m_queueNotFull.notify_one ();
+
 		return back;
 	}
 	
@@ -402,6 +435,9 @@ struct JdMpMcQueueT
 	}
 	
 	deque <T>									m_queue;
+	
+	atomic <i64>								m_fastLock				{ 0 };
+	
 	mutex										m_mutex;
 	condition_variable							m_queueNotEmpty;
 	condition_variable							m_queueNotFull;
