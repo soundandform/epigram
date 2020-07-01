@@ -176,24 +176,28 @@ class JdCircularAllocator
 	bool					m_hasOverflowed						= false;
 };
 
+# if 1
 class JdAllocator
 {
-	public:						JdAllocator					(u32 i_maxAllocationSize, u32 i_bufferSize = 0)
+	public:						JdAllocator						(u32 i_maxAllocationSize, u32 i_bufferSize = 0)
 	{
 	}
 	
 	template <typename T>
 	T *							Allocate						(u32 i_numBytes = sizeof (T))
 	{
-		return (T *) new u8 [i_numBytes];
+		return (T *) malloc (i_numBytes);
 	}
 	
 	void						Release							(void * i_data)
 	{
-		delete [] (u8 *) i_data;
+		free (i_data);
 	}
 };
+# else
 
-//typedef JdCircularAllocator JdAllocator;
+typedef JdCircularAllocator JdAllocator;
+
+# endif
 
 #endif /* JdCircularAllocator_hpp */
