@@ -19,6 +19,7 @@
  	all allocations are short-lived and allocated and deallocated in a roughly first-out, first-back-in manner.
  */
 
+
 class JdCircularAllocator
 {
 	public:					JdCircularAllocator					(u32 i_maxAllocationSize, u32 i_bufferSize = 0)
@@ -175,5 +176,24 @@ class JdCircularAllocator
 	bool					m_hasOverflowed						= false;
 };
 
+class JdAllocator
+{
+	public:						JdAllocator					(u32 i_maxAllocationSize, u32 i_bufferSize = 0)
+	{
+	}
+	
+	template <typename T>
+	T *							Allocate						(u32 i_numBytes = sizeof (T))
+	{
+		return (T *) new u8 [i_numBytes];
+	}
+	
+	void						Release							(void * i_data)
+	{
+		delete [] (u8 *) i_data;
+	}
+};
+
+//typedef JdCircularAllocator JdAllocator;
 
 #endif /* JdCircularAllocator_hpp */

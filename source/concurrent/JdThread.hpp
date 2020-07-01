@@ -74,9 +74,9 @@ struct IJdThread
     virtual ~                       IJdThread       () { };
     virtual JdResult                Setup           () 												{ return c_jdNoErr; }		// Setup happens in creator thread (which is probably main)
     virtual JdResult                Run             (EpigramRef i_args, ThreadInfo & i_info)	 	= 0;
-    virtual JdResult                Break           () 												{ return c_jdNoErr; };
-	virtual JdResult                Finalize        (const JdResult &i_runResult) 					{ return i_runResult; };	// Finalize happens in-thread
-    virtual JdResult                Teardown        (const JdResult &i_runResult)					{ return i_runResult; };	// Teardown happens in creator thread (which is probably main)
+    virtual JdResult                Break           () 												{ return c_jdNoErr; }
+	virtual JdResult                Finalize        (const JdResult &i_runResult) 					{ return i_runResult; }		// Finalize happens in-thread
+    virtual JdResult                Teardown        (const JdResult &i_runResult)					{ return i_runResult; }		// Teardown happens in creator thread (which is probably main)
 };
 
 

@@ -172,7 +172,7 @@ class JdMessageQueue // (v2)
 	
 	inline T * AcquireMessageSlot (seq_t & o_sequence)
 	{
-		o_sequence = m_pathway.insertSequence.Acquire();
+		o_sequence = m_pathway.insertSequence.Acquire ();
 		
 		seq_t slotIndex = o_sequence & m_pathway.m_sequenceMask;
 		T * record = & m_pathway.m_queue [slotIndex];
@@ -189,8 +189,11 @@ class JdMessageQueue // (v2)
 			if (offset < maxSequenceOffset)
 				break;
 
+			unique_lock <mutex> lock (m_conditionLock);
+			m_condition.wait (lock);
+
 			// TODO: condition variable this?
-			this_thread::yield ();
+//			this_thread::yield ();
 			++m_numSleeps;
 			
 			if (++tries > 100000000)
@@ -324,11 +327,15 @@ class JdMessageQueue // (v2)
 	inline void ReleaseMessage ()
 	{
 		m_pathway.claimSequence.Acquire ();
+
+		m_condition.notify_all ();
 	}
 	
 	inline void ReleaseMessages (seq_t i_numMessages)
 	{
 		m_pathway.claimSequence.Acquire (i_numMessages);
+		
+		m_condition.notify_all ();
 	}
 	
 	
@@ -370,6 +377,9 @@ class JdMessageQueue // (v2)
 	i64											m_acquiredPending	= 0;
 
 	u64											m_numSleeps			= 0;
+	
+	mutex										m_conditionLock;
+	condition_variable							m_condition;
 
 	JdThreadPortPathway <T>						m_pathway;
 };
