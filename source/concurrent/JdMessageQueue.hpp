@@ -40,7 +40,13 @@ class JdPortSequence : protected JdCacheLinePadded <atomic <seq_t>>
 	{
 		return value++; //atomic_inc32 (& value);
 	}
+
 	
+	void				Acquire				(seq_t i_value)
+	{
+		value += i_value;
+	}
+
 	
 	void				Update				(seq_t i_newSequenceNum)
 	{

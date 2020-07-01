@@ -62,18 +62,26 @@ class JdCircularAllocator
 			
 			while (GetNumAvailableBytesUnlocked () < numBytes)
 			{
+//				cout << " ** of **";
+//				cout.flush();
 				m_hasOverflowed = true;
 				m_condition.wait (lock);
 			}
 
 			u32 index = m_claimedIndex & m_indexMask;
 			m_claimedIndex += numBytes;
-			
+
+//			cout << "alloc: " << index;
+
 			u64 * data = (u64 *) & m_data [index];
 			* data = numBytes | 1;	// 1 = allocated signal bit
 			
 			allocated = (T *) ++data;
+			
+//			cout << " " << (void *) allocated << endl;
+//			cout.flush ();
 		}
+		
 		
 		return allocated;
 	}
@@ -83,32 +91,45 @@ class JdCircularAllocator
 		u32 numBytesToRelease = 0;
 
 		m_mutex.lock ();
+			
+//			cout << "rel: " << i_data << " ";
 
-		u64 * word = (u64 *) i_data;
-		(* --word) &= ~1;	// erase allocation bit flag
-		
-		u32 index = (u8 *) word - m_data;
+			u64 * word = (u64 *) i_data;
+			(* --word) &= ~1;	// erase allocation bit flag
+			
+			u32 index = (u8 *) word - m_data;
+			
+//			cout << index << " ri: " << m_releaseIndex << " ";
 
-		if (index == m_releaseIndex)
-		{
-			// if the release index is pointing to this chunk, then free it by advancing the release index.
-			// also, free any further contiguous chunks that have been deallocated prior.
-			do
+			if (index == (m_releaseIndex & m_indexMask))
 			{
-				u64 numBytes = * word;
-				numBytesToRelease += numBytes;
-				m_releaseIndex += numBytes;
-				
-				if (m_releaseIndex == m_claimedIndex)
-					break;
-				
-				word = (u64 *) & m_data [m_releaseIndex & m_indexMask];
+				// if the release index is pointing to this chunk, then free it by advancing the release index.
+				// also, free any further contiguous chunks that have been deallocated prior.
+				do
+				{
+					u64 numBytes = * word;
+					numBytesToRelease += numBytes;
+					
+//					if (numBytes == 0)
+//					{
+//						cout << "?\n";
+//					}
+					
+					m_releaseIndex += numBytes;
+					
+					if (m_releaseIndex == m_claimedIndex)
+						break;
+					
+					word = (u64 *) & m_data [m_releaseIndex & m_indexMask];
+				}
+				while (not (* word & 1)); // check allocated bit flag
 			}
-			while (not (* word & 1)); // check allocated bit flag
-		}
 
+//			cout << " nbtr: " << numBytesToRelease << endl;
 		m_mutex.unlock ();
-
+		
+//		cout.flush ();
+		
 		if (numBytesToRelease)
 			m_condition.notify_all ();
 	}
