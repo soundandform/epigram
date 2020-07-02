@@ -166,9 +166,9 @@ template <typename T> using EpHash64Attribute = EpAttribute <EpHash64, T>;
 
 
 #define d_attribute(TYPE, NAME)										static const EpStringAttribute <TYPE> a_##NAME (#NAME);
-#define d_cattribute(TYPE, CATEGORY, NAME)							namespace a_##CATEGORY { static const EpStringAttribute <TYPE> NAME (#NAME); }
-#define d_epAttribute(TYPE, CATEGORY, NAME)							namespace a_##CATEGORY { static const EpStringAttribute <TYPE> NAME (#NAME); }
-#define d_epAttributeWithDefault(TYPE, CATEGORY, NAME, DEFAULT)		namespace a_##CATEGORY { static const EpStringAttribute <TYPE> NAME (#NAME, DEFAULT); }
+//#define d_cattribute(TYPE, CATEGORY, NAME)							namespace a_##CATEGORY { static const EpStringAttribute <TYPE> NAME (#NAME); }
+#define d_epAttribute(TYPE, CATEGORY, NAME)							namespace a_##CATEGORY { static const EpStringAttribute <TYPE> NAME (#CATEGORY ":" #NAME); }
+#define d_epAttributeWithDefault(TYPE, CATEGORY, NAME, DEFAULT)		namespace a_##CATEGORY { static const EpStringAttribute <TYPE> NAME (#CATEGORY ":" #NAME, DEFAULT); }
 
 #define d_jdAttribute(TYPE, CATEGORY, NAME)							namespace a_jd##CATEGORY { static const EpStringAttribute <TYPE> NAME (#NAME); }
 
