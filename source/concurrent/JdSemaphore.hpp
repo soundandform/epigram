@@ -23,17 +23,17 @@ class JdSemaphore
     { }
 	
 	
-	void Lock ()
+	void LockMutex ()
 	{
 		m_mutex.lock ();
 	}
 	
-	void Unlock ()
+	void UnlockMutex ()
 	{
 		m_mutex.unlock ();
 	}
 	
-    unsigned int GetCount() const //for debugging/testing only
+    u64 GetCount () const //for debugging/testing only
     {
         return m_count;
     }

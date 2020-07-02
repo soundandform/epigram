@@ -2168,7 +2168,7 @@ class EpigramT : public interface_t
 	
 	size_t						GetCapacity			() const	{ return m_allocator.GetCapacity (); }
 	size_t						GetSize				() const	{ return m_allocator.GetNumUsedBytes (); }
-	u32							GetSequence			() const	{ return m_allocator.GetSequence (); }
+	u32							GetSequence			() const	{ return m_allocator.GetSequence (); }		// starts at 0
 	void						Reset				()			{ m_allocator.Reset (); }
 	void						Clear				()			{ m_allocator.Clear (); }
 	

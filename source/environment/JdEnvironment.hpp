@@ -103,34 +103,7 @@ class JdEnvironment
 		return result;
 	}
 	
-	
-	void Teardown ()
-	{
-		JdResult result;
-		
-		if (m_timersEnabled)
-		{
-			jd_lock (jd_timers)
-			{
-				jd_timers->StopAllTimers ();
-			}
-		}
-		
-		jd_timers.Release ();
-		
-		result = m_server.GetScheduler()->Teardown ();
-		
-		m_server.Teardown ();
-		
-#if FIX
-		jd_broadcaster.ForceRelease ();	// teardown broadcaster last
-#endif
-		
-		m_server.Teardown (true);
-		
-		m_initialized = false;
-	}
-	
+	JdResult 		Teardown				();
 	
 	void  			RunMainThread			(f64 i_maxDurationInSeconds);
 	void  			RunMainLoop				(f64 i_durationInSeconds);

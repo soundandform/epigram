@@ -61,3 +61,35 @@ void  JdEnvironment::RunMainLoop  (f64 i_durationInSeconds)
 	
 	mainThread->RunLoop (i_durationInSeconds * 1e6);
 }
+
+
+JdResult  JdEnvironment::Teardown  ()
+{
+	JdResult result;
+	
+	Jd::EnforceMainThread ();
+	
+	if (m_timersEnabled)
+	{
+		jd_lock (jd_timers)
+			jd_timers->StopAllTimers ();
+		
+		m_timersEnabled = false;
+	}
+	
+	jd_timers.Release ();
+	
+	result = m_server.GetScheduler()->Teardown ();
+	
+	m_server.Teardown ();
+	
+#if FIX
+	jd_broadcaster.ForceRelease ();	// teardown broadcaster last
+#endif
+	
+	m_server.Teardown (true);
+	
+	m_initialized = false;
+	
+	return result;
+}
