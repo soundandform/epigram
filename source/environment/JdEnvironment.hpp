@@ -141,7 +141,8 @@ class JdEnvironment
 		return & m_server;
 	}
 	
-	//	IJdModuleServer					GetServer					() { return & m_server; }
+	
+	JdServer &						GetServer					() { return m_server; }
 	
 	protected ://------------------------------------------------------------------------------------------------------
 	
