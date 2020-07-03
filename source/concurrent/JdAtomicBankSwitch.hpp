@@ -27,19 +27,42 @@
 
 */
 
-class JdAtomicBankSwitch
+class JdAtomicSwitch
 {
 	public:
 	// called by the write thread
-	u32			GetWriteBank 		();			// returns 0 or 1
-	void		ReleaseWriteBank 	();
+	u32			GetWriteIndex 		();			// returns 0 or 1
+	void		ReleaseWrite	 	();
 	
 	// called by the read thread
-	u32			GetReadBank 		();			// returns 0 or 1
+	u32			GetReadIndex 		();			// returns 0 or 1
 	
 	protected:
 	std::atomic <u8>			m_state			{ 0 };
 };
 
+template <typename T>
+struct JdAtomicBankSwitchT
+{
+	T &			GetWriteBank 		()
+	{
+		return m_banks [m_switch.GetWriteIndex ()];
+	}
+	
+	void		ReleaseWriteBank 	()
+	{
+		m_switch.ReleaseWrite ();
+	}
+	
+	T &			GetReadBank 		()
+	{
+		return m_banks [m_switch.GetReadIndex ()];
+	}
+
+	protected:
+	T				m_banks 		[2];
+	
+	JdAtomicSwitch	m_switch;
+};
 
 #endif /* defined(__Jigidesign__JdAtomicBankSwitch__) */

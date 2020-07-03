@@ -72,7 +72,7 @@ JdResult  JdEnvironment::Teardown  ()
 	if (m_timersEnabled)
 	{
 		jd_lock (jd_timers)
-			jd_timers->StopAllTimers ();
+			jd_timers->StopAllTimers ({});
 		
 		m_timersEnabled = false;
 	}

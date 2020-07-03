@@ -9,7 +9,7 @@
 #include "JdAtomicBankSwitch.hpp"
 
 
-u32  JdAtomicBankSwitch::GetWriteBank  ()		// returns 0 or 1
+u32  JdAtomicSwitch::GetWriteIndex  ()		// returns 0 or 1
 {
 	while (true)
 	{
@@ -26,14 +26,14 @@ u32  JdAtomicBankSwitch::GetWriteBank  ()		// returns 0 or 1
 	}
 }
 
-void  JdAtomicBankSwitch::ReleaseWriteBank  ()
+void  JdAtomicSwitch::ReleaseWrite  ()
 {
 	// signal the reader to switch banks
 	m_state |= 0x10;
 }
 
 
-u32  JdAtomicBankSwitch::GetReadBank  ()	// returns 0 or 1
+u32  JdAtomicSwitch::GetReadIndex  ()	// returns 0 or 1
 {
 	u8 state = m_state;
 	u8 switchSignaled = state & 0x10;
