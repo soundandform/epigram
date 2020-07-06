@@ -68,10 +68,11 @@ class JdEnvironment
 				
 				if (m_timersEnabled)
 				{
+					result = jd_timers.Bind (& m_server);
+
 					try
 					{
 //						jd_broadcaster.Bind (& m_server); // This is the notification delivery module
-						jd_timers.Bind (& m_server);
 					}
 					
 					catch (...)
@@ -83,18 +84,21 @@ class JdEnvironment
 //					m_timer = timers->ScheduleTimer (10, this, 0);
 				}
 				
-				auto scheduler = m_server.GetScheduler ();
-				
-				if (m_timersEnabled)
+				if (not result)
 				{
-					auto driver = jd_timers.Cast <IJdTimerDriver> ();
+					auto scheduler = m_server.GetScheduler ();
 					
-					scheduler->AddTimerThread (driver);
+					if (m_timersEnabled)
+					{
+						auto driver = jd_timers.Cast <IJdTimerDriver> ();
+						
+						scheduler->AddTimerThread (driver);
+					}
+	//				else
+	//				scheduler->AddThreads (1);
+					
+					scheduler->Start ();
 				}
-//				else
-//				scheduler->AddThreads (1);
-				
-				scheduler->Start ();
 				
 				m_initialized = true;
 			}

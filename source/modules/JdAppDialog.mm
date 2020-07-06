@@ -45,6 +45,7 @@ d_jdModule (JdAppDialog, IJdAppDialog)
 
 //		[alert beginSheetModalForWindow: [NSApp mainWindow] completionHandler:<#^(NSModalResponse returnCode)handler#>]
 		
+//		[[NSRunningApplication currentApplication] activateWithOptions:NSApplicationActivateIgnoringOtherApps];
 		if ([alert runModal] == NSAlertFirstButtonReturn)
 		{
 			return 1;
