@@ -412,7 +412,7 @@ struct JdPreconditions
 # if DEBUG
 #	define d_jdIfDebug(STUFF) STUFF
 # else
-#	define d_jdIfDebug(STUFF)
+#	define d_jdIfDebug(STUFF) {}
 # endif
 
 #endif
