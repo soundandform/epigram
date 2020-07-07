@@ -13,9 +13,9 @@
 
 d_jdStruct (JdModuleId)
 {
-	static const u64 c_instanceIdMask		= std::numeric_limits <u64>::max () >> 3;	// top bit unused + 2 flag bits
-//	const u64 c_moduleIdFlag				= 1LL << 63;
-	static const u64 c_namedInstanceFlag	= 1LL << 61;
+	static const u64 c_instanceIdMask		= std::numeric_limits <u64>::max () >> 4;	// top bit unused + 3 flag bits
+
+	static const u64 c_namedInstanceFlag	= 1LL << 60;
 
 //	JdModuleId (const JdModuleId & i_id)
 //	{
@@ -30,6 +30,11 @@ d_jdStruct (JdModuleId)
 		m_id = c_namedInstanceFlag | Jd::HashString64 (i_moduleName);
 	}
 	
+	JdModuleId (stringRef_t i_moduleName)
+	{
+		m_id = c_namedInstanceFlag | Jd::HashString64 (i_moduleName);
+	}
+
 //	bool		IsInstanceId	() const
 //	{
 //		return ((m_id & c_moduleIdFlag) == 0);
@@ -70,12 +75,14 @@ d_jdStruct (JdModuleId)
 typedef JdModuleId 		JdId;
 typedef JdModuleIdRef 	JdIdRef;
 
+//const JdModuleId 		c_jdSingletonId			{ "singleton" };
+
 
 inline std::ostream & operator << (std::ostream & output, JdIdRef i_moduleId)
 {
 	char temp [64];
 //	if (i_moduleId.IsInstanceId ()) output << "i.";
-	sprintf (temp, "i:%016llX", (u64) i_moduleId);
+	sprintf (temp, "i.%016llX", (u64) i_moduleId);
 	output << temp;
 	return output;
 }
