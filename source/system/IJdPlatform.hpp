@@ -11,7 +11,7 @@
 
 #include "IEpigram.hpp"
 #include "JdCore.hpp"
-#include "JdModuleId.hpp"
+#include "JdId.hpp"
 #include "JdEnum.hpp"
 
 /*
