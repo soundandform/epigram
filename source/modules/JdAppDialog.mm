@@ -9,7 +9,6 @@
 
 #include "JdAppDialog.hpp"
 
-#include "JdModule.hpp"
 #include "JdThread.hpp"
 
 #import <Foundation/Foundation.h>

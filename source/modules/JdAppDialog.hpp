@@ -9,7 +9,7 @@
 #ifndef JdAppDialog_h
 #define JdAppDialog_h
 
-#include "JdInterface.h"
+#include "IJdModule.hpp"
 
 
 d_jdModuleInterface (IJdAppDialog, 1.0)

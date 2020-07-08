@@ -75,8 +75,6 @@ d_jdStruct (JdModuleId)
 typedef JdModuleId 		JdId;
 typedef JdModuleIdRef 	JdIdRef;
 
-//const JdModuleId 		c_jdSingletonId			{ "singleton" };
-
 
 inline std::ostream & operator << (std::ostream & output, JdIdRef i_moduleId)
 {

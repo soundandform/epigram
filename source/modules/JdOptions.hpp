@@ -8,7 +8,7 @@
 #ifndef JdOptions_hpp
 #define JdOptions_hpp
 
-#include "JdInterface.h"
+#include "IJdModule.hpp"
 
 d_jdModuleInterface (IJdOptions, 1.0)
 {
