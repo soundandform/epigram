@@ -79,7 +79,7 @@ d_jdModule (JdOptions, IJdOptions)
 		JdDatabase::QueryGenerator <1024> keyGenerator;
 		string key = keyGenerator.EncodeColumns ({"k"_= i_key}, ",", false);
 		
-		string sql = Jd::SPrintF ("SELECT (v) FROM @ WHERE @", GetTableName (), key);		cout << sql << endl;
+		string sql = Jd::SPrintF ("SELECT (v) FROM @ WHERE @", GetTableName (), key);	//	cout << sql << endl;
 		
 		result = j_sql->Prepare (sql.c_str ());
 		
