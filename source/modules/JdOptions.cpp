@@ -116,6 +116,23 @@ d_jdModule (JdOptions, IJdOptions)
 	}
 	
 	
+	
+	d_jdMethod		(string,	Get,			string key;	string type)
+	{
+		decltype (i_.type) value;
+		Get (i_.key, value);
+		return value;
+	}
+
+	
+	d_jdMethod1		(i64,		Get,			string key;	i64 type)
+	{
+		decltype (i_.type) value;
+		Get (i_.key, value);
+		return value;
+	}
+	
+
 	cstr_t			GetTableName 	()
 	{
 		return "app_options";
