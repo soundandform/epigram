@@ -44,25 +44,25 @@ d_jdModule (JdOptions, IJdOptions)
 		JdDatabase::QueryGenerator <1024> valueGenerator;
 		string value = valueGenerator.EncodeColumns ({"v"_= i_value}, ",", false);
 		
-		string sql = Jd::SPrintF ("INSERT INTO @ (k,v) VALUES (?,?);", GetTableName ());		// cout << sql << endl;
+		string sql = Jd::SPrintF ("UPDATE @ SET @ WHERE @;", GetTableName (), value, key);		// cout << sql << endl;
 		
 		result = j_sql->Prepare (sql.c_str ());
 		
+		i32 index = valueGenerator.BindBlobs (j_sql);
+		keyGenerator.BindBlobs (j_sql, index);
+		
+		result = QuietSqlResult (j_sql->Step ());
+
 		if (not result)
 		{
-			i32 index = keyGenerator.BindBlobs (j_sql);
-			valueGenerator.BindBlobs (j_sql, index);
-			
-			result = QuietSqlResult (j_sql->Step ());
-			
-			if (result)
+			if (j_sql->GetChangeCount () == 0)
 			{
-				sql = Jd::SPrintF ("UPDATE @ SET @ WHERE @;", GetTableName (), value, key);		// cout << sql << endl;
-				
+				sql = Jd::SPrintF ("INSERT INTO @ (k,v) VALUES (?,?);", GetTableName ());		// cout << sql << endl;
+			
 				result = j_sql->Prepare (sql.c_str ());
-				
-				index = valueGenerator.BindBlobs (j_sql);
-				keyGenerator.BindBlobs (j_sql, index);
+			
+				i32 index = keyGenerator.BindBlobs (j_sql);
+				valueGenerator.BindBlobs (j_sql, index);
 				
 				result = QuietSqlResult (j_sql->Step ());
 			}
