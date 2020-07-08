@@ -11,7 +11,7 @@
 #include "JdRandom.hpp"
 #include "JdCoreL2.hpp"
 
-d_jdStruct (JdModuleId)
+d_jdStruct (JdId)
 {
 	static const u64 c_instanceIdMask		= std::numeric_limits <u64>::max () >> 4;	// top bit unused + 3 flag bits
 
@@ -22,15 +22,15 @@ d_jdStruct (JdModuleId)
 //		m_id = i_id.m_id;
 //	}
 	
-	JdModuleId () { }
-	JdModuleId (u64 i_id) : m_id (i_id) { }
+	JdId () { }
+	JdId (u64 i_id) : m_id (i_id) { }
 
-	JdModuleId (cstr_t i_moduleName)
+	JdId (cstr_t i_moduleName)
 	{
 		m_id = c_namedInstanceFlag | Jd::HashString64 (i_moduleName);
 	}
 	
-	JdModuleId (stringRef_t i_moduleName)
+	JdId (stringRef_t i_moduleName)
 	{
 		m_id = c_namedInstanceFlag | Jd::HashString64 (i_moduleName);
 	}
@@ -55,25 +55,22 @@ d_jdStruct (JdModuleId)
 		return m_id;// & ~c_moduleIdFlag;
 	}
 	
-	JdModuleId & operator =		(const JdModuleId & i_moduleId)
+	JdId & operator =		(const JdId & i_moduleId)
 	{
 		m_id = i_moduleId.m_id;
 		return * this;
 	}
 
 	static
-	JdModuleId		New			()
+	JdId		New			()
 	{
-		return JdModuleId (JdRandom::Get <u64> () & c_instanceIdMask);
+		return JdId (JdRandom::Get <u64> () & c_instanceIdMask);
 	}
 
 	protected:
 	u64				m_id		= 0;
 };
 
-
-typedef JdModuleId 		JdId;
-typedef JdModuleIdRef 	JdIdRef;
 
 
 inline std::ostream & operator << (std::ostream & output, JdIdRef i_moduleId)
@@ -85,6 +82,6 @@ inline std::ostream & operator << (std::ostream & output, JdIdRef i_moduleId)
 	return output;
 }
 
-const JdModuleId c_jdNullModuleId;
+const JdId c_jdNullModuleId;
 
 #endif /* JdModuleId_hpp */
