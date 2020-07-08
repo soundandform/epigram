@@ -282,7 +282,7 @@ class JdThreadT
 	JdResult				Stop ()
 	{
         if (m_state != c_jdThreadState::running)
-			return d_jdError ("Thread not running.");
+			return d_jdError1 ("Thread not running.");
 		
         m_state = c_jdThreadState::quiting;
         
@@ -472,7 +472,7 @@ class JdThread
 	JdResult				Stop ()
 	{
 		if (m_state != c_jdThreadState::running)
-			return d_jdError ("Thread not running.");
+			return d_jdError ("thread not running.");
 		
 		m_state = c_jdThreadState::quiting;
 		Break ();

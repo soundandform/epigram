@@ -345,7 +345,7 @@ bool operator != (const JdResultT <R1A>  &i_a, const JdResultT <R1B> &i_b)
 const JdResult c_jdNoErr;
 	
 #define d_jdResult(...)											JdResult ((JdFormatter() << __VA_ARGS__), __FILE__, __LINE__)
-#define d_jdError(...)											JdResult ((JdFormatter() << __VA_ARGS__), __FILE__, __LINE__)
-#define d_jdError2(...)											JdResult (Jd::SPrintF(__VA_ARGS__).c_str(), __FILE__, __LINE__)
+#define d_jdError1(...)											JdResult ((JdFormatter() << __VA_ARGS__), __FILE__, __LINE__)
+#define d_jdError(...)											JdResult (Jd::SPrintF(__VA_ARGS__).c_str(), __FILE__, __LINE__)
 
 #endif /* defined(__Jigidesign__JdResult__) */

@@ -229,7 +229,7 @@ class JdFibers
 			if (i_forceQuit)
 			{
 			}
-			else return d_jdError2 ("can't release active fiber without i_forceQuit");
+			else return d_jdError ("can't release active fiber without i_forceQuit");
 		}
 		
 		if (controller->m_state == c_jdFiber::exiting)
@@ -324,7 +324,7 @@ class JdFibers
 				
 				o_result = m_result;
 			}
-			else o_result = d_jdError2 ("invalid fiber state");
+			else o_result = d_jdError ("invalid fiber state");
 			
 			return m_state;
 		}
