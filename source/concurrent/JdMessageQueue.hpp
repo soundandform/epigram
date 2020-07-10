@@ -53,10 +53,10 @@ class JdPortSequence : protected JdCacheLinePadded <atomic <seq_t>>
 		while (true)
 		{
 			seq_t previousSeq = i_newSequenceNum - 1;
-			if (value.compare_exchange_strong (previousSeq, i_newSequenceNum))
+			if (value.compare_exchange_weak (previousSeq, i_newSequenceNum))
 				return;
 			
-			sleep (0); // FIX: improve
+			this_thread::yield ();  // TODO: could improve?
 		}
 	}
 	
@@ -80,12 +80,12 @@ struct JdThreadPortPathway
 {
 	JdThreadPortPathway	() { }
 	
-	JdThreadPortPathway	(u32 i_pathwaySizeInNumMessages)
-	{
-		u32 roundSize = Jd::Pow2CeilLog2 (i_pathwaySizeInNumMessages);
-		m_queue.Resize (roundSize);
-		m_sequenceMask = --roundSize;
-	}
+//	JdThreadPortPathway	(u32 i_pathwaySizeInNumMessages)
+//	{
+//		u32 roundSize = Jd::Pow2CeilLog2 (i_pathwaySizeInNumMessages);
+//		m_queue.Resize (roundSize);
+//		m_sequenceMask = --roundSize;
+//	}
 	
 	void SetPathwaySize (u32 i_pathwaySizeInNumMessages)
 	{

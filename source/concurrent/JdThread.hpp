@@ -204,7 +204,7 @@ class JdThreadT
 		{
 			result = Stop ();
 			
-			if (! result)
+			if (not result)
 			{
 				if (m_state == c_jdThreadState::quit)
 				{
@@ -292,7 +292,7 @@ class JdThreadT
         {
 			auto p = static_cast <IJdThread *> (m_implementation);
             result = p->Break();
-            if (! result) break;
+            if (not result) break;
             usleep (10000);
         }
         
