@@ -56,7 +56,7 @@ JdResult JdResert (bool i_shouldBeTrue, cstr_t i_truthfulOrLyingStatement, cstr_
 		if (i_format)
 			message = Jd::SPrintF (i_format, i_args...);
 		
-		result = JdResert (i_truthfulOrLyingStatement, i_filePath, i_lineNum, message);
+//		result = JdResert (i_truthfulOrLyingStatement, i_filePath, i_lineNum, message);
 	}
 	
 	return result;

@@ -42,7 +42,7 @@ tuple <T1> jd_return (T1 && i_return1) { return tuple <T1> (i_return1); }
 
 struct JdR {};
 
-struct JdResultLocation
+struct JdFileLocation
 {
 	typedef cstr_t type;
 	
@@ -57,8 +57,8 @@ struct JdResultLocation
 };
 
 
-template <typename t_locationInfo = JdResultLocation, typename R1 = JdR>
-class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResultT <R1>, /* version: */ 1, /* epigram name: */ JdR>
+template <typename R1, typename t_locationInfo = JdFileLocation>
+class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResultT <R1, t_locationInfo>, /* version: */ 1, /* epigram name: */ JdR>
 {
 	typedef typename t_locationInfo::type location_t;
 	
@@ -66,7 +66,7 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 
 	public:
 							JdResultT				() {}
-							~JdResultT				() {}
+//							~JdResultT				() {}
 
 
 	template <typename T1>
@@ -80,12 +80,22 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 							m_return				(i_return)
 							{ }
 
-	
-							JdResultT 				(const JdResultT <JdResultLocation> & i_return)
+
+							JdResultT 				(const JdResultT & i_result)
 							:
-							t_locationInfo			(i_return),
-							m_resultCode			(i_return.m_resultCode),
-							m_message				(i_return.m_message)
+							t_locationInfo			(i_result),
+							m_resultCode			(i_result.m_resultCode),
+							m_message				(i_result.m_message),
+							m_return				(i_result.m_return)
+							{ }
+
+	
+							template <typename R, typename L>
+							JdResultT 				(const JdResultT <R,L> & i_result)
+							:
+							t_locationInfo			(i_result),
+							m_resultCode			(i_result.m_resultCode),
+							m_message				(i_result.m_message)
 							{ }
 	
 
@@ -140,7 +150,7 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 		m_resultCode = (i32) hash;
 	}
 	
-	JdResultT &				operator =				(const JdResultT <t_locationInfo, R1> & i_other)
+	JdResultT &				operator =				(const JdResultT <R1, t_locationInfo> & i_other)
 	{
 		if ((voidptr_t) & i_other != this)
 		{
@@ -286,8 +296,8 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 	}
 };
 
-typedef JdResultT <> 			JdResult;
-typedef const JdResult & 		JdResultRef;
+typedef JdResultT <JdR, JdFileLocation> 			JdResult;
+typedef const JdResult & 							JdResultRef;
 
 template <typename L, typename R1>
 std::ostream & operator << (std::ostream &output, const JdResultT <L, R1> & i_result)
