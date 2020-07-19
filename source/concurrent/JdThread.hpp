@@ -9,6 +9,7 @@
 #ifndef __Jigidesign__JdThread__
 #define __Jigidesign__JdThread__
 
+#include "Epilog.hpp"
 #include "Epigram.hpp"
 #include "JdSemaphore.hpp"
 #include "JdEnum.hpp"
@@ -16,7 +17,7 @@
 #include <pthread.h>
 #include <unistd.h>
 
-#define d_epilogBuild 1
+//#define d_epilogBuild 0
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -106,15 +107,16 @@ class JdThreadT
 		// set thread priority
 		if (i_priority != c_jdThread_defaultPriority)
 		{
-			struct sched_param sp;
-			memset (&sp, 0, sizeof (struct sched_param));
-			sp.sched_priority = i_priority;
-			
-			
 			i32 policy = SCHED_OTHER;
 //			policy = SCHED_RR;
 			
-			if (pthread_setschedparam (pthread_self(), policy, &sp) != 0)
+			i_priority = min ((u8) sched_get_priority_max (policy), i_priority);
+			i_priority = max ((u8) sched_get_priority_min (policy), i_priority);
+
+			sched_param sp = {};
+			sp.sched_priority = i_priority;
+
+			if (pthread_setschedparam (pthread_self (), policy, &sp))
 			{
 				#ifndef d_epilogBuild
 					epilog_func (detail, "set priority of @ failed for '@'", (u32) sp.sched_priority, i_owner->m_threadName);
@@ -452,7 +454,7 @@ class JdThread
 			m_state = c_jdThreadState::initializing;
 			
 			#ifndef d_epilogBuild
-				epilog_(detail, "start: '%s'", m_threadName);
+				epilog (detail, "start: '%s'", m_threadName);
 			#endif
 			m_stdThread = std::thread (Runner, this, m_priority);
 			
