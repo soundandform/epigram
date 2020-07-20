@@ -217,6 +217,11 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 		return get <0> (m_return);
 	}
 
+	const R1 &					Return 					() const
+	{
+		return get <0> (m_return);
+	}
+
 	
 	// FIX: Get these
 	i32						Code					() const

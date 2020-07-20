@@ -118,7 +118,7 @@ bool operator == (JdNewUUID const& lhs, JdUUID const& rhs);
 
 bool operator < (JdUUID const& lhs, JdUUID const& rhs);
 	
-const JdUUID c_jdNullId;
+const JdUUID c_jdNullUuid;
 
 d_jdResultConst (Uuid, isExtant, "UUID is extant")
 

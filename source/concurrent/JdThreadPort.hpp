@@ -767,6 +767,8 @@ class JdMessagePortT
 
 #include "JdThread.hpp"
 
+/*
+
 template <typename Handler>
 class JdPortedThread : public JdThread, public JdThreadPort <Handler>
 {
@@ -880,5 +882,6 @@ struct JdThreadPort2 : public JdMessagePortT <t_thread, t_argSize>, public IJdTh
     u64                 m_nextIdle			= 0;
 };
 
+*/
 
 #endif /* defined(__Jigidesign__JdThreadPort__) */

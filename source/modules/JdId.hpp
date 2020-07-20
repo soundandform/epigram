@@ -82,6 +82,6 @@ inline std::ostream & operator << (std::ostream & output, JdIdRef i_moduleId)
 	return output;
 }
 
-const JdId c_jdNullModuleId;
+const JdId c_jdNullId;
 
 #endif /* JdModuleId_hpp */
