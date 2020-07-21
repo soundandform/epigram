@@ -94,8 +94,7 @@ class JdEnvironment
 						
 						scheduler->AddTimerThread (driver);
 					}
-	//				else
-	//				scheduler->AddThreads (1);
+					else scheduler->AddThreads (1);
 					
 					scheduler->Start ();
 				}
