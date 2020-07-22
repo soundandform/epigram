@@ -91,11 +91,16 @@ class JdThreadT
 		// set thread priority
 		if (i_priority != c_jdThread_defaultPriority)
 		{
-			i32 policy = SCHED_OTHER;
+			i32 policy;
+//			policy = SCHED_OTHER;
 //			policy = SCHED_RR;
+			policy = SCHED_FIFO;
 			
-			i_priority = min ((u8) sched_get_priority_max (policy), i_priority);
-			i_priority = max ((u8) sched_get_priority_min (policy), i_priority);
+			// TODO: read this. https://developer.apple.com/library/archive/documentation/Darwin/Conceptual/KernelProgramming/scheduler/scheduler.html#//apple_ref/doc/uid/TP30000905-CH211-TPXREF109
+			
+			// these don't seem to be correct. returns max of 47. can set to 127 without failure
+//			i_priority = min ((u8) sched_get_priority_max (policy), i_priority);
+//			i_priority = max ((u8) sched_get_priority_min (policy), i_priority);
 
 			sched_param sp = {};
 			sp.sched_priority = i_priority;
