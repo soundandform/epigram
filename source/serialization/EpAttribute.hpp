@@ -167,20 +167,20 @@ template <typename T> using EpHash64Attribute = EpAttribute <EpHash64, T>;
 
 //#define d_attribute(TYPE, NAME)										static const EpStringAttribute <TYPE> a_##NAME (#NAME);
 
-#define d_epAttribute(TYPE, CATEGORY, NAME)							namespace a_##CATEGORY { static const EpStringAttribute <TYPE> NAME (#NAME); }
-#define d_epAttributeWithDefault(TYPE, CATEGORY, NAME, DEFAULT)		namespace a_##CATEGORY { static const EpStringAttribute <TYPE> NAME (#NAME, DEFAULT); }
+#define d_epNoCatAttribute(TYPE, CATEGORY, NAME)						namespace a_##CATEGORY { static const EpStringAttribute <TYPE> NAME (#NAME); }
+#define d_epNoCatAttributeWithDefault(TYPE, CATEGORY, NAME, DEFAULT)	namespace a_##CATEGORY { static const EpStringAttribute <TYPE> NAME (#NAME, DEFAULT); }
 
-//#define d_epAttribute(TYPE, CATEGORY, NAME)							namespace a_##CATEGORY { static const EpStringAttribute <TYPE> NAME (#CATEGORY ":" #NAME); }
-//#define d_epAttributeWithDefault(TYPE, CATEGORY, NAME, DEFAULT)		namespace a_##CATEGORY { static const EpStringAttribute <TYPE> NAME (#CATEGORY ":" #NAME, DEFAULT); }
+#define d_epAttribute(TYPE, CATEGORY, NAME)							namespace a_##CATEGORY { static const EpStringAttribute <TYPE> NAME (#CATEGORY ":" #NAME); }
+#define d_epAttributeWithDefault(TYPE, CATEGORY, NAME, DEFAULT)		namespace a_##CATEGORY { static const EpStringAttribute <TYPE> NAME (#CATEGORY ":" #NAME, DEFAULT); }
 
 #define d_jdAttribute(TYPE, CATEGORY, NAME)							namespace a_jd##CATEGORY { static const EpStringAttribute <TYPE> NAME (#NAME); }
 
 #define d_epHashAttribute(TYPE, CATEGORY, NAME)						namespace a_##CATEGORY { static const EpHash32Attribute <TYPE> NAME (#CATEGORY ":" #NAME); }
 
-#define d_attributeWithDefault(TYPE, NAME, DEFAULT)					static const EpStringAttribute <TYPE> a_##NAME (#NAME, DEFAULT);
+//#define d_attributeWithDefault(TYPE, NAME, DEFAULT)					static const EpStringAttribute <TYPE> a_##NAME (#NAME, DEFAULT);
 
-#define d_attribute_enum(ENUM,NAME)									d_attribute (u32, NAME)
+//#define d_attribute_enum(ENUM,NAME)									d_attribute (u32, NAME)
 
-#define d_attributeWithDefault_i32(NAME, DEFAULT)					d_attributeWithDefault(i32, NAME, DEFAULT)
+//#define d_attributeWithDefault_i32(NAME, DEFAULT)					d_attributeWithDefault(i32, NAME, DEFAULT)
 
 #endif
