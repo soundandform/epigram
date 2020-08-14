@@ -60,7 +60,7 @@ void RunSession (socket_ptr sock, EpilogMsgQueue * i_queue)
 				{
 					d_jdAssert (totalNeededPacketSize <= sizeof (EpilogMsg), "message overflow");
 					
-					i_queue->QueueMessage (* msg);
+					i_queue->Push (* msg);
 					
 					totalLength -= totalNeededPacketSize;
 					ptr -= totalNeededPacketSize;

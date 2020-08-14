@@ -26,7 +26,6 @@
 		B52A13262490143400B8F3F6 /* JdThreadPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A13072490143400B8F3F6 /* JdThreadPort.cpp */; };
 		B52A13272490143400B8F3F6 /* JdAtomicBankSwitch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A130B2490143400B8F3F6 /* JdAtomicBankSwitch.cpp */; };
 		B52A13282490143400B8F3F6 /* JdThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A130C2490143400B8F3F6 /* JdThread.cpp */; };
-		B52A13292490143400B8F3F6 /* JdFiber.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A130F2490143400B8F3F6 /* JdFiber.cpp */; };
 		B52A132A2490148300B8F3F6 /* epilog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12C82490143400B8F3F6 /* epilog.cpp */; };
 		B52A132B2490148600B8F3F6 /* EpilogCliServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12C92490143400B8F3F6 /* EpilogCliServer.cpp */; };
 		B52A132C2490149300B8F3F6 /* EpilogLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12CA2490143400B8F3F6 /* EpilogLib.cpp */; };
@@ -43,23 +42,18 @@
 		B52A13372490165B00B8F3F6 /* JdCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12D32490143400B8F3F6 /* JdCore.cpp */; };
 		B530F95C2490212B009AB853 /* test.modules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B530F95B2490212B009AB853 /* test.modules.cpp */; };
 		B562BD771FB55D9500FDE277 /* test.epigram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B562BD761FB55D9500FDE277 /* test.epigram.cpp */; };
-		B580E2431FB64CF100DD177B /* libboost_timer-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2411FB64CF100DD177B /* libboost_timer-clang-darwin42-mt-x64-1_67.a */; };
-		B580E2441FB64CF100DD177B /* libboost_chrono-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2421FB64CF100DD177B /* libboost_chrono-clang-darwin42-mt-x64-1_67.a */; };
-		B580E2461FB64D0B00DD177B /* libboost_system-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2451FB64D0A00DD177B /* libboost_system-clang-darwin42-mt-x64-1_67.a */; };
 		B583D0941FA97E85007C07F0 /* test.core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B583D0931FA97E85007C07F0 /* test.core.cpp */; };
-		B583D0C11FA97F0D007C07F0 /* libboost_context-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B583D0C01FA97F0D007C07F0 /* libboost_context-clang-darwin42-mt-x64-1_67.a */; };
 		B583D0C31FA97F20007C07F0 /* city.o in Frameworks */ = {isa = PBXBuildFile; fileRef = B583D0C21FA97F20007C07F0 /* city.o */; };
-		B5C695C8202A1552001DC0F3 /* libboost_system-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2451FB64D0A00DD177B /* libboost_system-clang-darwin42-mt-x64-1_67.a */; };
-		B5C695CE202A1553001DC0F3 /* libboost_program_options-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C695CB202A1553001DC0F3 /* libboost_program_options-clang-darwin42-mt-x64-1_67.a */; };
-		B5C695CF202A1553001DC0F3 /* libboost_thread-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C695CC202A1553001DC0F3 /* libboost_thread-clang-darwin42-mt-x64-1_67.a */; };
-		B5D09CF920AE742B0036BB57 /* libboost_timer-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2411FB64CF100DD177B /* libboost_timer-clang-darwin42-mt-x64-1_67.a */; };
-		B5D09CFB20AE743A0036BB57 /* libboost_system-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2451FB64D0A00DD177B /* libboost_system-clang-darwin42-mt-x64-1_67.a */; };
-		B5D09D0420AE74A30036BB57 /* libboost_thread-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C695CC202A1553001DC0F3 /* libboost_thread-clang-darwin42-mt-x64-1_67.a */; };
-		B5D09D0620AE74B50036BB57 /* libboost_chrono-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B580E2421FB64CF100DD177B /* libboost_chrono-clang-darwin42-mt-x64-1_67.a */; };
 		B5D09D0820AE74D10036BB57 /* city.o in Frameworks */ = {isa = PBXBuildFile; fileRef = B583D0C21FA97F20007C07F0 /* city.o */; };
 		B5D09D0920AE76200036BB57 /* libepilogger.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B5D09CED20AE740C0036BB57 /* libepilogger.dylib */; };
 		B5DB7A5C20AE3D9000FB25CD /* epilog in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5C695B82029E42A001DC0F3 /* epilog */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		B5DB7A6020AE3E7900FB25CD /* libboost_thread-clang-darwin42-mt-x64-1_67.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C695CC202A1553001DC0F3 /* libboost_thread-clang-darwin42-mt-x64-1_67.a */; };
+		B5F6F2BC24E7437C006627C7 /* libboost_program_options-clang-darwin110-mt-x64-1_74.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5F6F2BB24E7437C006627C7 /* libboost_program_options-clang-darwin110-mt-x64-1_74.a */; };
+		B5F6F2BE24E74ED9006627C7 /* libboost_timer-clang-darwin110-mt-x64-1_74.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5F6F2BD24E74ED9006627C7 /* libboost_timer-clang-darwin110-mt-x64-1_74.a */; };
+		B5F6F2C024E74EEC006627C7 /* libboost_chrono-clang-darwin110-mt-x64-1_74.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5F6F2BF24E74EEC006627C7 /* libboost_chrono-clang-darwin110-mt-x64-1_74.a */; };
+		B5F6F2C224E7507A006627C7 /* libboost_context-clang-darwin110-mt-x64-1_74.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5F6F2C124E7507A006627C7 /* libboost_context-clang-darwin110-mt-x64-1_74.a */; };
+		B5F6F2C324E75089006627C7 /* libboost_chrono-clang-darwin110-mt-x64-1_74.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5F6F2BF24E74EEC006627C7 /* libboost_chrono-clang-darwin110-mt-x64-1_74.a */; };
+		B5F6F2C424E75089006627C7 /* libboost_timer-clang-darwin110-mt-x64-1_74.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5F6F2BD24E74ED9006627C7 /* libboost_timer-clang-darwin110-mt-x64-1_74.a */; };
+		B5F6F2C624E750A3006627C7 /* EpAttribute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5F6F2C524E750A3006627C7 /* EpAttribute.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -179,6 +173,11 @@
 		B5C695CB202A1553001DC0F3 /* libboost_program_options-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_program_options-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_program_options-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
 		B5C695CC202A1553001DC0F3 /* libboost_thread-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_thread-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_thread-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
 		B5D09CED20AE740C0036BB57 /* libepilogger.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libepilogger.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5F6F2BB24E7437C006627C7 /* libboost_program_options-clang-darwin110-mt-x64-1_74.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_program_options-clang-darwin110-mt-x64-1_74.a"; path = "../../lib/libboost_program_options-clang-darwin110-mt-x64-1_74.a"; sourceTree = "<group>"; };
+		B5F6F2BD24E74ED9006627C7 /* libboost_timer-clang-darwin110-mt-x64-1_74.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_timer-clang-darwin110-mt-x64-1_74.a"; path = "../../lib/libboost_timer-clang-darwin110-mt-x64-1_74.a"; sourceTree = "<group>"; };
+		B5F6F2BF24E74EEC006627C7 /* libboost_chrono-clang-darwin110-mt-x64-1_74.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_chrono-clang-darwin110-mt-x64-1_74.a"; path = "../../lib/libboost_chrono-clang-darwin110-mt-x64-1_74.a"; sourceTree = "<group>"; };
+		B5F6F2C124E7507A006627C7 /* libboost_context-clang-darwin110-mt-x64-1_74.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_context-clang-darwin110-mt-x64-1_74.a"; path = "../../lib/libboost_context-clang-darwin110-mt-x64-1_74.a"; sourceTree = "<group>"; };
+		B5F6F2C524E750A3006627C7 /* EpAttribute.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EpAttribute.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -186,13 +185,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5F6F2C324E75089006627C7 /* libboost_chrono-clang-darwin110-mt-x64-1_74.a in Frameworks */,
+				B5F6F2C424E75089006627C7 /* libboost_timer-clang-darwin110-mt-x64-1_74.a in Frameworks */,
+				B5F6F2C224E7507A006627C7 /* libboost_context-clang-darwin110-mt-x64-1_74.a in Frameworks */,
 				B5D09D0920AE76200036BB57 /* libepilogger.dylib in Frameworks */,
 				B583D0C31FA97F20007C07F0 /* city.o in Frameworks */,
-				B580E2461FB64D0B00DD177B /* libboost_system-clang-darwin42-mt-x64-1_67.a in Frameworks */,
-				B583D0C11FA97F0D007C07F0 /* libboost_context-clang-darwin42-mt-x64-1_67.a in Frameworks */,
-				B5DB7A6020AE3E7900FB25CD /* libboost_thread-clang-darwin42-mt-x64-1_67.a in Frameworks */,
-				B580E2431FB64CF100DD177B /* libboost_timer-clang-darwin42-mt-x64-1_67.a in Frameworks */,
-				B580E2441FB64CF100DD177B /* libboost_chrono-clang-darwin42-mt-x64-1_67.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,9 +197,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B5C695CE202A1553001DC0F3 /* libboost_program_options-clang-darwin42-mt-x64-1_67.a in Frameworks */,
-				B5C695CF202A1553001DC0F3 /* libboost_thread-clang-darwin42-mt-x64-1_67.a in Frameworks */,
-				B5C695C8202A1552001DC0F3 /* libboost_system-clang-darwin42-mt-x64-1_67.a in Frameworks */,
+				B5F6F2BC24E7437C006627C7 /* libboost_program_options-clang-darwin110-mt-x64-1_74.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -210,11 +205,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5F6F2C024E74EEC006627C7 /* libboost_chrono-clang-darwin110-mt-x64-1_74.a in Frameworks */,
+				B5F6F2BE24E74ED9006627C7 /* libboost_timer-clang-darwin110-mt-x64-1_74.a in Frameworks */,
 				B5D09D0820AE74D10036BB57 /* city.o in Frameworks */,
-				B5D09D0420AE74A30036BB57 /* libboost_thread-clang-darwin42-mt-x64-1_67.a in Frameworks */,
-				B5D09CFB20AE743A0036BB57 /* libboost_system-clang-darwin42-mt-x64-1_67.a in Frameworks */,
-				B5D09D0620AE74B50036BB57 /* libboost_chrono-clang-darwin42-mt-x64-1_67.a in Frameworks */,
-				B5D09CF920AE742B0036BB57 /* libboost_timer-clang-darwin42-mt-x64-1_67.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,6 +307,7 @@
 		B52A12E42490143400B8F3F6 /* serialization */ = {
 			isa = PBXGroup;
 			children = (
+				B5F6F2C524E750A3006627C7 /* EpAttribute.cpp */,
 				B52A12E52490143400B8F3F6 /* EpigramDump.hpp */,
 				B52A12E62490143400B8F3F6 /* EpSerializationRaw.hpp */,
 				B52A12E72490143400B8F3F6 /* EpigramAppleUtil.h */,
@@ -405,6 +399,10 @@
 		B583D0BF1FA97F0D007C07F0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B5F6F2C124E7507A006627C7 /* libboost_context-clang-darwin110-mt-x64-1_74.a */,
+				B5F6F2BF24E74EEC006627C7 /* libboost_chrono-clang-darwin110-mt-x64-1_74.a */,
+				B5F6F2BD24E74ED9006627C7 /* libboost_timer-clang-darwin110-mt-x64-1_74.a */,
+				B5F6F2BB24E7437C006627C7 /* libboost_program_options-clang-darwin110-mt-x64-1_74.a */,
 				B5C695CA202A1553001DC0F3 /* libboost_date_time-clang-darwin42-mt-x64-1_67.a */,
 				B5C695CB202A1553001DC0F3 /* libboost_program_options-clang-darwin42-mt-x64-1_67.a */,
 				B5C695CC202A1553001DC0F3 /* libboost_thread-clang-darwin42-mt-x64-1_67.a */,
@@ -554,8 +552,8 @@
 			files = (
 				B52A13192490143400B8F3F6 /* JdAssert.cpp in Sources */,
 				B52A131F2490143400B8F3F6 /* JdVersion.cpp in Sources */,
-				B52A13292490143400B8F3F6 /* JdFiber.cpp in Sources */,
 				B52A131C2490143400B8F3F6 /* EpigramAppleUtil.cpp in Sources */,
+				B5F6F2C624E750A3006627C7 /* EpAttribute.cpp in Sources */,
 				B52A13242490143400B8F3F6 /* JdMacPlatform.mm in Sources */,
 				B52A13272490143400B8F3F6 /* JdAtomicBankSwitch.cpp in Sources */,
 				B530F95C2490212B009AB853 /* test.modules.cpp in Sources */,

@@ -8,8 +8,8 @@ mkdir lib
 
 cd external
 
-BOOST_VERSION=1.67.0
-BOOST=boost_1_67_0
+BOOST_VERSION=1.74.0
+BOOST=boost_1_74_0
 BOOST_TAR=$BOOST.tar.gz
 
 curl -L -O https://dl.bintray.com/boostorg/release/$BOOST_VERSION/source/$BOOST_TAR

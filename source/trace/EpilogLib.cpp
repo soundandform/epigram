@@ -20,6 +20,7 @@ using boost::asio::ip::tcp;
 #include "EpilogLib.hpp"
 #include "IJdPlatform.hpp"
 #include "JdUtils.hpp"
+#include "JdUUID.hpp"
 
 
 static CEpigramConnection * GetEpilog ()
@@ -95,7 +96,7 @@ void CEpigramConnection::DefineCategory (const char * i_className, const char * 
 		
 		memcpy (msg.eventPayload, i_category, msg.msgSize);
 		
-		m_queue.QueueMessage (msg);
+		m_queue.Push (msg);
 	}
 }
 
@@ -261,7 +262,7 @@ bool CEpigramConnection::Quit ()
 			EpilogQueuedMsg2k msg;
 			msg.event.size = 0;
 			msg.msgType = c_epilogMsg_quit;
-			m_queue.QueueMessage (msg);
+			m_queue.Push (msg);
 		}
 
 		m_thread.join();
@@ -482,7 +483,7 @@ void CEpigramConnection::LogDeferred (uint8_t i_importance, const char * i_class
 //	msg.msgSize = i_event->size;						// FIX: this isn't really used...
 	msg.threadId = (location_t) pthread_self ();
 	
-	m_queue.QueueMessage (msg);		// this copies the entire msg/event to the queue, so it can be formatted later
+	m_queue.Push (msg);		// this copies the entire msg/event to the queue, so it can be formatted later
 }
 
 

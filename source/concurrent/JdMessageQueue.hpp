@@ -528,7 +528,7 @@ struct JdThreadStream
 			
 			if (m_inPending == t_packetSize)
 			{
-				m_queue.QueueMessage (m_inPacket);
+				m_queue.Push (m_inPacket);
 				m_inPending = 0;
 			}
 		}
@@ -536,7 +536,7 @@ struct JdThreadStream
 		while (i_count >= t_packetSize)
 		{
 			auto packet = (Packet *) i_values;
-			m_queue.QueueMessage (* packet);
+			m_queue.Push (* packet);
 			
 			i_count -= t_packetSize;
 			i_values += t_packetSize;
@@ -572,7 +572,7 @@ struct JdThreadStream
 		while (i_required >= t_packetSize)
 		{
 			auto packet = (Packet *) o_values;
-			m_queue.WaitForMessage (* packet);
+			m_queue.PopWait (* packet);
 			
 			o_values += t_packetSize;
 			i_required -= t_packetSize;
@@ -580,7 +580,7 @@ struct JdThreadStream
 		
 		if (i_required)
 		{
-			m_queue.WaitForMessage (m_outPacket);
+			m_queue.PopWait (m_outPacket);
 			
 			memcpy (o_values, & m_outPacket.values [0], i_required * sizeof (T));
 			m_outPending = t_packetSize - i_required;

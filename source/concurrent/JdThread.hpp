@@ -17,7 +17,7 @@
 #include <pthread.h>
 #include <unistd.h>
 
-//#define d_epilogBuild 0
+//#define d_epilogLibBuild 0
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -107,13 +107,13 @@ class JdThreadT
 
 			if (pthread_setschedparam (pthread_self (), policy, &sp))
 			{
-				#ifndef d_epilogBuild
+				#ifndef d_epilogLibBuild
 					epilog_func (detail, "set priority of @ failed for '@'", (u32) sp.sched_priority, i_owner->m_threadName);
 				#endif
 			}
 			else
 			{
-				#ifndef d_epilogBuild
+				#ifndef d_epilogLibBuild
 					epilog_func (detail, "'@' set to priority: @", i_owner->m_threadName, (u32) i_priority);
 				#endif
 			}
@@ -226,7 +226,7 @@ class JdThreadT
 		{
 //			m_state = c_jdThreadState::initializing;
 			
-			#ifndef d_epilogBuild
+			#ifndef d_epilogLibBuild
 				epilog (detail, "start: '@'", m_threadName);
 			#endif
 			
@@ -308,7 +308,7 @@ class JdThreadT
 		m_runResult = i_runResult;
 		m_exited = true;
 		
-		#ifndef d_epilogBuild
+		#ifndef d_epilogLibBuild
 			epilog (detail, "'@' exited", m_threadName);
 		#endif
 	}
@@ -375,7 +375,7 @@ class JdThreadPool
 			
 			if (thread->DidExit ())
 			{
-				#ifndef d_epilogBuild
+				#ifndef d_epilogLibBuild
 					epilog (normal, "purging dead thread");
 				#endif
 				thread->Stop ();

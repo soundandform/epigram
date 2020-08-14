@@ -7,7 +7,7 @@
 
 #ifndef __JdFiber_hpp__
 
-#include <boost/context/all.hpp>
+#include <boost/context/detail/fcontext.hpp>
 #include <list>
 #include <iomanip>
 
