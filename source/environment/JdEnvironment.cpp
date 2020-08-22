@@ -10,15 +10,6 @@
 
 
 // Module Libraries ---------------------------------------------------------------------------
-//#include "JdSql.h"
-
-#if d_JdLinkBasic
-//#	include "JdTimers.hpp"
-//#	include "JdTimerManager.h"
-//#	include "JdNotifications.hpp"
-//#	include "JdBroadcaster.h"
-#endif
-
 
 d_jdLinkDef (Sql)
 d_jdLinkDef (Timers)
@@ -69,26 +60,23 @@ JdResult  JdEnvironment::Teardown  ()
 	
 	Jd::EnforceMainThread ();
 	
-	if (m_timersEnabled)
-	{
-		jd_lock (jd_timers)
-			jd_timers->StopAllTimers ({});
-		
-		m_timersEnabled = false;
-	}
+	jd_lock (jd_timers)
+		jd_timers->StopAllTimers ({});
 	
-	jd_timers.Release ();
-	
+	m_server.ReleaseSingletons ();
+
 	result = m_server.GetScheduler()->Teardown ();
-	
-	m_server.Teardown ();
-	
-#if FIX
-	jd_broadcaster.ForceRelease ();	// teardown broadcaster last
-#endif
-	
-	m_server.Teardown (true);
-	
+
+	// disable the ModuleDiener, so timer release doesn't try to send txn
+	m_server.Shutdown ();
+
+	// timers has to be released after stopping thread, so timer thread doesn't
+	// try to drive the timers
+	jd_timers.Release ();
+
+	// Teardown will delete JdModuleDiener and JdTimers on the main thread
+	result |= m_server.Teardown ();
+
 	m_initialized = false;
 	
 	return result;
