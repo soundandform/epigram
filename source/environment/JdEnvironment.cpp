@@ -59,12 +59,16 @@ JdResult  JdEnvironment::Teardown  ()
 	JdResult result;
 	
 	Jd::EnforceMainThread ();
+
+	// This shutdown sequence is
 	
 	jd_lock (jd_timers)
 		jd_timers->StopAllTimers ({});
 	
+	// remove the extra +1 usage count on singleton modules
 	m_server.ReleaseSingletons ();
 
+	// stop all threads
 	result = m_server.GetScheduler()->Teardown ();
 
 	// disable the ModuleDiener, so timer release doesn't try to send txn
