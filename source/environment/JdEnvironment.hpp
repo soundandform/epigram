@@ -10,7 +10,6 @@
 #define JdEnvironment_h
 
 
-//#include "JdLibraryManager.h"
 #include "JdServer.h"
 #include "JdLibraryFactory.h"
 
@@ -50,56 +49,60 @@ class JdEnvironment
 		
 		if (not m_initialized)
 		{
-			result = m_server.Setup ();
-			
+			result = m_libraries.ParseLibraries (& JdLibraryFactory::Get ());
+
 			if (not result)
 			{
-				m_libraries.ParseLibraries (& JdLibraryFactory::Get ());
-				
-				if (i_configuration)
-					m_server.SetConfiguration (i_configuration);
-				
-				for (auto moduleName : m_disabledModules)
-				{
-					//epilog_(normal,  "disable: %s", epistr (moduleName));
-					
-					m_libraries.DisableModule (moduleName);
-				}
-				
-				if (m_timersEnabled)
-				{
-					result = jd_timers.Bind (& m_server);
-
-					try
-					{
-//						jd_broadcaster.Bind (& m_server); // This is the notification delivery module
-					}
-					
-					catch (...)
-					{
-						
-					}
-					
-//					auto timers = JdPlatform::Get <IJdPlatform::Notification> ();
-//					m_timer = timers->ScheduleTimer (10, this, 0);
-				}
+				result = m_server.Setup ();
 				
 				if (not result)
 				{
-					auto scheduler = m_server.GetScheduler ();
+					
+					if (i_configuration)
+						m_server.SetConfiguration (i_configuration);
+					
+					for (auto moduleName : m_disabledModules)
+					{
+						//epilog_(normal,  "disable: %s", epistr (moduleName));
+						
+						m_libraries.DisableModule (moduleName);
+					}
 					
 					if (m_timersEnabled)
 					{
-						auto driver = jd_timers.Cast <IJdTimerDriver> ();
+						result = jd_timers.Bind (& m_server);
+
+						try
+						{
+	//						jd_broadcaster.Bind (& m_server); // This is the notification delivery module
+						}
 						
-						scheduler->AddTimerThread (driver);
+						catch (...)
+						{
+							
+						}
+						
+	//					auto timers = JdPlatform::Get <IJdPlatform::Notification> ();
+	//					m_timer = timers->ScheduleTimer (10, this, 0);
 					}
-					else scheduler->AddThreads (1);
 					
-					scheduler->Start ();
+					if (not result)
+					{
+						auto scheduler = m_server.GetScheduler ();
+						
+						if (m_timersEnabled)
+						{
+							auto driver = jd_timers.Cast <IJdTimerDriver> ();
+							
+							scheduler->AddTimerThread (driver);
+						}
+						else scheduler->AddThreads (1);
+						
+						scheduler->Start ();
+					}
+					
+					m_initialized = true;
 				}
-				
-				m_initialized = true;
 			}
 		}
 		
