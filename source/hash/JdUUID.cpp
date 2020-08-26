@@ -10,7 +10,7 @@
 
 #include <boost/uuid/string_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
-//#include <boost/detail/endian.hpp>
+#include <boost/predef/other/endian.h>
 
 // JdUUID ------------------------------------------------------------------------------------------------------------
 
@@ -43,7 +43,7 @@ JdUUID::JdUUID (cstr_t i_cStringUuid)
 
 JdUUID::JdUUID (u32 a, u16 b, u16 c, u16 d, u64 e)
 {
-	#ifdef BOOST_LITTLE_ENDIAN
+	#ifdef BOOST_ENDIAN_LITTLE_BYTE
 		Jd::ByteSwap (a);
 		Jd::ByteSwap (b);
 		Jd::ByteSwap (c);
