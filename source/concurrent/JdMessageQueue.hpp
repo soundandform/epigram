@@ -17,7 +17,7 @@ const int c_jdCacheLineBytes = 64;
 
 // I really don't know if this cache sharing prevention acheives anything...
 template <typename T>
-struct alignas (c_jdCacheLineBytes) JdCacheLinePadded
+struct /* alignas (c_jdCacheLineBytes) */ JdCacheLinePadded
 {
 	JdCacheLinePadded () {	d_jdAssert (sizeof (JdCacheLinePadded) == c_jdCacheLineBytes, "JdCacheLinePadded not aligned properly"); }
 
@@ -134,7 +134,7 @@ class JdMessageQueue // (v2)
 	
 	~ JdMessageQueue ()
 	{
-		cout << "numSleeps: " << m_numSleeps << endl;
+		// cout << "numSleeps: " << m_numSleeps << endl;
 	}
 	
 	u32 GetQueueSizeInBytes ()
@@ -191,13 +191,9 @@ class JdMessageQueue // (v2)
 
 			unique_lock <mutex> lock (m_conditionLock);
 			m_condition.wait (lock);
-
-			// TODO: condition variable this?
-//			this_thread::yield ();
-			++m_numSleeps;
 			
-			if (++tries > 100000000)
-				d_jdThrow ("Deadlock. Or, more likely, you've blown out the queue. Each sequence (lock) can push up to 512 transactions (calls).");
+//			if (++tries > 100000000)
+//				d_jdThrow ("Deadlock. Or, more likely, you've blown out the queue. Each sequence (lock) can push up to 512 transactions (calls).");
 		}
 		
 		return record;

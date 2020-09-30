@@ -66,7 +66,7 @@ const u8 c_jdThread_defaultPriority = 0;
 
 struct IJdThread
 {
-    struct ThreadInfo
+    struct Info
     {
         virtual bool                IsAlive         () = 0;
 		virtual cstr_t				GetName			() const = 0;
@@ -74,7 +74,7 @@ struct IJdThread
     
     virtual ~                       IJdThread       () { };
     virtual JdResult                Setup           () 												{ return c_jdNoErr; }		// Setup happens in creator thread (which is probably main)
-    virtual JdResult                Run             (EpigramRef i_args, ThreadInfo & i_info)	 	= 0;
+    virtual JdResult                Run             (EpigramRef i_args, IJdThread::Info & i_info)	= 0;
     virtual JdResult                Break           () 												{ return c_jdNoErr; }
 	virtual JdResult                Finalize        (const JdResult &i_runResult) 					{ return i_runResult; }		// Finalize happens in-thread
     virtual JdResult                Teardown        (const JdResult &i_runResult)					{ return i_runResult; }		// Teardown happens in creator thread (which is probably main)
@@ -132,7 +132,7 @@ class JdThreadT
 		
 //		i_owner->m_state = c_jdThreadState::running;
 		
-		struct ThreadInfo : IJdThread::ThreadInfo
+		struct ThreadInfo : IJdThread::Info
 		{
 			ThreadInfo (EJdThreadState &i_state, cstr_t i_name)
 			: m_state (i_state), m_name (i_name)												{ }
