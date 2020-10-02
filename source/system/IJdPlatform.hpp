@@ -69,7 +69,7 @@ struct FileSystem //------------------------------------------------------------
 
 struct Notification //------------------------------------------------------------------------------------------------------------------------------------
 {
-	virtual JdTimerRef			ScheduleTimer				(f64 i_periodInSeconds, IJdCallback * i_callback, void * i_refData) = 0;
+	virtual JdTimerRef			ScheduleTimer				(f64 i_periodInSeconds, IJdCallback * i_callback, void * i_refData = nullptr) = 0;
 	virtual void				DestroyTimer				(const JdTimerRef &i_timerRef) = 0;
 
 //	"1DE70882-2676-40A8-A002-6A2B03F77429.progress"
