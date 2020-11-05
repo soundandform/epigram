@@ -243,13 +243,18 @@ namespace jd
 				ensure_ring(); return callback_ring_->add_before (cb);
 			}
 			
-			size_t size ()
+			size_t size () const
 			{
 				size_t size = 0;
 				
 				if (callback_ring_) size = callback_ring_->size ();
 				
 				return size;
+			}
+			
+			operator bool () const
+			{
+				return size ();
 			}
 			
 			void clear ()	// doesn't clear default slot
