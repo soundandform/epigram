@@ -198,7 +198,7 @@ i32 JdMacPlatform::FileSystem::RemoveFile (const std::string & i_path)
 {
 	d_objC (JdTimerBridgeCallbackWrapper) *info = [i_timer userInfo];
 	
-	bool repeat = info->m_callback->CallbackFired (0);
+	bool repeat = info->m_callback->HandleCallback (0);
 	
 	if (! repeat)
 	{

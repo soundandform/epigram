@@ -34,7 +34,7 @@
 
 struct IJdCallback
 {
-	virtual bool /* repeat */		CallbackFired			(void *i_refData) = 0;
+	virtual bool /* repeat */		HandleCallback			(void *i_refData) = 0;
 };
 
 
