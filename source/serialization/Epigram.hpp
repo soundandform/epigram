@@ -207,7 +207,6 @@
 #include <set>
 #include <functional>
 
-//#include "JdCore.hpp"
 #include "JdTypeId.hpp"
 #include "JdAssert.hpp"
 #include "IEpigram.hpp"
@@ -1983,11 +1982,17 @@ class EpigramT : public interface_t
 	
 	EpigramT () {}
 
-	EpigramT (cstr_t i_what)
+	// constructor
+//	EpigramT (cstr_t i_what)
+//	{
+//		this->operator () (i_what);
+//	}
+
+	EpigramT (const std::string & i_what)
 	{
 		this->operator () (i_what);
 	}
-	
+
 	
 	EpigramT			(voidptr_t i_data, size_t i_numBytes)
 	{
