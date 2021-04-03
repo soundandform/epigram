@@ -149,7 +149,18 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 		hash |= (0x80000000 * (i32) i_isError);
 		m_resultCode = (i32) hash;
 	}
-	
+
+	JdResultT &				operator =				(cstr_t i_message)
+	{
+		if (i_message)
+		{
+			m_message = i_message;
+			m_resultCode = -100;
+		}
+		
+		return * this;
+	}
+
 	JdResultT &				operator =				(const JdResultT <R1, t_locationInfo> & i_other)
 	{
 		if ((voidptr_t) & i_other != this)
