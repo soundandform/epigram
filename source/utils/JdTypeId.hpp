@@ -328,6 +328,11 @@ class JdTypeId
 					JdTypeId		(u8 i_typeId);
 					JdTypeId		();
 	
+					operator u8		() const
+	{
+		return m_typeId;
+	}
+	
 	u8				Id				() const;
 	bool			operator !=		(const JdTypeId & i_rhs);
 	
@@ -346,11 +351,16 @@ class JdTypeId
 	bool			IsFunction		() const;
 	bool 			IsObject		() const;
 
-	static bool		IsObject		(u8 i_typeId);
+	bool 			IsIntegerType			() const 	{ return Jd::IsIntegerType (m_typeId); }
+	bool 			IsFloatingPointType		() const 	{ return Jd::IsFloatingPointType (m_typeId); }
+	bool 			IsSignedIntegerType		() const 	{ return Jd::IsSignedIntegerType (m_typeId); }
+	bool 			IsUnsignedIntegerType	() const 	{ return Jd::IsUnsignedIntegerType (m_typeId); }
 
-	std::string		GetTypeName		() const;
-	std::string		GetLongTypeName	() const;
-	char			GetTypeChar		() const;
+	static bool		IsObject				(u8 i_typeId);
+
+	std::string		GetTypeName				() const;
+	std::string		GetLongTypeName			() const;
+	char			GetTypeChar				() const;
 	
 	protected:
 	
