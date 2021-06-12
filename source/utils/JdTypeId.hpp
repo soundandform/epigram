@@ -86,7 +86,9 @@ namespace c_jdTypeId
 				method				=	function,
 	
 				any					=	29,
+
 				none				=	30, // 'none' means unset. ('default' epigram item uses this key-type,  void/null means "set to null")
+				auto_			 	= 	30,
 	
 				unknown				=	31, // 0x1f
 	

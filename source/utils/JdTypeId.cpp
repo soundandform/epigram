@@ -18,8 +18,8 @@ TypeIdsMap::TypeIdsMap ()
 	 A |                 a | any                  0  \void
 	 B | binary          b  \bool                 1  /----
 	 C  \i8              c  /----                 2 |
-	 D  /--              d | default/none         3 |
-	 E |	epigram			e | enum                 4 |
+	 D  /--              d  \ default/none/auto   3 |
+	 E | epigram		 e  / -----------------   4 |
 	 F  \f64             f  \f32                  5 |
 	 G  /---             g  /---                  6 |
 	 H |                 h | hash-64              7 |
@@ -28,13 +28,13 @@ TypeIdsMap::TypeIdsMap ()
 	 K  \u16             k  \i16
 	 L  /---             l  /---
 	 M |                 m | method/function
-	 N |                 n | signature
+	 N | enum            n | signature
 	 O  \versioned       o  \object
 	 P  /object          p  /------
 	 Q |                 q |
-	 R |	                r |
+	 R |	             r |
 	 S  \struct          s  \string
-	 T  /pod---          t  /------
+	 T  /pod             t  /------
 	 U  \u64             u  \u32
 	 V  /---             v  /---
 	 W |                 w |
@@ -49,7 +49,7 @@ TypeIdsMap::TypeIdsMap ()
 	
 	chars [c_jdTypeId::pod]				= 'S';
 	
-	chars [c_jdTypeId::enumeration]		= 'e';
+	chars [c_jdTypeId::enumeration]		= 'N';
 	chars [c_jdTypeId::signature]		= 'n';
 	chars [c_jdTypeId::epigram]			= 'E';
 	chars [c_jdTypeId::binary]			= 'B';
@@ -104,13 +104,16 @@ TypeIdsMap::TypeIdsMap ()
 	names ['T'] = "pod*";
 	
 	names ['x'] = "uuid";  //	TODO: ptr to enum just not allowed. dumb.
-	names ['e'] = "enum";  //	TODO: ptr to enum just not allowed. dumb.
+	names ['N'] = "enum";  //	TODO: ptr to enum just not allowed. dumb.
 	names ['n'] = "sig";
 	names ['B'] = "bin";  //	TODO: ptr to binary not allowed
 	//		names ['a'] = "#32";
 	names ['h'] = "#64";
 	names ['a'] = "any";
+
 	names ['d'] = "def";
+	names ['e'] = "def*";
+
 	names ['m'] = "fun";
 	
 	names ['E'] = "epg";
@@ -162,7 +165,8 @@ TypeIdsMap::TypeIdsMap ()
 	//		longNames ['S'] = "pod";
 	longNames ['T'] = "pod *";
 	
-	longNames ['d'] = "default";  //	TODO: ptr to binary not allowed
+	longNames ['d'] = "default";
+	longNames ['e'] = "default *";
 	
 	longNames ['E'] = "epigram";
 	
@@ -244,25 +248,45 @@ TypeIdsMap::TypeIdsMap ()
 
 namespace Jd
 {
+	bool HasPointerTypeChar (u8 i_typeChar)
+	{
+		const u8 c_typeChars [] = { 'C', 'F', 'I', 'K', 'U', 'b', 'd', 'f', 'i', 'k', 'o', 's', 'u', 'v', '0', '8' };
+		
+		for (u8 c : c_typeChars)
+		{
+			if (c == i_typeChar)
+				return true;
+		}
+		
+		return false;
+	}
+
 	char TypeIdToChar (u8 i_typeId)
 	{
+		u16 typeId = i_typeId;
+		
 		char c = '?';
-		if (i_typeId == c_jdTypeId::unknown)
+		if (typeId == c_jdTypeId::unknown)
 			return c;
 		
-		u8 isPointer = i_typeId & c_jdTypeId::isPointer;
+		bool isPointer = i_typeId & c_jdTypeId::isPointer;
 
-		i_typeId &= c_jdTypeId::typeMask;
-		i_typeId &= ~c_jdTypeId::isPointer;
+		typeId &= c_jdTypeId::typeMask;
+		typeId &= ~c_jdTypeId::isPointer;
 		
-		if (i_typeId <= c_jdTypeId::none)
+		if (typeId <= c_jdTypeId::none)
 		{
-			c = TypeIdsMap::Get().chars [i_typeId];
+			c = TypeIdsMap::Get().chars [typeId];
 			
 			if (c == 0)
 				c = '?';
 			else if (isPointer)
-				++c;
+			{
+				if (HasPointerTypeChar (c))
+					++c;
+				else
+					abort (); //"unrepresentable type char"
+			}
 		}
 		
 		return c;
