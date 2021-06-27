@@ -1978,15 +1978,16 @@ class EpigramT : public interface_t
 	
 	typedef EpigramKVT <KVAny <EpNoType>> EpigramElement;
 
-	public: // constructors --------------------------------------------------------------------------------------
+	public:
+	
+	// constructors --------------------------------------------------------------------------------------
 	
 	EpigramT () {}
 
-	// constructor
-//	EpigramT (cstr_t i_what)
-//	{
-//		this->operator () (i_what);
-//	}
+	EpigramT (cstr_t i_what)
+	{
+		this->operator () (i_what);
+	}
 
 	EpigramT (const std::string & i_what)
 	{
