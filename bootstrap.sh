@@ -6,10 +6,12 @@ if [ $# == 0 ]; then
 	VERSION=74
 fi
 
-echo "building boost version: 1.$VERSION"
+platform=`sh script/platform.sh`
+
+echo "----------------------------------------------"
+echo "building boost version: 1.$VERSION for $platform"
 echo "----------------------------------------------"
 
-platform=`sh script/platform.sh`
 mkdir lib
 
 
@@ -21,7 +23,8 @@ BOOST_VERSION=1.$VERSION.0
 BOOST=boost_1_"$VERSION"_0
 BOOST_TAR=$BOOST.tar.gz
 
-curl -L -O https://dl.bintray.com/boostorg/release/$BOOST_VERSION/source/$BOOST_TAR
+curl -L -O https://boostorg.jfrog.io/artifactory/main/release/$BOOST_VERSION/source/$BOOST_TAR
+
 tar -zxf $BOOST_TAR
 rm $BOOST_TAR
 mv $BOOST boost
