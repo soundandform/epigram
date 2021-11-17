@@ -15,7 +15,6 @@
 #include "JdEnum.hpp"
 #include <thread>
 #include <pthread.h>
-//#include <unistd.h>
 
 //#define d_epilogLibBuild 0
 
@@ -287,7 +286,7 @@ class JdThreadT
             if (result)
 				break;
 			
-            usleep (10000);
+			std::this_thread::sleep_for (std::chrono::microseconds (10000));
         }
         
         if (not result)
