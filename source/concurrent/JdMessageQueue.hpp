@@ -7,6 +7,7 @@
 #define JdMessageQueue_hpp
 
 #include <iostream>
+#include <atomic>
 
 #include "JdAssert.hpp"
 #include "JdSemaphore.hpp"
