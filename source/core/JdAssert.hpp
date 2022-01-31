@@ -67,7 +67,7 @@ JdResult JdResert (bool i_shouldBeTrue, cstr_t i_truthfulOrLyingStatement, cstr_
 #define d_jdPermAssert(TRUTH, ...) JdAssert (TRUTH, #TRUTH, __FILE__, __LINE__, __VA_ARGS__)
 
 #if DEBUG
-	#define d_jdAssert(TRUTH, ...) JdAssert (TRUTH, #TRUTH, __FILE__, __LINE__, __VA_ARGS__)
+	#define d_jdAssert(TRUTH, ...) JdAssert (TRUTH, #TRUTH, __FILE__, __LINE__, "" __VA_ARGS__)
 #else
 	#define d_jdAssert(...)
 #endif
