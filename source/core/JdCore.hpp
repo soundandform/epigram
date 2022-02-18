@@ -187,6 +187,13 @@ namespace jd
 	{
 		cout << Jd::SPrintF (i_format, i_value, i_args...) << "\r" << endl;
 	}
+
+	template <typename T>
+	void out (const T & i_value)
+	{
+		cout << i_value << "\r" << endl;
+	}
+
 	
 	template <typename A, typename B>
 	auto min (const A & a, const B & b)

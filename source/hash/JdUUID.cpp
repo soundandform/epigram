@@ -188,7 +188,7 @@ bool operator < (JdUUID const& lhs, JdUUID const& rhs)
 
 namespace Jd
 {
-	std::string JdEncodeBitsToString (const u8 * i_bits, i32 i_numBits, bool i_lowercase)
+	std::string EncodeBitsToString (const u8 * i_bits, i32 i_numBits, bool i_lowercase)
 	{
 		std::string o_string;
 		
@@ -253,7 +253,7 @@ namespace Jd
 		else
 		{
 			u32 truncated = (u32) i_uuid.Hash() & 0x000FFFFF;
-			s = Jd::JdEncodeBitsToString ((u8 *) &truncated, 20, true);
+			s = Jd::EncodeBitsToString ((u8 *) &truncated, 20, true);
 		}
 		
 		return s;
