@@ -115,9 +115,21 @@ struct TypeIdsMap
 	
 	std::unordered_map <std::string, u8>		namesToIds;
 	
-	u8 pointerForbidden [7] = {
-		c_jdTypeId::uuid, c_jdTypeId::enumeration, c_jdTypeId::binary, c_jdTypeId::method, c_jdTypeId::uuid, c_jdTypeId::hash, c_jdTypeId::none };
-			 
+	u8 pointerForbidden [11] = {
+		c_jdTypeId::uuid, c_jdTypeId::signature, c_jdTypeId::epigram, c_jdTypeId::enumeration, c_jdTypeId::hash, c_jdTypeId::binary,
+		c_jdTypeId::method, c_jdTypeId::uuid, c_jdTypeId::hash, c_jdTypeId::any, c_jdTypeId::none };
+	
+	void ThrowIf (bool i_test, cstr_t i_string)
+	{
+		if (i_test)
+		{
+#			if __cpp_exceptions
+				throw (std::string (i_string));
+#			else
+				abort ();
+#			endif
+		}
+	}
 };
 
 namespace jd

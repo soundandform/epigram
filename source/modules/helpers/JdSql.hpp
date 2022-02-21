@@ -559,6 +559,14 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 							{
 								e (columnName, JdUUID (data));
 							}
+							else if (typeId == c_jdTypeId::f64)
+							{
+								// FIX: quick hack to get f64 array goin
+								vector <f64> v (size / Jd::TypeIdToSize (typeId));
+								memcpy (v.data (), data, size);
+								
+								e (columnName, v);
+							}
 						}
 						else
 						{
@@ -581,7 +589,7 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 	}
 	
 	
-	Epigram					GetRow						(const rowid_t &i_uuid)
+	Epigram					GetRow						(const rowid_t & i_rowId)
 	{
 		SetupDatabase();
 		d_jdAssert (m_tablesInitialized, "database wasn't initialized");
@@ -594,7 +602,7 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
         {
             JdResult result = jd_sql->Prepare (m_f);
             
-			BindRowId (jd_sql, 0, i_uuid);
+			BindRowId (jd_sql, 0, i_rowId);
             
             if (not result)
             {
@@ -924,8 +932,9 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 	rows_t							ProcessQuery					()
 	{        
         rows_t rows;
-        
-        jd_lock (jd_sql)
+
+		// caller should lock
+//        jd_lock (jd_sql)
         {
             JdResult result = jd_sql->Step ();
             

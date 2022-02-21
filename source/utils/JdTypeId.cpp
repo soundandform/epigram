@@ -212,26 +212,20 @@ TypeIdsMap::TypeIdsMap ()
 		char c = chars [i];
 		if (c)
 		{
-			if (not names [c])
-# if __cpp_exceptions
-				throw (std::string ("no name for JdTypeId"));
-#else
-			abort ();
-# endif
+			ThrowIf (not names [c], "no name for JdTypeId");
 			
 			namesToIds [names [c]] = i;
 			
 			if (longNames [c])
 				namesToIds [longNames [c]] = i;
-			
+
+			ThrowIf (ids [c], "type char collision");
 			ids [c] = i;
-			
-			//				std::cout << c << " -> " << i << endl;
-			
+
 			bool noPointer = false;
-			for (u32 j = 0; j < 7; ++j)
+			for (u8 pf : pointerForbidden)
 			{
-				if (pointerForbidden [j] == i)
+				if (i == pf)
 				{
 					noPointer = true;
 					break;
@@ -239,7 +233,10 @@ TypeIdsMap::TypeIdsMap ()
 			}
 			
 			if (not noPointer)
+			{
+				ThrowIf (ids [c+1], "type char collision");
 				ids [c+1] = i | c_jdTypeId::isPointer;
+			}
 		}
 	}
 }
