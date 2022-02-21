@@ -1837,7 +1837,12 @@ class EpigramT : public interface_t
 			}
 			else return nullptr;
 		}
-		
+
+		pair <voidptr_t, voidptr_t>						unsafePayload				() const
+		{
+			return { this->payload, this->endPayload };
+		}
+
 		size_t					Count					() const					{ return this->count; }
 
 		bool					IsSet					() const					{ return this->valueType != c_jdTypeId::unknown; }

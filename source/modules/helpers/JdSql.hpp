@@ -79,6 +79,12 @@ const char * const c_jdDatabaseTablePrefix = "jdu_";
  - There could be more caching in general to avoid rerunning redundant SELECTs.
  - Statements can be precompiled.
  
+	
+	Usage notes
+	-----------
+	- arrays of fundamentals are stored as Blobs (but still with the actual /t flag in the column name). An epigram doesn't distinguish between a single value
+	and an array of 1, so this can be problematic; either need to have column upgrade mechnaism and/or have a DefineTable () api.
+ 
  */
 
 
@@ -328,9 +334,9 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 		InvalidateRowId (o_rowId);
 		
 //		cout << "CREATE: "; Epigram e (i_columns); e.Dump ();
+//		i_columns.dump ();
 
-		SetupDatabase ();
-		d_jdAssert (m_tablesInitialized, "database wasn't initialized");
+		SetupDatabase ();											d_jdAssert (m_tablesInitialized, "database wasn't initialized");
 
 		m_f << "INSERT INTO ", m_databaseName, "(seq) VALUES (", IncrementSequenceNum (), ")";
 		
@@ -596,7 +602,7 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 				
                 if (result == c_jdSql::rowReady)
                 {
-					e = EncodeRow (jd_sql, m_firstUserColumn);
+					e = EncodeRow (jd_sql, m_firstUserColumn, true);
                 }
             }
         }
@@ -639,8 +645,16 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 				if (i > 0) f += i_bindingToken;
 				f += "[", name, "]=";
 				
-				// Could create jump table for this.
-					 if (item.Is <i32> ())				{ f += (i32) item; }
+				if (item.Count () > 1)
+				{
+					f += "?";
+					
+					auto payload = item.unsafePayload ();
+					size_t size =  (u8 *) payload.second - (u8 *) payload.first;
+					
+					m_bindInfo.push_back ({ (u8 *) payload.first, (i32) size, 'B' });
+				}
+				else if (item.Is <i32> ())				{ f += (i32) item; }
 				else if (item.Is <u32> ())				{ f += (u32) item; }
 				else if (item.Is <i64> ())				{ f += (i64) item; }
 				else if (item.Is <u64> ())				{ f += (i64) ((u64) item); }	// final cast to (i64) because SQL integers are signed 64.
@@ -831,19 +845,24 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 		
 		for (auto & item : i_columns)
 		{
-			std::string name = item.GetKeyString ();
+			string name = item.GetKeyString ();
 			
-			d_jdAssert (name.find ("/") == std::string::npos, "column names can't use a forward slash");
+			d_jdAssert (name.find ("/") == string::npos, "column names can't use a forward slash");
 			
 			if (not FindColumn (name.c_str()))
 			{
 				cstr_t sqlType = nullptr;
 				
 				name += "/";
+				
+//				if (item.count)
+				
 				name += item.GetValueTypeChar ();
 
 				
-					 if (item.Is <i32> ())						{ sqlType = "INTEGER"; }
+					 if (item.Count () > 1)						{ sqlType = "BLOB"; }
+				
+				else if (item.Is <i32> ())						{ sqlType = "INTEGER"; }
 				else if (item.Is <i64> ())						{ sqlType = "INTEGER"; }
 				else if (item.Is <i8> ())						{ sqlType = "INTEGER"; }
 				
