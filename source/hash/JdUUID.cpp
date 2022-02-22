@@ -188,7 +188,7 @@ bool operator < (JdUUID const& lhs, JdUUID const& rhs)
 
 namespace Jd
 {
-	std::string EncodeBitsToString (const u8 * i_bits, i32 i_numBits, bool i_lowercase)
+	std::string  EncodeBitsToString  (const u8 * i_bits, i32 i_numBits, bool i_lowercase)
 	{
 		std::string o_string;
 		
@@ -239,6 +239,51 @@ namespace Jd
 		}
 		
 		return o_string;
+	}
+	
+	
+	bool  DecodeStringToBits  (void * o_bits, i32 i_numBits, const std::string & i_string)
+	{
+		int b = 0;
+		u8 * bits = (u8 *) o_bits;
+
+		for (u32 c : i_string)
+		{
+			c = toupper (c);
+			
+			if      (c >= 'A' && c <= 'H')  c = c - 'A';
+			else if (c >= 'J' && c <= 'N')  c = c - 'J' + 8;
+			else if (c >= 'P' && c <= 'Z')  c = c - 'P' + 13;
+			else if (c >= '2' && c <= '9')  c = c - '2' + 24;
+			else return false;
+			
+			if (bits and i_numBits >= 5)
+			{
+				c = c << 3;
+				
+				u8 mask = 0xFF ^ (0xF8 >> b);
+				
+				u8 byte = (*bits & mask) | (c >> b);
+				*bits = byte;
+				
+				if (b >= 4)
+				{
+					byte = (c << (8-b)) & 0x000000F0;
+					*(bits + 1) = byte;
+				}
+				
+				b += 5;
+				i_numBits -= 5;
+				
+				if (b >= 8)
+				{
+					bits++;
+					b -= 8;
+				}
+			}
+		}
+		
+		return true;
 	}
 
 	

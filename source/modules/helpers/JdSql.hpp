@@ -262,7 +262,7 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 		{
 			QueryGenerator <65536> generator;
 			
-			std::string sql = generator.EncodeColumns (i_selectInfo, " AND ");
+			string sql = generator.EncodeColumns (i_selectInfo, " AND ");
 			m_query += sql;
             
 			JdResult result;
@@ -513,6 +513,8 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 					else if (dataTypeChar == Jd::TypeIdChar <u32> ()) 		e (columnName, (u32) v);
 					else if (dataTypeChar == Jd::TypeIdChar <i64> ())		e (columnName, (i64) v);
 					else if (dataTypeChar == Jd::TypeIdChar <u64> ()) 		e (columnName, (u64) v);
+					else if (dataTypeChar == Jd::TypeIdChar <i16> ()) 		e (columnName, (i16) v);
+					else if (dataTypeChar == Jd::TypeIdChar <u16> ()) 		e (columnName, (u16) v);
 					else if (dataTypeChar == Jd::TypeIdChar <i8> ()) 		e (columnName, (i8) v);
 					else if (dataTypeChar == Jd::TypeIdChar <u8> ()) 		e (columnName, (u8) v);
 					
@@ -662,6 +664,8 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 					
 					m_bindInfo.push_back ({ (u8 *) payload.first, (i32) size, 'B' });
 				}
+				else if (item.Is <i16> ())				{ f += (i16) item; }
+				else if (item.Is <u16> ())				{ f += (u16) item; }
 				else if (item.Is <i32> ())				{ f += (i32) item; }
 				else if (item.Is <u32> ())				{ f += (u32) item; }
 				else if (item.Is <i64> ())				{ f += (i64) item; }
@@ -870,12 +874,14 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 				
 					 if (item.Count () > 1)						{ sqlType = "BLOB"; }
 				
-				else if (item.Is <i32> ())						{ sqlType = "INTEGER"; }
 				else if (item.Is <i64> ())						{ sqlType = "INTEGER"; }
+				else if (item.Is <i32> ())						{ sqlType = "INTEGER"; }
+				else if (item.Is <i16> ())						{ sqlType = "INTEGER"; }
 				else if (item.Is <i8> ())						{ sqlType = "INTEGER"; }
 				
-				else if (item.Is <u32> ())						{ sqlType = "UNSIGNED INTEGER"; }
 				else if (item.Is <u64> ())						{ sqlType = "UNSIGNED INTEGER"; }
+				else if (item.Is <u32> ())						{ sqlType = "UNSIGNED INTEGER"; }
+				else if (item.Is <u16> ())						{ sqlType = "UNSIGNED INTEGER"; }
 				else if (item.Is <u8> ())						{ sqlType = "UNSIGNED INTEGER"; }
 				
 				else if (item.Is <f32> ())						{ sqlType = "REAL"; }
