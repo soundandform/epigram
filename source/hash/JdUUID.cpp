@@ -188,8 +188,10 @@ bool operator < (JdUUID const& lhs, JdUUID const& rhs)
 
 namespace Jd
 {
-	std::string  EncodeBitsToString  (const u8 * i_bits, i32 i_numBits, bool i_lowercase)
+	std::string  EncodeBitsToString  (voidptr_t i_bits, i32 i_numBits, bool i_lowercase)
 	{
+		auto ptr = (const u8 *) i_bits;
+		
 		std::string o_string;
 		
 		int numBytes = (i_numBits + 7) >> 3;
@@ -202,12 +204,12 @@ namespace Jd
 		
 		while (i_numBits > 0)
 		{
-			bits = ((int) *i_bits) << 8;
+			bits = ((int) *ptr) << 8;
 			
 			if (numBytes > 1)
 			{
 				//cout << "appending extra byte\n";
-				bits |= ((int) *(i_bits+1));
+				bits |= ((int) *(ptr + 1));
 			}
 			//cout << "WORD: " << std::hex << bits << endl;
 			
@@ -232,8 +234,8 @@ namespace Jd
 			
 			if (b >= 8)
 			{
-				i_bits++;
-				numBytes--;
+				++ptr;
+				--numBytes;
 				b -= 8;
 			}
 		}
@@ -246,6 +248,9 @@ namespace Jd
 	{
 		int b = 0;
 		u8 * bits = (u8 *) o_bits;
+		
+		i32 numBytes = (i_numBits + 7) >> 3;
+		const u8 * end = bits + numBytes;
 
 		for (u32 c : i_string)
 		{
@@ -257,7 +262,7 @@ namespace Jd
 			else if (c >= '2' && c <= '9')  c = c - '2' + 24;
 			else return false;
 			
-			if (bits and i_numBits >= 5)
+			if (bits and i_numBits > 0)
 			{
 				c = c << 3;
 				
@@ -266,7 +271,7 @@ namespace Jd
 				u8 byte = (*bits & mask) | (c >> b);
 				*bits = byte;
 				
-				if (b >= 4)
+				if (b >= 4 and (bits + 1) < end)
 				{
 					byte = (c << (8-b)) & 0x000000F0;
 					*(bits + 1) = byte;
