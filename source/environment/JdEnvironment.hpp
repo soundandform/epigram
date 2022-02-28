@@ -16,6 +16,7 @@
 #include "IJdBroadcaster.h"
 #include "IJdTimers.h"
 
+extern string g_jdApplicationName;
 
 class JdEnvironment
 {
@@ -35,6 +36,11 @@ class JdEnvironment
 		Teardown ();
 	}
 	
+	
+	void		Configure		(stringRef_t i_appName)
+	{
+		g_jdApplicationName = i_appName;
+	}
 	
 	void DisableModules (cstr_t i_disabledModules)
 	{

@@ -9,6 +9,9 @@
 #include "JdEnvironment.hpp"
 
 
+string g_jdApplicationName;
+
+
 // Module Libraries ---------------------------------------------------------------------------
 
 d_jdLinkDef (Sql)
