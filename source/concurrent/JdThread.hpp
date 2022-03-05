@@ -168,7 +168,7 @@ class JdThreadT
 	
     public:
     
-    JdThreadT                   (cstr_t i_threadName = "unnamed", u8 i_priority = c_jdThread_defaultPriority /* 0-63 */)
+    JdThreadT                   (stringRef_t i_threadName = "unnamed", u8 i_priority = c_jdThread_defaultPriority /* 0-63 */)
     :
 	m_priority					(i_priority),
 	m_threadName				(i_threadName)
