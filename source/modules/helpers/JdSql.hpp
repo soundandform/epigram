@@ -460,6 +460,8 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 			u8 dataTypeChar;
 			cstr_t typeInfo;
 			
+			JdString128 cn;
+
 			if (i_typedColumns)
 			{
 				cstr_t slash = strstr (name, "/");
@@ -473,8 +475,7 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 				
 				dataTypeChar = typeInfo [0];
 				
-				JdString128 cn (name, elementNameEnd);
-				columnName = cn;
+				columnName = cn.Set (name, elementNameEnd);
 			}
 			else
 			{
@@ -508,6 +509,9 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 					//                                d_jdAssert (typeLength == 1, "sql/epmsg type id is too long");
 					
 					i64 v = i_sql->GetColumn64 (c);
+					
+//					jd::out ("'@' @", columnName, (voidpr_t) columnName);
+					
 					
 					if (dataTypeChar == Jd::TypeIdChar <i32> ()) 			e (columnName, (i32) v);
 					else if (dataTypeChar == Jd::TypeIdChar <u32> ()) 		e (columnName, (u32) v);

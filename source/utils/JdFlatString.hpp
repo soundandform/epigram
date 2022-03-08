@@ -50,13 +50,7 @@ class JdFlatString
 	
 	JdFlatString					(cstr_t i_start, cstr_t i_end)
 	{
-		size_t length = i_end - i_start;
-		if (i_start && i_end && length > 0)
-		{
-			strncpy (m_cstring, i_start, std::min (length, (size_t) t_length));
-			m_cstring [t_length-1] = 0;
-		}
-		m_cstring [length] = 0;
+		Set (i_start, i_end);
 	}
 
 	JdFlatString					(const std::string &i_sstring)
@@ -127,6 +121,21 @@ class JdFlatString
 		memcpy (m_cstring, i_bytes, length);
 		m_cstring [length] = 0;
 	}
+	
+	char *							Set						(cstr_t i_start, cstr_t i_end)
+	{
+		size_t length = i_end - i_start;
+		if (i_start and i_end and length > 0)
+		{
+			strncpy (m_cstring, i_start, std::min (length, (size_t) t_length));
+			m_cstring [t_length-1] = 0;
+		}
+		
+		m_cstring [length] = 0;
+		
+		return m_cstring;
+	}
+
 	
 	const char *					CString					() const { return m_cstring; }
 	char *							CString					() { return m_cstring; }
