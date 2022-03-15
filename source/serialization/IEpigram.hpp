@@ -18,6 +18,7 @@ struct IIEpigramIn // : Jd::TypedT <c_jdTypeId::epigram>
 		union
 		{
 			const unsigned char *	bytes;
+			const char *			chars;
 			const void *			data;
 		};
 		
