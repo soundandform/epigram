@@ -18,12 +18,14 @@ class JdStopwatch
 {
 	public:
 	
-	JdStopwatch	(cstr_t i_label, bool i_display = false);
+	JdStopwatch	(cstr_t i_label, bool i_doDisplay = true);
 
 	operator bool () const;
 	
 	void 	Start ();
 	f64 	End ();
+	
+	void	Finish ();
 	
 	~ JdStopwatch ();
 	

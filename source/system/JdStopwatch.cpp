@@ -10,11 +10,13 @@
 
 using namespace std;
 
-JdStopwatch::JdStopwatch	(cstr_t i_label, bool i_display)
+JdStopwatch::JdStopwatch	(cstr_t i_label, bool i_doDisplay)
 :
 m_label		(i_label),
-m_display 	(i_display)
-{ }
+m_display 	(i_doDisplay)
+{
+	Start ();
+}
 
 JdStopwatch::operator bool () const
 {
@@ -36,14 +38,20 @@ f64 JdStopwatch::End ()
 	return elapsed;
 }
 
-JdStopwatch::~ JdStopwatch ()
+void  JdStopwatch::Finish ()
 {
 	m_timer.stop ();
 	
+	string t = m_timer.format (boost::timer::default_places, "%w"); // don't seem to get user/system time on mac
+	cout << setw (14) << m_label << ": " << t << "s" << endl;
+	
+	m_display = false;
+}
+
+
+JdStopwatch::~ JdStopwatch ()
+{
 	if (m_display)
-	{
-		string t = m_timer.format (boost::timer::default_places, "%w"); // don't seem to get user/system time on mac
-		cout << setw (14) << m_label << ": " << t << "s" << endl;
-	}
+		Finish ();
 }
 	

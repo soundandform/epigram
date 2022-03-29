@@ -27,7 +27,6 @@
 
 #include <iostream>
 #include <sstream>
-#include <string>
 #include <limits>
 #include <type_traits>
 
@@ -79,6 +78,12 @@ namespace Jd
 	u32 SizeOfArray (const T (&) [t_length])
 	{
 		return t_length;
+	}
+	
+	template <typename T, size_t t_length>
+	std::vector <T>  ArrayToVector  (const T (& i_array) [t_length])
+	{
+		return { i_array, i_array + t_length };
 	}
 
 	struct OtherToString
@@ -177,6 +182,14 @@ namespace Jd
 
 namespace jd
 {
+	template <typename T, typename... Args>
+	std::string sprintf (cstr_t i_format, T i_value, Args... i_args)
+	{
+		std::ostringstream oss;
+		Jd::SSPrintF (oss, i_format, i_value, i_args...);
+		return oss.str ();
+	}
+
 	inline void out (cstr_t i_format)
 	{
 		cout << i_format << "\r" << endl;

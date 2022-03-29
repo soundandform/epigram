@@ -79,13 +79,13 @@ d_jdClass (JdUUID) : public Jd::TypedT <c_jdTypeId::uuid>
 			void Generate (boost::uuids::uuid & o_uuid)
 			{
 				std::lock_guard <std::mutex> lock (m_lock);
-				o_uuid = m_uuid ();
+				o_uuid = m_uuidGenerator ();
 			}
 		
-			std::mutex m_lock;
-			boost::uuids::random_generator m_uuid;
+			std::mutex 						m_lock;
+			boost::uuids::random_generator 	m_uuidGenerator;
 		#else
-			void Generate (boost::uuids::uuid & o_uuid) {}
+			void Generate (boost::uuids::uuid & o_uuid) { o_uuid.Nullify (); }
 		# endif
 	};
 	
