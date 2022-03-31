@@ -22,6 +22,7 @@ namespace Jd
 	
 	std::string					ReadFileContentsToString		(stringRef_t i_filename);
 	
+	// FIX: only works for string/vector
 	template <typename C> i32	WriteContainerToFile			(stringRef_t i_filename, C & i_container)
 	{
 		using namespace std;

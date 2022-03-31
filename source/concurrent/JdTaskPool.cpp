@@ -37,11 +37,6 @@ namespace jd
 	
 	void task (task_batch_t i_batch, const std::function <void (void)> & i_function)
 	{
-		auto & pool = task_pool ();
-		
-		auto batch = (JdTask::Batch *) i_batch;
-		batch->Add ();
-		pool.m_queue.Push ({ batch, i_function });
 	}
 	
 	
@@ -54,10 +49,10 @@ namespace jd
 	}
 	
 	
-	void wait (task_batch_t i_batch)
-	{
-//		jd::out ("Wait on: @", i_batch);
-		auto & pool = task_pool ();
-		pool.FinishBatch (i_batch);
-	}
+//	void wait (JdTaskBatch & i_batch)
+//	{
+////		jd::out ("Wait on: @", i_batch);
+////		auto & pool = task_pool ();
+////		pool.FinishBatch (i_batch);
+//	}
 }

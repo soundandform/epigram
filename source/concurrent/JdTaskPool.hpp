@@ -196,10 +196,23 @@ struct JdTaskPool
 	JdTask::Batch							m_globalBatch;
 };
 
+namespace jd
+{
+	JdTaskPool & task_pool 	();
+}
 
 
 struct JdTaskBatch
 {
+	JdTaskBatch (bool i_useTaskPool = true)
+	{
+		if (i_useTaskPool)
+		{
+			auto & pool = jd::task_pool ();
+			m_batch = pool.CreateBatch ();
+		}
+	}
+	
 	JdTaskBatch (jd::task_batch_t i_batch)
 	:
 	m_batch (i_batch) {}
@@ -218,10 +231,26 @@ struct JdTaskBatch
 	void finish ()
 	{
 		if (m_batch)
-			jd::wait (m_batch);
-		
-		m_batch = 0;
+		{
+			auto & pool = jd::task_pool ();
+			pool.FinishBatch (m_batch);
+			m_batch = 0;
+		}
 	}
+	
+	void operator () (const std::function <void (void)> & i_function)
+	{
+		if (m_batch)
+		{
+			auto & pool = jd::task_pool ();
+			
+			auto batch = (JdTask::Batch *) m_batch;
+			batch->Add ();
+			pool.m_queue.Push ({ batch, i_function });
+		}
+		else i_function ();
+	}
+
 	
 	operator jd::task_batch_t () const
 	{
@@ -234,12 +263,10 @@ struct JdTaskBatch
 
 namespace jd
 {
-	JdTaskPool & task_pool 	();
-	
 	JdTaskBatch 	batch 	();
-	void 			task 	(task_batch_t i_batch, const std::function <void (void)> & i_function);
+//	void 			task 	(task_batch_t i_batch, const std::function <void (void)> & i_function);
 	void			task	(const std::function <void (void)> & i_function);
-	void			wait	(task_batch_t i_batch);
+//	void			wait	(JdTaskBatch & i_batch);
 }
 
 
