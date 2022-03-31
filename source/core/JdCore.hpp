@@ -190,20 +190,36 @@ namespace jd
 		return oss.str ();
 	}
 
+#	ifndef d_epigramDisableMutex
+		template <u32 lockid_t>
+		std::mutex & global_lock ()
+		{
+			static std::mutex mutex;
+			return mutex;
+		}
+
+#		define d_jdGlobalLock(ID) 	mutex_lock lock (global_lock <ID> ());
+#	else
+#		define d_jdGlobalLock(ID)
+#	endif
+
 	inline void out (cstr_t i_format)
 	{
+		d_jdGlobalLock ('cout');
 		cout << i_format << "\r" << endl;
 	}
 
 	template <typename T, typename... Args>
 	void out (cstr_t i_format, T i_value, Args... i_args)
 	{
+		d_jdGlobalLock ('cout');
 		cout << Jd::SPrintF (i_format, i_value, i_args...) << "\r" << endl;
 	}
 
 	template <typename T>
 	void out (const T & i_value)
 	{
+		d_jdGlobalLock ('cout');
 		cout << i_value << "\r" << endl;
 	}
 
