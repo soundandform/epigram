@@ -16,8 +16,6 @@
 namespace jd
 {
 	typedef voidptr_t task_batch_t;
-	
-	void wait (task_batch_t);
 }
 
 
@@ -74,7 +72,7 @@ struct JdTaskThread : IJdThread
 			
 			task.func ();
 			task.batch->Remove ();
-			++m_tasksRun;
+			++m_numTasksRan;
 		}
 		
 		return result;
@@ -88,7 +86,7 @@ struct JdTaskThread : IJdThread
 	
 
 	JdMessageQueue <JdTask> *			m_queue			= nullptr;
-	u64									m_tasksRun		= 0;
+	u64									m_numTasksRan		= 0;
 };
 
 
@@ -264,9 +262,7 @@ struct JdTaskBatch
 namespace jd
 {
 	JdTaskBatch 	batch 	();
-//	void 			task 	(task_batch_t i_batch, const std::function <void (void)> & i_function);
 	void			task	(const std::function <void (void)> & i_function);
-//	void			wait	(JdTaskBatch & i_batch);
 }
 
 

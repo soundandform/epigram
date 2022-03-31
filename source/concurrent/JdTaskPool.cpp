@@ -30,15 +30,8 @@ namespace jd
 	JdTaskBatch batch ()
 	{
 		auto & pool = task_pool ();
-		
 		return pool.CreateBatch ();
 	}
-	
-	
-	void task (task_batch_t i_batch, const std::function <void (void)> & i_function)
-	{
-	}
-	
 	
 	void task (const std::function <void (void)> & i_function)
 	{
@@ -47,12 +40,4 @@ namespace jd
 		pool.m_globalBatch.Add ();
 		pool.m_queue.Push ({ & pool.m_globalBatch, i_function });
 	}
-	
-	
-//	void wait (JdTaskBatch & i_batch)
-//	{
-////		jd::out ("Wait on: @", i_batch);
-////		auto & pool = task_pool ();
-////		pool.FinishBatch (i_batch);
-//	}
 }
