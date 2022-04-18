@@ -27,6 +27,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 #include <limits>
 #include <type_traits>
 
@@ -177,11 +178,38 @@ namespace Jd
 	}
 	
 	string SPrintF (cstr_t i_format);
+
+	struct FormatDefault {};
+	std::ostream & operator << (std::ostream & stream, const FormatDefault & i_dummy);
 }
 
 
 namespace jd
 {
+	template <u32 precision_t, typename notation_t = Jd::FormatDefault>
+	struct fmt
+	{
+		fmt (const f64 i_value) : value (i_value) {}
+		
+		f64		value;
+	};
+
+	struct fixed {};
+	std::ostream & operator << (std::ostream & stream, const fixed & i_dummy);
+
+	template <u32 precision_t, typename notation_t>
+	std::ostream & operator << (std::ostream & stream, const fmt <precision_t, notation_t> & i_value)
+	{
+		auto saved = stream.precision ();
+		
+		stream << std::setprecision (precision_t) << notation_t () << i_value.value << std::setprecision (saved);
+		stream.unsetf (ios_base::floatfield);
+		
+		return stream;
+	}
+
+
+
 	template <typename T, typename... Args>
 	std::string sprintf (cstr_t i_format, T i_value, Args... i_args)
 	{

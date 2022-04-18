@@ -26,8 +26,15 @@ JdPreconditions::JdPreconditions ()
 	d_jdAssert (sizeof (JdString32) == 32,			"JdFlatString whacked");
 }
 
+namespace jd
+{
+	std::ostream & operator << (std::ostream & stream, const fixed & i_dummy)			{ return (stream << std::fixed); }
+}
+
 namespace Jd
 {
+	std::ostream & operator << (std::ostream & stream, const FormatDefault & i_dummy)	{ return stream; }
+
 	u32		Pow2CeilLog2 (u32 i_value)
 	{
 		u32 v = i_value, s = i_value;
@@ -65,6 +72,7 @@ namespace Jd
 		return i_value ? "true" : "false";
 	}
 	
+
 	void SSPrintF (std::ostringstream & o_oss, cstr_t i_format)
 	{
 		cstr_t format = i_format;
