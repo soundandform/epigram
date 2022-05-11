@@ -23,7 +23,7 @@ namespace Jd
 			i_string = i_string.substr (1);
 		}
 		
-		while ((p = i_string.rfind (' ')) == (i_string.size() - 1))
+		while (i_string.size () and (p = i_string.rfind (' ')) == (i_string.size () - 1))
 		{
 			i_string = i_string.substr (0, p);
 		}
