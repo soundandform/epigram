@@ -231,24 +231,34 @@ namespace jd
 #		define d_jdGlobalLock(ID)
 #	endif
 
+	typedef void (* outHandler_t) (cstr_t);
+	void _defaultOutHandler (cstr_t i_cstr);
+
+	outHandler_t outHandler (const outHandler_t i_outHandler = nullptr);
+
 	inline void out (cstr_t i_format)
 	{
 		d_jdGlobalLock ('cout');
-		cout << i_format << "\r" << endl;
+		
+		outHandler () (i_format);
+
+//		cout << i_format << "\r" << endl;
 	}
 
 	template <typename T, typename... Args>
 	void out (cstr_t i_format, T i_value, Args... i_args)
 	{
 		d_jdGlobalLock ('cout');
-		cout << Jd::SPrintF (i_format, i_value, i_args...) << "\r" << endl;
+//		cout << Jd::SPrintF (i_format, i_value, i_args...) << "\r" << endl;
+		outHandler () (Jd::SPrintF (i_format, i_value, i_args...).c_str ());
 	}
 
 	template <typename T>
 	void out (const T & i_value)
 	{
 		d_jdGlobalLock ('cout');
-		cout << i_value << "\r" << endl;
+//		cout << i_value << "\r" << endl;
+		outHandler () (Jd::SPrintF ("@", i_value).c_str ());
 	}
 
 	

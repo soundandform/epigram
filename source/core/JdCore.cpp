@@ -29,6 +29,23 @@ JdPreconditions::JdPreconditions ()
 namespace jd
 {
 	std::ostream & operator << (std::ostream & stream, const fixed & i_dummy)			{ return (stream << std::fixed); }
+
+	void _defaultOutHandler (cstr_t i_cstr)
+	{
+		cout << i_cstr << std::endl;
+		cout.flush ();
+	}
+
+	outHandler_t outHandler (const outHandler_t i_outHandler)
+	{
+		static outHandler_t s_outHandler = _defaultOutHandler;
+		
+		if (i_outHandler)
+			s_outHandler = i_outHandler;
+		
+		return s_outHandler;
+	}
+
 }
 
 namespace Jd
