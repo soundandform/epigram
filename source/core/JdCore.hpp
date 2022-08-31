@@ -146,11 +146,12 @@ namespace Jd
 		{
 			if (* i_format == c_epilogInsertToken)
 			{
-				if (*(i_format + 1) == c_epilogInsertToken)
-				{
-					++i_format;
-				}
-				else
+				// this didn't work!
+//				if (*(i_format + 1) == c_epilogInsertToken)
+//				{
+//					++i_format;
+//				}
+//				else
 				{
 					SSPrintFHelper::Stream (o_oss, i_value);
 					SSPrintF (o_oss, i_format + 1, i_args ...); // call even when *s == 0 to detect extra arguments

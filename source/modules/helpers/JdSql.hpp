@@ -1249,7 +1249,7 @@ class JdSqlTable : public JdDatabase64
 };
 
 
-d_epilogCategory (database, JdDatabaseUUID, JdDatabase64)
+//d_epilogCategory (database, JdDatabaseUUID, JdDatabase64)
 
 
 
