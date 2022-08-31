@@ -238,7 +238,7 @@ class EpBinary : public Jd::TypedT <c_jdTypeId::binary>
 		return *this;
 	}
 	
-	EpBinary (const function <void (voidptr_t i_data, size_t i_size)> & i_handler)
+	EpBinary (const std::function <void (voidptr_t i_data, size_t i_size)> & i_handler)
 	:
 	m_handler	(i_handler) { }
 	
@@ -271,7 +271,7 @@ class EpBinary : public Jd::TypedT <c_jdTypeId::binary>
 	
 	voidptr_t												m_data = nullptr;
 	size_t													m_size = 0;
-	function <void (voidptr_t i_data, size_t i_size)>		m_handler;
+	std::function <void (voidptr_t i_data, size_t i_size)>	m_handler;
 };
 
 
@@ -332,7 +332,7 @@ struct EpigramCast
 		template <typename F>
 		static std::string Cast (const F &i_from)
 		{
-			ostringstream oss;
+			std::ostringstream oss;
 			oss << i_from;
 			return oss.str();
 		}
@@ -348,28 +348,28 @@ struct EpigramCast
 		static T Cast (const std::string &i_from)
 		{
 			T value = EpigramDefaultValue <T> ();
-			istringstream iss (i_from);
+			std::istringstream iss (i_from);
 			iss >> value;
 			return value;
 		}
 	};
 
-	type_if <	is_class <T>::value,								Null,						Auto>::type				caster_a;
-	type_if <	jd::is_cstring <T>::value,							Null,						caster_a>::type			caster_b;
+	type_if <	std::is_class <T>::value,									Null,						Auto>::type				caster_a;
+	type_if <	jd::is_cstring <T>::value,									Null,						caster_a>::type			caster_b;
 	
-	type_if <	is_same <S, std::string>::value and
-							is_fundamental <T>::value,				StringToFundamental,		caster_b>::type			caster_c;
+	type_if <	std::is_same <S, std::string>::value and
+						std::is_fundamental <T>::value,						StringToFundamental,		caster_b>::type			caster_c;
 	
-	type_if <	is_same <T, std::string>::value and
-							is_fundamental <S>::value,				FundamentalToString,		caster_c>::type			caster_d;
+	type_if <	std::is_same <T, std::string>::value and
+						std::is_fundamental <S>::value,						FundamentalToString,		caster_c>::type			caster_d;
 
-	type_if <	is_same <T, S>::value,								Auto,						caster_d>::type			caster_e;
+	type_if <	std::is_same <T, S>::value,									Auto,						caster_d>::type			caster_e;
 
-	type_if <	is_pointer <T>::value and
-							not is_pointer <S>::value,				Null,						caster_e>::type			caster_f;
+	type_if <	std::is_pointer <T>::value and
+						not std::is_pointer <S>::value,						Null,						caster_e>::type			caster_f;
 
-	type_if <	is_enum <T>::value,									Null,						caster_f>::type			caster_x;
-	type_if <	is_enum <T>::value and is_fundamental <S>::value,	FundamentalToEnum,			caster_f>::type			caster_g;
+	type_if <	std::is_enum <T>::value,									Null,						caster_f>::type			caster_x;
+	type_if <	std::is_enum <T>::value and std::is_fundamental <S>::value,	FundamentalToEnum,			caster_f>::type			caster_g;
 
 
 	typedef caster_x type;
@@ -701,7 +701,7 @@ class EpigramT : public interface_t
 		}
 		
 		
-		static constexpr u8	GetTypeId () { return Jd::TypeId <string> (); }
+		static constexpr u8	GetTypeId () { return Jd::TypeId <std::string> (); }
 		
 		template <typename T>
 		static u32 GetItemCount (const T & i_value) { return 1; }
@@ -754,7 +754,7 @@ class EpigramT : public interface_t
 			cstr_t	value;
 			
 			bool operator == (cstr_t i_string)				{ return (strcmp (i_string, value) == 0); }
-			bool operator == (const string & i_string)		{ return (i_string == value); }
+			bool operator == (const std::string & i_string)		{ return (i_string == value); }
 		};
 		
 		static const u8 * Fetch (StringCompare & o_value, const u8 * i_iterator, PayloadRef i_payload, u8 unused = 0)
@@ -768,7 +768,7 @@ class EpigramT : public interface_t
 		}
 
 		typedef StringCompare		compare_t;
-		typedef string				store_t;
+		typedef std::string			store_t;
 	};
 	
 	
@@ -970,7 +970,7 @@ class EpigramT : public interface_t
 		struct SizeOfNothing	{ static constexpr size_t sizeOfT () { return 0; }};	// cause c++ sizeof on an empty struct still equals 1
 		struct SizeOfSomething	{ static constexpr size_t sizeOfT () { return sizeof (T); }};
 		
-		type_if <is_empty <T>::value,	SizeOfNothing,		 SizeOfSomething>::type			sizer;
+		type_if <std::is_empty <T>::value,	SizeOfNothing,		 SizeOfSomething>::type			sizer;
 
 		static constexpr u8	GetTypeId () { return Jd::TypeId <T> (); }
 		
@@ -1169,26 +1169,27 @@ class EpigramT : public interface_t
 	struct TypeT
 	{
 		protected:
-		type_def remove_pointer <R>::type							Rnp;
+		type_def std::remove_pointer <R>::type						Rnp;
 		
-		type_if <is_class <R>::value,								PodT <R>,						FundamentalT <R>>::type			storerA;
+		type_if <std::is_class <R>::value,							PodT <R>,						FundamentalT <R>>::type			storerA;
 		
-		type_if <is_pointer <R>::value and is_class <Rnp>::value,	ObjPointerT <Rnp, R>,			storerA>::type					storerP;
+		type_if <std::is_pointer <R>::value 
+					and std::is_class <Rnp>::value,					ObjPointerT <Rnp, R>,			storerA>::type					storerP;
 		
-		type_if <is_same <std::string, R>::value,					StringType,						storerP>::type					storerB;
+		type_if <std::is_same <std::string, R>::value,				StringType,						storerP>::type					storerB;
 		type_if <jd::is_cstring <R>::value,							StringType,						storerB>::type					storerC;
 		
-		type_if <is_base_of <IIEpigram, R>::value,					EpigramType,					storerC>::type					storerD;
+		type_if <std::is_base_of <IIEpigram, R>::value,				EpigramType,					storerC>::type					storerD;
 
-		type_if <is_base_of <Jd::Typed, R>::value,					IntrinsicPodT <R>,				storerD>::type					storerE;
+		type_if <std::is_base_of <Jd::Typed, R>::value,				IntrinsicPodT <R>,				storerD>::type					storerE;
 
-		type_if <is_base_of <versionedObject_t, R>::value,			ObjectT <R>,					storerE>::type					storerF;
-		type_if <is_base_of <unversionedObject_t, R>::value,		ObjectT <R>,					storerF>::type					storerG;
-//		type_if <is_base_of <unversionedObject_t, R>::value,		UnversionedObjectT <R>,			storerF>::type					storerG;
-		type_if <is_base_of <string_t, R>::value,					StringType,						storerG>::type					storerH;
+		type_if <std::is_base_of <versionedObject_t, R>::value,		ObjectT <R>,					storerE>::type					storerF;
+		type_if <std::is_base_of <unversionedObject_t, R>::value,	ObjectT <R>,					storerF>::type					storerG;
+//		type_if <std::is_base_of <unversionedObject_t, R>::value,		UnversionedObjectT <R>,			storerF>::type					storerG;
+		type_if <std::is_base_of <string_t, R>::value,				StringType,						storerG>::type					storerH;
 
-		type_if <is_enum <R>::value,								EnumT <R>,						storerH>::type					storerI;
-		type_if <is_base_of <binary_t, R>::value,					BinaryT <R>,					storerI>::type					storerX;
+		type_if <std::is_enum <R>::value,							EnumT <R>,						storerH>::type					storerI;
+		type_if <std::is_base_of <binary_t, R>::value,				BinaryT <R>,					storerI>::type					storerX;
 
 		public: typedef storerX	type;
 	};
@@ -1216,7 +1217,7 @@ class EpigramT : public interface_t
 		
 		type_def C::value_type R;
 
-		type_if <is_same <C, T>::value,		R,		T>::type					store_t;
+		type_if <std::is_same <C, T>::value,		R,		T>::type					store_t;
 		
 		type_def TypeT <store_t>::type storer_t;
 	};
@@ -1272,10 +1273,10 @@ class EpigramT : public interface_t
 	template <typename T, typename IT = T> // IT = inner type.  allows the store to cast container contents to pre-defined attribute types (or simply enforce & fail)
 	class StorerType
 	{
-		type_def remove_extent <T>::type R;
+		type_def std::remove_extent <T>::type R;
 		
 		type_if <jd::has_iterator	<T>::value,		ContainerStorer <T, IT>,	ItemStorer <T>	>::type		A;
-		type_if <is_array			<T>::value,		ArrayStorer <R>,			A				>::type		B;
+		type_if <std::is_array		<T>::value,		ArrayStorer <R>,			A				>::type		B;
 		type_if <jd::is_cstring		<T>::value,		ItemStorer <cstr_t>,		B				>::type		C;
 		
 		public:
@@ -1336,7 +1337,7 @@ class EpigramT : public interface_t
 				casters [c_jdTypeId::u64] = FetchAndCast <u64>;
 //				casters [c_jdTypeId::enumeration] = FetchAndCast ... 
 				casters [c_jdTypeId::boolean] = FetchAndCast <bool>;
-				casters [c_jdTypeId::string] = FetchAndCast <string>;
+				casters [c_jdTypeId::string] = FetchAndCast <std::string>;
 			}
 			
 			fetchAndCast_t		casters		[32] = {};
@@ -1635,8 +1636,8 @@ class EpigramT : public interface_t
 		
 		static void Fetch (T & o_container, const EpigramKV * i_data)
 		{
-			type_if <is_base_of <versionedObject_t, R>::value,			true_type,						false_type>::type			t1;
-			type_if <is_base_of <unversionedObject_t, R>::value,		true_type,						t1>::type					t2;
+			type_if <std::is_base_of <versionedObject_t, R>::value,			std::true_type,						std::false_type>::type			t1;
+			type_if <std::is_base_of <unversionedObject_t, R>::value,		std::true_type,						t1>::type					t2;
 			
 			fetcher_t fetcher;
 			
@@ -1838,7 +1839,7 @@ class EpigramT : public interface_t
 			else return nullptr;
 		}
 
-		pair <voidptr_t, voidptr_t>						unsafePayload				() const
+		std::pair <voidptr_t, voidptr_t>  unsafePayload				() const
 		{
 			return { this->payload, this->endPayload };
 		}
@@ -1895,15 +1896,15 @@ class EpigramT : public interface_t
 			return name;
 		}
 		
-		string					GetValueTypeName				() const
+		std::string				GetValueTypeName				() const
 		{
-			string name = Jd::TypeIdToName (this->valueType);
+			std::string name = Jd::TypeIdToName (this->valueType);
 			if (this->count > 1) name += "[]";
 			
 			return name;
 		}
 		
-		string					GetKeyTypeName					() const
+		std::string				GetKeyTypeName					() const
 		{
 			return Jd::TypeIdToFullName (this->keyType);
 		}
@@ -2311,7 +2312,7 @@ class EpigramT : public interface_t
 		// FIX: need to refactor to AddElement to GetItemCount() vs. pushing i_arraySize.  For now:
 		typedef typename remove_pointer <V>::type B;
 		
-		vector <B> vec (i_value, i_value + i_arraySize);
+		std::vector <B> vec (i_value, i_value + i_arraySize);
 		
 		return this->In (i_key, vec);
 	}
@@ -2608,7 +2609,7 @@ class EpigramT : public interface_t
 		const u8 *						m_ptr;
 		allocator_t &					m_allocator;
 		
-		vector <const u8 *>				m_elements;
+		std::vector <const u8 *>		m_elements;
 		ptrdiff_t						m_index;
 	};
 	

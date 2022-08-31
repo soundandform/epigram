@@ -31,7 +31,7 @@ void JdAssert (bool i_shouldBeTrue, cstr_t i_truthfulOrLyingStatement, cstr_t i_
 {
 	if (not i_shouldBeTrue)
 	{
-		string message;
+		std::string message;
 
 		if (i_format)
 			message = Jd::SPrintF (i_format, i_args...);
@@ -51,7 +51,7 @@ JdResult JdResert (bool i_shouldBeTrue, cstr_t i_truthfulOrLyingStatement, cstr_
 	
 	if (not i_shouldBeTrue)
 	{
-		string message;
+		std::string message;
 		
 		if (i_format)
 			message = Jd::SPrintF (i_format, i_args...);

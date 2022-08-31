@@ -9,16 +9,16 @@
 #ifndef Jigidesign_EpSerializationRaw_h
 #define Jigidesign_EpSerializationRaw_h
 
-#include "JdNucleus.hpp"
-#include "JdUtils.hpp"
-#include "JdTypeId.hpp"
-
 #include <iostream>
 #include <assert.h>
 #include <algorithm>
 #include <type_traits>
 #include <cstring>
 #include <string.h>
+
+#include "JdNucleus.hpp"
+#include "JdUtils.hpp"
+#include "JdTypeId.hpp"
 
 #ifdef d_epigramUseCityHash
 #	include "city.h"

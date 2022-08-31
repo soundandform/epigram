@@ -37,7 +37,7 @@ class EpArg_
 	template <typename T>
 	EpArg <A, T> operator = (T && i_value) const
 	{
-		return EpArg <A, T> (m_arg, forward <T> (i_value));
+		return EpArg <A, T> (m_arg, std::forward <T> (i_value));
 	}
 	
 	

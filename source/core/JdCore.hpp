@@ -6,8 +6,6 @@
 //  Copyright 2011-2012 Epigram Software, LLC. All rights reserved.
 //
 
-#include "JdNucleus.hpp"
-
 # if ! defined (_MSC_VER)
 	# pragma GCC diagnostic ignored "-Wconversion"
 #endif
@@ -37,9 +35,8 @@
 	typedef std::lock_guard <std::recursive_mutex> rmutex_lock;
 # endif
 
-#include "JdTypeTraits.hpp"
-
-using namespace std;
+# include "JdTypeTraits.hpp"
+# include "JdNucleus.hpp"
 
 
 namespace Jd
@@ -177,7 +174,7 @@ namespace Jd
 		return oss.str ();
 	}
 	
-	string SPrintF (cstr_t i_format);
+	std::string SPrintF (cstr_t i_format);
 
 	struct FormatDefault {};
 	std::ostream & operator << (std::ostream & stream, const FormatDefault & i_dummy);
@@ -294,7 +291,7 @@ class JdFormatter
 	{
 		// FIX: kill this. was just using this for sqlite: which should switch to "bind" method input
 		if (i_maxPrecision)
-			oss.precision (numeric_limits <f64>::max_digits10);
+			oss.precision (std::numeric_limits <f64>::max_digits10);
 	}
 
 		template <typename T>

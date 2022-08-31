@@ -32,8 +32,8 @@ namespace jd
 
 	void _defaultOutHandler (cstr_t i_cstr)
 	{
-		cout << i_cstr << std::endl;
-		cout.flush ();
+		std::cout << i_cstr << std::endl;
+		std::cout.flush ();
 	}
 
 	outHandler_t outHandler (const outHandler_t i_outHandler)
@@ -104,7 +104,7 @@ namespace Jd
 				}
 				else
 				{
-					string msg = "invalid ssprintf: '";
+					std::string msg = "invalid ssprintf: '";
 					(msg += format) += "' is missing argument(s)";
 					
 					# if __cpp_exceptions

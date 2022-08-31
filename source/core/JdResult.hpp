@@ -33,11 +33,11 @@ struct JdErrorConst
 template <typename T1>
 struct JdReturn
 {
-	tuple <T1> values;
+	std::tuple <T1> values;
 };
 
 template <typename T1>
-tuple <T1> jd_return (T1 && i_return1) { return tuple <T1> (i_return1); }
+std::tuple <T1> jd_return (T1 && i_return1) { return std::tuple <T1> (i_return1); }
 
 
 struct JdR {};
@@ -70,9 +70,9 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 
 
 	template <typename T1>
-							JdResultT				(const tuple <T1> & i_return)
+							JdResultT				(const std::tuple <T1> & i_return)
 	{
-		m_return = tuple <R1> (get <0> (i_return));
+		m_return = std::tuple <R1> (std::get <0> (i_return));
 	}
 	
 							JdResultT				(const R1 & i_return)
@@ -188,7 +188,7 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 //			this->m_location	= t_locationInfo ();
 			
 			m_message			= i_other.m_message;
-			get <0> (m_return)	= R1 ();
+			std::get <0> (m_return)	= R1 ();
 		}
 		return * this;
 	}
@@ -220,17 +220,17 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 
 	void					SetReturn 				(const R1 & i_return)
 	{
-		get <0> (m_return) = i_return;
+		std::get <0> (m_return) = i_return;
 	}
 
 	R1						GetReturn 				() const
 	{
-		return get <0> (m_return);
+		return std::get <0> (m_return);
 	}
 
 	const R1 &					Return 					() const
 	{
-		return get <0> (m_return);
+		return std::get <0> (m_return);
 	}
 
 	
@@ -263,7 +263,7 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 		m_message = i_message;
 	}
 	
-	string					GetMessage				() const
+	std::string				GetMessage				() const
 	{
 		return m_message;
 	}
@@ -297,7 +297,7 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 	i32							m_resultCode			= 0;
 	JdFlatString <112>			m_message;
 	
-	tuple <R1>					m_return;
+	std::tuple <R1>				m_return;
 	
 	public:
 
@@ -318,6 +318,8 @@ typedef const JdResult & 							JdResultRef;
 template <typename L, typename R1>
 std::ostream & operator << (std::ostream &output, const JdResultT <L, R1> & i_result)
 {
+	using namespace std;
+
 	char code [16];
 	
 	i32 resultCode = i_result.Code();
