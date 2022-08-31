@@ -1707,7 +1707,7 @@ class EpigramT : public interface_t
 		void CastedFetch								(T & o_value) const
 		{
 			type_if <jd::has_iterator <T>::value,		ContainerFetcher <T>,	ItemFetcher <T>>::type		fetcher_a;
-			type_if <is_pointer <T>::value,				PointerFetcher <T>,		fetcher_a>::type			fetcher_t;
+			type_if <std::is_pointer <T>::value,		PointerFetcher <T>,		fetcher_a>::type			fetcher_t;
 			
 			fetcher_t::Fetch (o_value, this);
 		}
@@ -1772,7 +1772,7 @@ class EpigramT : public interface_t
 		void CastedFetch								(T & o_value) const
 		{
 			type_if <jd::has_iterator <T>::value,		ContainerFetcher <T>,	ItemFetcher <T>>::type		fetcher_a;
-			type_if <is_pointer <T>::value,				PointerFetcher <T>,		fetcher_a>::type			fetcher_t;
+			type_if <std::is_pointer <T>::value,		PointerFetcher <T>,		fetcher_a>::type			fetcher_t;
 			
 			fetcher_t::Fetch (o_value, this);
 		}
@@ -2310,7 +2310,7 @@ class EpigramT : public interface_t
 	EpigramT &					InArray				(const K & i_key, const V & i_value, size_t i_arraySize)			// Array
 	{
 		// FIX: need to refactor to AddElement to GetItemCount() vs. pushing i_arraySize.  For now:
-		typedef typename remove_pointer <V>::type B;
+		typedef typename std::remove_pointer <V>::type B;
 		
 		std::vector <B> vec (i_value, i_value + i_arraySize);
 		

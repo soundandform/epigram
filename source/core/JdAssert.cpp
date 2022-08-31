@@ -12,6 +12,7 @@
 # endif
 
 #include "JdAssert.hpp"
+using namespace std;
 
 
 JdException::JdException (cstr_t i_message, cstr_t i_location, u32 i_line)

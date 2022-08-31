@@ -201,7 +201,7 @@ namespace jd
 		auto saved = stream.precision ();
 		
 		stream << std::setprecision (precision_t) << notation_t () << i_value.value << std::setprecision (saved);
-		stream.unsetf (ios_base::floatfield);
+		stream.unsetf (std::ios_base::floatfield);
 		
 		return stream;
 	}
@@ -264,14 +264,14 @@ namespace jd
 	auto min (const A & a, const B & b)
 	{
 		typedef decltype (a*b) fused;
-		return ::min ((fused) a, (fused) b);
+		return std::min ((fused) a, (fused) b);
 	}
 
 	template <typename A, typename B>
 	auto max (const A & a, const B & b)
 	{
 		typedef decltype (a*b) fused;
-		return ::max ((fused) a, (fused) b);
+		return std::max ((fused) a, (fused) b);
 	}
 }
 
