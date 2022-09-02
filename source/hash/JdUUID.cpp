@@ -292,9 +292,9 @@ namespace Jd
 	}
 
 	
-	string IdToFriendlyString (JdUUIDRef i_uuid)
+	std::string IdToFriendlyString (JdUUIDRef i_uuid)
 	{
-		string s;
+		std::string s;
 		
 		if (i_uuid.IsNull())
 		{

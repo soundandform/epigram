@@ -13,6 +13,8 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 
+using namespace std;
+
 namespace JdPlatform
 {
 	template <> IJdPlatform::FileSystem * 		Get () { return Jd::AcquireSingleton <JdMacPlatform::FileSystem> (); }

@@ -12,6 +12,8 @@
 #include "JdAssert.hpp"
 #include "JdSemaphore.hpp"
 
+using namespace std;
+
 typedef u64 seq_t;
 
 const int c_jdCacheLineBytes = 64;

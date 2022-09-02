@@ -8,6 +8,8 @@
 
 #include "EpigramAppleUtil.h"
 
+using namespace std;
+
 CFDictionaryRef EpigramToCFDictionary (EpDelivery i_msg)
 {
 	Epigram msg = i_msg;

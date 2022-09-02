@@ -2027,25 +2027,25 @@ class EpigramT : public interface_t
 
 	EpigramT			(EpigramT && i_epigram)
 	{
-		m_allocator = move (i_epigram.m_allocator);
+		m_allocator = std::move (i_epigram.m_allocator);
 	}
 
 	EpigramT&			operator= (EpigramT && i_epigram)
 	{
-		m_allocator = move (i_epigram.m_allocator);
+		m_allocator = std::move (i_epigram.m_allocator);
 		return * this;
 	}
 
 	template <typename A>
 	EpigramT			(EpigramT <A> && i_epigram)
 	{
-		m_allocator = move (i_epigram.m_allocator);
+		m_allocator = std::move (i_epigram.m_allocator);
 	}
 
 	template <typename A>
 	EpigramT&			operator= (EpigramT <A> && i_epigram)
 	{
-		m_allocator = move (i_epigram.m_allocator);
+		m_allocator = std::move (i_epigram.m_allocator);
 		return * this;
 	}
 

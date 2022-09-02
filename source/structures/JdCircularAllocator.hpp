@@ -14,6 +14,8 @@
 #include <condition_variable>
 #include <mutex>
 
+using namespace std;
+
 /*
  	This is a thread-safe fixed-size circular buffer allocator.  It's used in the JdModule system for message-passing and assumes that
  	all allocations are short-lived and allocated and deallocated in a roughly first-out, first-back-in manner.

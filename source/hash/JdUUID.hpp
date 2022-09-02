@@ -137,9 +137,9 @@ namespace std
 
 namespace Jd
 {
-	string	EncodeBitsToString	(voidptr_t i_bits, i32 i_numBits, bool i_lowercase);
-	bool	DecodeStringToBits	(void * o_bits, i32 i_numBits, const std::string & i_string);
-	string	IdToFriendlyString	(JdUUIDRef i_uuid);
+	std::string	EncodeBitsToString	(voidptr_t i_bits, i32 i_numBits, bool i_lowercase);
+	bool		DecodeStringToBits	(void * o_bits, i32 i_numBits, const std::string & i_string);
+	std::string	IdToFriendlyString	(JdUUIDRef i_uuid);
 }
 
 

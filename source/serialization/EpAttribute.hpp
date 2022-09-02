@@ -20,7 +20,7 @@ class EpAttributes
 {
 	public:
 	
-	static u8 GetTypeForName (const string & i_attributeName)
+	static u8 GetTypeForName (const std::string & i_attributeName)
 	{
 		return Static().GetTypeForName_ (i_attributeName);
 	}
@@ -36,7 +36,7 @@ class EpAttributes
 		Static ().RegisterAttribute_ (i_name, Jd::TypeId <T> (), i_hash);
 	}
 
-	static string GetHashAttributeName (u64 i_hash)
+	static std::string GetHashAttributeName (u64 i_hash)
 	{
 		return Static ().GetHashAttributeName_ (i_hash);
 	}
@@ -53,8 +53,8 @@ class EpAttributes
 	}
 	
 	protected://-------------------------------------------------------------------------
-	u8 GetTypeForName_ (const string & i_attributeName);
-	string GetHashAttributeName_ (u64 i_hash);
+	u8 GetTypeForName_ (const std::string & i_attributeName);
+	std::string GetHashAttributeName_ (u64 i_hash);
 	void RegisterAttribute_ (cstr_t i_name, u8 i_typeId, stringRef_t);
 	void RegisterAttribute_ (cstr_t i_name, u8 i_typeId, u64 i_hash);
 	
@@ -67,7 +67,7 @@ class EpAttributes
 		u8		type;
 	};
 	
-	map <string, Info>		m_attributes;
+	std::map <std::string, Info>		m_attributes;
 };
 
 

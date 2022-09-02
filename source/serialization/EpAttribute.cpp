@@ -9,6 +9,7 @@
 
 #include "EpAttribute.hpp"
 
+using namespace std;
 
 u8 EpAttributes::GetTypeForName_ (const string & i_attributeName)
 {

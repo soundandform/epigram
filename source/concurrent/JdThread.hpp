@@ -130,7 +130,7 @@ class JdThreadT
 			int policy;
 			pthread_getschedparam (pthread_self (), &policy, & sp);
 			
-			cout << "policy: " << policy << " priority: " << sp.sched_priority << endl;
+			std::cout << "policy: " << policy << " priority: " << sp.sched_priority << std::endl;
 		}
 		
 //		i_owner->m_state = c_jdThreadState::running;
@@ -325,7 +325,7 @@ class JdThreadT
 	JdResult			m_runResult;
 	bool				m_exited				= false;
 	
-	string				m_threadName;
+	std::string			m_threadName;
 	JdSemaphore			m_threadReady;
 	Epigram				m_args;
 };
@@ -391,7 +391,7 @@ class JdThreadPool
 		return c_jdNoErr;
 	}
 	
-	set <JdThreadT <t_thread> *>		m_threads;
+	std::set <JdThreadT <t_thread> *>		m_threads;
 };
 
 
