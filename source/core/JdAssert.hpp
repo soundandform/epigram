@@ -24,10 +24,10 @@ class JdException : public std::exception, public JdResult
 };
 
 
-void JdAssert (cstr_t i_truthfulOrLyingStatement, cstr_t i_filePath, u32 i_lineNum, stringRef_t i_message);
+void JdAssert (bool i_debugBuild, cstr_t i_truthfulOrLyingStatement, cstr_t i_filePath, u32 i_lineNum, stringRef_t i_message);
 
 template <typename... args_t>
-void JdAssert (bool i_shouldBeTrue, cstr_t i_truthfulOrLyingStatement, cstr_t i_filePath, u32 i_lineNum, cstr_t i_format, args_t... i_args)
+void JdAssert (bool i_debugBuild, bool i_shouldBeTrue, cstr_t i_truthfulOrLyingStatement, cstr_t i_filePath, u32 i_lineNum, cstr_t i_format, args_t... i_args)
 {
 	if (not i_shouldBeTrue)
 	{
@@ -36,7 +36,7 @@ void JdAssert (bool i_shouldBeTrue, cstr_t i_truthfulOrLyingStatement, cstr_t i_
 		if (i_format)
 			message = Jd::SPrintF (i_format, i_args...);
 		
-		JdAssert (i_truthfulOrLyingStatement, i_filePath, i_lineNum, message);
+		JdAssert (i_debugBuild, i_truthfulOrLyingStatement, i_filePath, i_lineNum, message);
 	}
 }
 
@@ -64,17 +64,18 @@ JdResult JdResert (bool i_shouldBeTrue, cstr_t i_truthfulOrLyingStatement, cstr_
 
 
 
-#define d_jdPermAssert(TRUTH, ...) JdAssert (TRUTH, #TRUTH, __FILE__, __LINE__, __VA_ARGS__)
+#define d_jdShipAssert(TRUTH, ...) JdAssert (false, TRUTH, #TRUTH, __FILE__, __LINE__, "" __VA_ARGS__)
 
 #if DEBUG
-	#define d_jdAssert(TRUTH, ...) JdAssert (TRUTH, #TRUTH, __FILE__, __LINE__, "" __VA_ARGS__)
+	#define d_jdAssert(TRUTH, ...) JdAssert (DEBUG, TRUTH, #TRUTH, __FILE__, __LINE__, "" __VA_ARGS__)
 #else
 	#define d_jdAssert(...)
 #endif
 
+
 #define d_jdResert(TRUTH, ...) JdResert (TRUTH, #TRUTH, __FILE__, __LINE__, __VA_ARGS__)
 
-#define d_jdThrow(...) JdAssert (false, "throw", __FILE__, __LINE__, __VA_ARGS__)
+#define d_jdThrow(...) JdAssert (false, false, "throw", __FILE__, __LINE__, __VA_ARGS__)
 #define d_jdFix(...) d_jdThrow ("fix: " __VA_ARGS__)
 
 

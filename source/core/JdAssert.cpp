@@ -39,41 +39,45 @@ const char * JdException::what() const throw ()
 }
 
 
-void JdAssert (cstr_t i_truthfulOrLyingStatement, cstr_t i_filePath, u32 i_lineNum, stringRef_t i_message)
+void JdAssert (bool i_debugBuild, cstr_t i_truthfulOrLyingStatement, cstr_t i_filePath, u32 i_lineNum, stringRef_t i_message)
 {
-	std::ostringstream oss;
-	// FIX: this should probably be wrapped in a JdException. Upper level code that catches the exception will log, display, or cerr the .what()
-	if (strcmp (i_truthfulOrLyingStatement, "0") == 0)
-		oss << "\n| throw: ";
-	else
-		oss << "\n| '" << i_truthfulOrLyingStatement << "' assertion failed. ";
-	
-	oss << i_message;
-	
-	cstr_t file = strstr (i_filePath, "../");
-	if (! file) file = i_filePath;
-	else file += 2;
-	
-	if (file)
+	if (i_debugBuild)
 	{
-		oss << "\n+" << string (strlen (file) + 7, '-');
-		oss << "\n| " << file << ":" << i_lineNum;
-	}
-	
-	//epilog_(fatal, "%s", epistr (oss.str()));
-	std::cout << oss.str() << std::endl << std::endl;
-	
-	// Break into the debugger
-	if (not JdConfig::IsUnitTest () and JdConfig::IsDebug ())
-	{
-		#if __APPLE__
-			usleep (50000);		// give epilog 50ms to flush.
-		#endif
-//			raise (SIGTRAP);
+		std::ostringstream oss;
+		// FIX: this should probably be wrapped in a JdException. Upper level code that catches the exception will log, display, or cerr the .what()
+		if (strcmp (i_truthfulOrLyingStatement, "0") == 0)
+			oss << "\n| throw: ";
+		else
+			oss << "\n| '" << i_truthfulOrLyingStatement << "' assertion failed. ";
+		
+		oss << i_message;
+		
+		cstr_t file = strstr (i_filePath, "../");
+		if (! file) file = i_filePath;
+		else file += 2;
+		
+		if (file)
+		{
+			oss << "\n+" << string (strlen (file) + 7, '-');
+			oss << "\n| " << file << ":" << i_lineNum;
+		}
+		
+		//epilog_(fatal, "%s", epistr (oss.str()));
+		std::cout << oss.str() << std::endl << std::endl;
+		
+		// Break into the debugger
+		if (not JdConfig::IsUnitTest () and JdConfig::IsDebug ())
+		{
+			#if __APPLE__
+				usleep (50000);		// give epilog 50ms to flush.
+			#endif
+	//			raise (SIGTRAP);
+		}
 	}
 	
 	# if __cpp_exceptions
-		throw JdException (oss.str().c_str(), i_filePath, i_lineNum);
+		string exceptionString = "'" + string (i_truthfulOrLyingStatement) + "' " + i_message;
+		throw JdException (exceptionString.c_str (), i_filePath, i_lineNum);
 	# else
 		abort ();
 	# endif
