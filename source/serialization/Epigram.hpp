@@ -1433,7 +1433,7 @@ class EpigramT : public interface_t
 				
 				if (canExtract)
 				{
-					size_t objSize;
+					size_t objSize = 0;
 
 					const u8 * ptr = (u8 *) i_data.start;
 					
@@ -2710,9 +2710,16 @@ class EpigramT : public interface_t
 
 
 	template <typename K, typename V>
-	EpigramKVT <KVSet <K, V>>		operator []				(const EpAttribute <K,V> & i_attribute) //const
+	EpigramKVT <KVSet <K, V>>			operator []				(const EpAttribute <K,V> & i_attribute) //const
 	{
 		return FindItem <KVSet <K, V>> ((K &) i_attribute);
+	}
+	
+	
+	template <typename K>
+	bool								Has						(const K & i_key)
+	{
+		return operator [] (i_key).IsSet ();
 	}
 
 
