@@ -1185,15 +1185,14 @@ struct JdCoreDatabase : JdSqlTableT <T>, JdModuleHelper <IJdModuleServer>
 # endif
 
 
-/*
 typedef JdCoreDatabase <JdUUID> JdDatabaseUUID;
 
-class JdUuidDatabase : public JdDatabaseUUID
+class JdUuidSqlTable : public JdDatabaseUUID
 {
     public:
-	JdUuidDatabase (cstr_t i_databaseName, u64 * i_linkedSequence = nullptr)
+	JdUuidSqlTable (cstr_t i_databaseName, u64 * i_linkedSequence = nullptr)
 	:
-	JdCoreDatabase <JdUUID> (i_databaseName, "uuid", i_linkedSequence)
+	JdDatabaseUUID (i_databaseName, "uuid", i_linkedSequence)
 	{
 		this->m_useNativeSqliteRowId = false;
 		// 0: (native) rowid, 1: seq, 2: rowId
@@ -1216,7 +1215,7 @@ class JdUuidDatabase : public JdDatabaseUUID
 		return JdUUID (uuidBytes);
 	}
 };
-*/
+
 
 typedef JdCoreDatabase <i64> JdDatabase64;
 

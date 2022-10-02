@@ -180,7 +180,7 @@ bool EpigramDumper::Decompose (const u8 * i_start, const u8 * i_end, u32 i_depth
 	u32 index = 0;
 	while (ptr > flippedEnd)
 	{
-		if (m_argsMode && ptr != i_start) out << ", ";
+		if (m_argsMode and ptr != i_start) out << ", ";
 		
 		const u8 * decode = ptr;
 		
