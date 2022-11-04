@@ -96,7 +96,7 @@ static void EpilogF (std::ostringstream & o_oss, cstr_t i_format)
 			}
 			else
 			{
-				string msg = "invalid epilog: '";
+				std::string msg = "invalid epilog: '";
 				(msg += format) += "' is missing argument(s)";
 				
 				# if __cpp_exceptions
@@ -139,7 +139,7 @@ void EpilogF (std::ostringstream & o_oss, cstr_t i_format, T value, Args... i_ar
 template <typename... t_args>
 void EpilogPrint (char * o_string4k, cstr_t i_format, t_args... i_args)
 {
-	ostringstream oss;
+	std::ostringstream oss;
 	EpilogF (oss, i_format, i_args...);
 	oss << std::ends;
 	
@@ -150,7 +150,7 @@ void EpilogPrint (char * o_string4k, cstr_t i_format, t_args... i_args)
 inline
 void EpilogPrint (char * o_string4k, cstr_t i_format)
 {
-	ostringstream oss;
+	std::ostringstream oss;
 	EpilogF (oss, i_format);
 	oss << std::ends;
 	
@@ -219,7 +219,7 @@ struct EpilogConvert
 		typedef void * cast_type;
 	};
 	
-	type_if <is_fundamental<T>::value,					Fundamental<T>, Object<T> >::type	type_;
+	type_if <std::is_fundamental<T>::value,				Fundamental<T>, Object<T> >::type	type_;
 	type_if <std::is_pointer<T>::value,					Fundamental<T>, type_>::type		type__;
 	type_if <std::is_same <T,EpilogEmptyArg>::value,	EmptyArg,		type__>::type		type;
 };
@@ -547,7 +547,7 @@ struct EpilogCasterObjC
 struct EpilogCaster
 #endif
 {
-	type_if <std::is_same <T, string>::value, JdString256, T>::type			A;
+	type_if <std::is_same <T, std::string>::value, JdString256, T>::type			A;
 	type_if <std::is_same <T, cstr_t>::value, JdString256, A>::type			B;
 	
 	#if __OBJC__
@@ -968,6 +968,8 @@ class Session
 
 	static void Start (int argc, char * argv [], EpilogHandler i_handler = nullptr)
 	{
+		using namespace std;
+		
 		bool ipAddressFound = false;
 		for (int i = 1; i < argc; ++i)
 		{
@@ -1127,7 +1129,7 @@ static void LogNow (uint8_t i_importance, const char * i_className, EpilogEvent 
 {
 	char str [4096];
 	i_event->formatter (str, i_event);
-	cout << std::setw (20) << i_className << "| " << str << endl;
+	std::cout << std::setw (20) << i_className << "| " << str << std::endl;
 }
 
 #if 1
