@@ -12,8 +12,6 @@
 # endif
 
 #include "JdAssert.hpp"
-using namespace std;
-
 
 JdException::JdException (cstr_t i_message, cstr_t i_location, u32 i_line)
 :
@@ -41,9 +39,10 @@ const char * JdException::what() const throw ()
 
 void JdAssert (bool i_debugBuild, cstr_t i_truthfulOrLyingStatement, cstr_t i_filePath, u32 i_lineNum, stringRef_t i_message)
 {
+																					using namespace std;
 	if (i_debugBuild)
 	{
-		std::ostringstream oss;
+		ostringstream oss;
 		// FIX: this should probably be wrapped in a JdException. Upper level code that catches the exception will log, display, or cerr the .what()
 		if (strcmp (i_truthfulOrLyingStatement, "0") == 0)
 			oss << "\n| throw: ";
@@ -63,7 +62,7 @@ void JdAssert (bool i_debugBuild, cstr_t i_truthfulOrLyingStatement, cstr_t i_fi
 		}
 		
 		//epilog_(fatal, "%s", epistr (oss.str()));
-		std::cout << oss.str() << std::endl << std::endl;
+		cout << oss.str() << endl << endl;
 		
 		// Break into the debugger
 		if (not JdConfig::IsUnitTest () and JdConfig::IsDebug ())
@@ -86,11 +85,11 @@ void JdAssert (bool i_debugBuild, cstr_t i_truthfulOrLyingStatement, cstr_t i_fi
 
 JdResult JdResert (cstr_t i_truthfulOrLyingStatement, cstr_t i_filePath, u32 i_lineNum, stringRef_t i_message)
 {
-	JdResult result;
+	JdResult result;																using namespace std;
 	
 	if (JdConfig::IsDebug ())
 	{
-		std::ostringstream oss;
+		ostringstream oss;
 		// FIX: this should probably be wrapped in a JdException. Upper level code that catches the exception will log, display, or cerr the .what()
 		if (strcmp (i_truthfulOrLyingStatement, "0") == 0)
 			oss << "\n| throw: ";
@@ -106,7 +105,7 @@ JdResult JdResert (cstr_t i_truthfulOrLyingStatement, cstr_t i_filePath, u32 i_l
 		if (file) oss << "\n| " << file << ":" << i_lineNum;
 		
 		//epilog_(fatal, "%s", epistr (oss.str()));
-		std::cout << oss.str() << std::endl << std::endl;
+		cout << oss.str () << endl << endl;
 		
 		// Break into the debugger
 		if (not JdConfig::IsUnitTest () and JdConfig::IsDebug ())

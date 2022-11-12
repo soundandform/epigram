@@ -12,6 +12,7 @@
 #include "JdThread.hpp"
 #include "JdMessageQueue.hpp"
 
+using std::vector;
 
 namespace jd
 {

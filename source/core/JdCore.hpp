@@ -38,6 +38,10 @@
 # include "JdTypeTraits.hpp"
 # include "JdNucleus.hpp"
 
+using std::pair;
+using std::cout;
+using std::endl;
+using std::tuple;
 
 namespace Jd
 {

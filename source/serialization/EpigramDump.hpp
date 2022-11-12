@@ -14,13 +14,15 @@
 #include "EpAttribute.hpp"
 
 //---------------------------------------------------------------------------------------------------------------------------------------------
-using namespace std;
+
+using std::string;
+using std::ostringstream;
 
 struct EpigramDumper
 {
 	//	EpigramDumper					(Epigram & i_epigram, std::ostream & i_stream);
-	EpigramDumper						(EpDelivery i_epigram, std::ostream & i_stream = cout);
-	EpigramDumper						(const u8 * i_payload, size_t i_size, std::ostream & i_stream = cout);
+	EpigramDumper						(EpDelivery i_epigram, std::ostream & i_stream = std::cout);
+	EpigramDumper						(const u8 * i_payload, size_t i_size, std::ostream & i_stream = std::cout);
 	
 	void	DumpCode					() const;
 	void	Dump						(u32 i_sequence) const;
@@ -116,7 +118,7 @@ struct EpigramDumper
 	template <typename T, typename C = T> // C is a cast so that output for u8's is an integer and not a ascii char.
 	string ParseHashPayload (const u8 * i_payload, const u8 * i_end, size_t * io_count) const
 	{
-		ostringstream out;
+		ostringstream out;												using namespace std;
 		
 		size_t i_count =  1;
 		

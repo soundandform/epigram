@@ -12,6 +12,8 @@
 #include <iomanip>
 #include <regex>
 
+using namespace std;
+
 void DumpEpigram (EpDelivery i_epigram, u32 i_sequence)
 {
 	EpigramDumper d (i_epigram);

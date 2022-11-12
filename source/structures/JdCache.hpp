@@ -416,10 +416,10 @@ public:
 	}
 	
 	
-	list <u8 *>		m_memory;
-	size_t			m_totalAllocatedBytes		= 0;
-	size_t			m_totalFreeBytes			= 0;
-	size_t			m_totalUsedBytes			= 0;
+	std::list <u8 *>	m_memory;
+	size_t				m_totalAllocatedBytes		= 0;
+	size_t				m_totalFreeBytes			= 0;
+	size_t				m_totalUsedBytes			= 0;
 };
 
 

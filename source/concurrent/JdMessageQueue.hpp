@@ -9,10 +9,14 @@
 #include <iostream>
 #include <atomic>
 
+using std::atomic;
+using std::mutex;
+using std::condition_variable;
+using std::lock_guard;
+using std::unique_lock;
+
 #include "JdAssert.hpp"
 #include "JdSemaphore.hpp"
-
-using namespace std;
 
 typedef u64 seq_t;
 
@@ -59,7 +63,7 @@ class JdPortSequence : protected JdCacheLinePadded <atomic <seq_t>>
 			if (value.compare_exchange_weak (previousSeq, i_newSequenceNum))
 				return;
 			
-			this_thread::yield ();  // TODO: could improve?
+			std::this_thread::yield ();  // TODO: could improve?
 		}
 	}
 	
@@ -115,7 +119,7 @@ struct JdThreadPortPathway
 	JdPortSequence					claimSequence	{ c_jdThreadPort_startIndex }; // consumer index
 	
 	seq_t							m_sequenceMask;
-	vector <MessageRecord>			m_queue;
+	std::vector <MessageRecord>		m_queue;
 };
 
 
@@ -182,7 +186,7 @@ class JdMessageQueue // (v2)
 		
 		const seq_t maxSequenceOffset = m_pathway.m_queue.size ();
 
-		u32 tries = 0;
+		// u32 tries = 0;
 		
 		while (true)
 		{
@@ -192,7 +196,7 @@ class JdMessageQueue // (v2)
 			if (offset < maxSequenceOffset)
 				break;
 
-			unique_lock <mutex> lock (m_conditionLock);
+			std::unique_lock <std::mutex> lock (m_conditionLock);
 			m_condition.wait (lock);
 			
 //			if (++tries > 100000000)
@@ -485,7 +489,7 @@ struct JdMpMcQueueT
 		size_t			m_frontIndex;
 		size_t			m_backIndex;
 		size_t			m_mask;
-		vector <T>		m_elements;
+		std::vector <T>	m_elements;
 	};
 	
 //	deque <T>									m_queue;
@@ -495,7 +499,7 @@ struct JdMpMcQueueT
 	mutex										m_mutex;
 	condition_variable							m_queueNotEmpty;
 	condition_variable							m_queueNotFull;
-	u32											m_maxNumElements		= numeric_limits <u32>::max ();
+	u32											m_maxNumElements		= std::numeric_limits <u32>::max ();
 };
 
 
@@ -517,7 +521,7 @@ struct JdThreadStream
 		if (m_inPending)
 		{
 			size_t required = t_packetSize - m_inPending;
-			size_t available = min (required, (size_t) i_count);
+			size_t available = std::min (required, (size_t) i_count);
 			
 			memcpy (& m_inPacket.values [m_inPending], i_values, sizeof (T) * available);
 			

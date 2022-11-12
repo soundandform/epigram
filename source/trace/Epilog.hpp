@@ -551,8 +551,8 @@ struct EpilogCaster
 	type_if <std::is_same <T, cstr_t>::value, JdString256, A>::type			B;
 	
 	#if __OBJC__
-		type_if <is_same <T, CFStringRef>::value, JdString256, B>::type		C;
-		type_if <is_same <T, NSString *>::value, JdString256ObjC, C>::type		D;
+		type_if <std::is_same <T, CFStringRef>::value, JdString256, B>::type		C;
+		type_if <std::is_same <T, NSString *>::value, JdString256ObjC, C>::type		D;
 		typedef D cast_t;
 	#else
 		typedef B cast_t;
