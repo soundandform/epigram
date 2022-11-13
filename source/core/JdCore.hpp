@@ -1,9 +1,8 @@
 //
 //  JdCore.hpp
-//  Jigidesign
 //
 //  Created by Steven Massey on 8/3/11.
-//  Copyright 2011-2012 Epigram Software, LLC. All rights reserved.
+//  Copyright 2022 Steven Massey. All rights reserved.
 //
 
 # if ! defined (_MSC_VER)
@@ -38,7 +37,6 @@
 # include "JdTypeTraits.hpp"
 # include "JdNucleus.hpp"
 
-using std::pair;
 using std::cout;
 using std::endl;
 using std::tuple;

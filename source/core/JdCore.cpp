@@ -1,9 +1,8 @@
 /*
  *  JdCore.cpp
- *  Jigidesign
  *
  *  Created by Steven Massey on 8/11/11.
- *  Copyright 2011 Jigidesign. All rights reserved.
+ *  Copyright 2022 Steven Massey. All rights reserved.
  *
  */
  

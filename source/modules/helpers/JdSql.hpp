@@ -33,8 +33,7 @@ namespace c_jdSql
 #include "EpAttribute.hpp"
 #include "Epilog.hpp"
 
-using namespace std;
-
+using std::vector, std::string;
 
 // FIX: move this to JdCore/JdInternal?
 //std::ostream & operator << (std::ostream &i_stream, const uint128 &i_hash);
