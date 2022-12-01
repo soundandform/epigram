@@ -22,7 +22,7 @@ class JdFlatString
 	public:
 	JdFlatString				()
 	{
-		m_cstring[0] = 0;
+		m_cstring [0] = 0;
 	}
 
 	JdFlatString					(const JdFlatString & i_string)
@@ -91,7 +91,7 @@ class JdFlatString
 	}
 
 
-	JdFlatString& operator +=	(const std::string &i_string)
+	JdFlatString& operator +=	(const std::string & i_string)
 	{
 		strncat (m_cstring, i_string.c_str(), t_length - strlen (m_cstring));
 		m_cstring [t_length-1] = 0;
@@ -99,21 +99,16 @@ class JdFlatString
 	}
 
 
-	bool		operator <		(const JdFlatString &i_string)
+	bool		operator <		(const JdFlatString & i_string)
 	{
 		return (strcmp (m_cstring, i_string.m_cstring) < 0);
 	}
 	
-	bool		operator ==		(const JdFlatString &i_string)
-	{
-		return (strcmp (m_cstring, i_string.m_cstring) == 0);
-	}
-
-	bool		operator !=		(const JdFlatString &i_string)
-	{
-		return (strcmp (m_cstring, i_string.m_cstring) != 0);
-	}
-
+	bool		operator ==		(cstr_t i_cstring)					{ return (strcmp (m_cstring, i_cstring) == 0); }
+	bool		operator !=		(cstr_t i_cstring)					{ return (strcmp (m_cstring, i_cstring) != 0); }
+	
+	bool		operator ==		(const JdFlatString & i_string)		{ return (strcmp (m_cstring, i_string.m_cstring) == 0); }
+	bool		operator !=		(const JdFlatString & i_string)		{ return (strcmp (m_cstring, i_string.m_cstring) != 0); }
 
 	void							Set						(const uint8_t * i_bytes, uint32_t i_numBytes)
 	{
@@ -137,37 +132,28 @@ class JdFlatString
 	}
 
 	
-	const char *					CString					() const { return m_cstring; }
-	char *							CString					() { return m_cstring; }
+	//	char *							CString					() { return m_cstring; }
+	const char *					CString					() const 	{ return m_cstring; }
+									operator const char * 	() const 	{ return m_cstring; }
+									operator std::string 	() const 	{ return m_cstring; }
 	
 	size_t							Length					() const
 	{	
 		return strlen (m_cstring);
 	}
 	
-	u32								Capacity				() const { return t_length - 1; }
+	u32								Capacity				() const 	{ return t_length - 1; }
 	
-	operator const char * () const
-	{
-		return m_cstring;
-	}
-	
-	
-	operator std::string () const
-	{
-		return m_cstring;
-	}
-		
 		
 	protected:
-	char							m_cstring				[t_length];
+	char							m_cstring				[t_length];			// always null terminated
 };
 
 
 template <int t_length>
 std::ostream & operator << (std::ostream &output, const JdFlatString <t_length> & i_string)
 {
-	output << i_string.CString();
+	output << i_string.CString ();
 	return output;
 }
 
