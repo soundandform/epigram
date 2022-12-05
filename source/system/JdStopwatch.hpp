@@ -14,11 +14,14 @@
 #include <boost/timer/timer.hpp>
 #include "JdNucleus.hpp"
 
+# include "JdFlatString.hpp"
+
 class JdStopwatch
 {
 	public:
 	
 	JdStopwatch	(cstr_t i_label, bool i_doDisplay = true);
+	JdStopwatch	(stringRef_t i_label, bool i_doDisplay = true);
 
 	operator bool () const;
 	
@@ -31,7 +34,7 @@ class JdStopwatch
 	
 	protected:
 	
-	cstr_t		 				m_label;
+	JdString64					m_label;
     bool            			m_display;
 	boost::timer::cpu_timer		m_timer;
 };

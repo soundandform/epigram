@@ -18,6 +18,15 @@ m_display 	(i_doDisplay)
 	Start ();
 }
 
+JdStopwatch::JdStopwatch	(stringRef_t i_label, bool i_doDisplay)
+:
+m_label		(i_label),
+m_display 	(i_doDisplay)
+{
+	Start ();
+}
+
+
 JdStopwatch::operator bool () const
 {
 	auto self = const_cast <JdStopwatch *> (this);
