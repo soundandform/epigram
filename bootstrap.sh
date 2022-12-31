@@ -53,6 +53,6 @@ mv boost ../..
 # CityHash ----------------------------------------------------------------------------------------------------------------
 
 cd cityhash
-./configure
+env CXXFLAGS="-arch x86_64 -arch arm64" ./configure
 make
 
