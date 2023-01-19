@@ -68,6 +68,8 @@ class JdCacheT : protected JdCacheHandlerT <T>
 
 								~JdCacheT					()
 	{
+//		jd::out ("cache: @", m_totalResourceSize);
+									
 		FlushResources (0);
 		
 		auto i = m_freeRecords.begin ();
@@ -173,16 +175,17 @@ class JdCacheT : protected JdCacheHandlerT <T>
 
 	pointer_t					Remove						(ref_t i_cacheId)
 	{
+		pointer_t resource = nullptr;
+		
 		auto hr = (ResourceRecord *) i_cacheId;
 		
 		if (hr->cacheOwner == this and hr->acquireCount == 0)
 		{
-			Flush (hr);
-			
-			return hr->resource;
-//			return true;
+			Flush (hr);					// Fush can call FlushCacheItem and delete hr->resource
+			resource = hr->resource;	// so pick this off afterward
 		}
-		else return nullptr;
+		
+		return resource;
 	}
 
 	
@@ -193,7 +196,6 @@ class JdCacheT : protected JdCacheHandlerT <T>
 		if (hr->cacheOwner == this)
 		{
 			Flush (hr);
-			m_freeRecords.push_back (hr);
 		}
 	}
 	
@@ -266,6 +268,8 @@ class JdCacheT : protected JdCacheHandlerT <T>
 				m_handler->FlushCacheItem (hr->resource);
 			
 			auto next = m_queue.erase (hr);
+			
+			m_freeRecords.push_back (hr);
 			
 			return next;
 		}
