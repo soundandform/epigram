@@ -368,7 +368,7 @@ class JdThreadPort
 			if (offset < maxSequenceOffset)
 				break;
 			
-			this_thread::yield ();
+			std::this_thread::yield ();
 //			sleep (0);		// NOTE: for higher-performance throughput (nothing really ever needed for Jigi probably.) but this could spin, then backoff to a sleep.
 		}
 		
@@ -398,7 +398,7 @@ class JdThreadPort
 			if (offset < maxSequenceOffset)
 				break;
 			
-			this_thread::yield ();
+			std::this_thread::yield ();
 //			sleep (0);		// NOTE: for higher-performance throughput (nothing really ever needed for Jigi probably.) but this could spin, then backoff to a sleep.
 		}
 		

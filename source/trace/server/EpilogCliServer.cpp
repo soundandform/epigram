@@ -15,6 +15,7 @@
 
 #include "Epilog.hpp"
 
+using namespace std;
 
 void EpilogCliServer::SetColor (EEpilogColorIndex i_color)
 {

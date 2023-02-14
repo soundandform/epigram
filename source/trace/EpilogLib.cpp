@@ -22,6 +22,7 @@ using boost::asio::ip::tcp;
 #include "JdUtils.hpp"
 #include "JdUUID.hpp"
 
+using namespace std;
 
 static CEpigramConnection * GetEpilog ()
 {

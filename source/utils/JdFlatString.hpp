@@ -20,14 +20,17 @@ template <int t_length>
 class JdFlatString
 {
 	public:
-	JdFlatString				()
-	{
-		m_cstring [0] = 0;
-	}
+	JdFlatString				()	{}
 
 	JdFlatString					(const JdFlatString & i_string)
 	{
 		strncpy (m_cstring, i_string.m_cstring, t_length);
+		m_cstring [t_length-1] = 0;
+	}
+
+	JdFlatString					(stringRef_t i_stdString)
+	{
+		strncpy (m_cstring, i_stdString.c_str (), t_length);
 		m_cstring [t_length-1] = 0;
 	}
 
@@ -51,12 +54,6 @@ class JdFlatString
 	JdFlatString					(cstr_t i_start, cstr_t i_end)
 	{
 		Set (i_start, i_end);
-	}
-
-	JdFlatString					(const std::string &i_sstring)
-	{
-		strncpy (m_cstring, i_sstring.c_str(), t_length);
-		m_cstring [t_length-1] = 0;
 	}
 
 	JdFlatString& operator =		(const JdFlatString & i_string)
@@ -146,8 +143,9 @@ class JdFlatString
 	
 		
 	protected:
-	char							m_cstring				[t_length];			// always null terminated
+	char							m_cstring				[t_length]	= { 0 };			// always null terminated
 };
+
 
 
 template <int t_length>
@@ -156,6 +154,34 @@ std::ostream & operator << (std::ostream &output, const JdFlatString <t_length> 
 	output << i_string.CString ();
 	return output;
 }
+
+// --------------------------------------------------------------------------------------------------------
+// needed for map & unordered_map key compatibility
+template <int t_length>
+bool operator < (const JdFlatString <t_length> & i_lhs, const JdFlatString <t_length> & i_rhs)
+{
+	return std::strcmp (i_lhs, i_rhs) < 0;
+}
+
+template <int t_length>
+bool operator == (const JdFlatString <t_length> & i_lhs, const JdFlatString <t_length> & i_rhs)
+{
+	return std::strcmp (i_lhs, i_rhs) == 0;
+}
+
+namespace std
+{
+	template <int L>
+	struct hash <JdFlatString <L>>
+	{
+		size_t operator () (const JdFlatString <L> & i_flatString) const
+		{
+			return  std::hash <std::string_view> () (i_flatString.CString ());
+		}
+	};
+}
+// --------------------------------------------------------------------------------------------------------
+
 
 typedef JdFlatString <256>	JdString256;
 typedef JdFlatString <128>	JdString128;

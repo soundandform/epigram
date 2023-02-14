@@ -196,7 +196,7 @@ protected:
 //	<void *, EpilogTableInternal *>		m_tables;
 	
 	std::mutex							m_mutex;
-	unordered_map
+	std::unordered_map
 	<const char *, const char *>		m_categories;
 	
 //	JdThreadT <CEpilogRunner>			m_runner { "epilog2", 0 /* priority */ };

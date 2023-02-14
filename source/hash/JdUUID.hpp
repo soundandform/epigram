@@ -29,7 +29,11 @@ d_jdClass (JdUUID) : public Jd::TypedT <c_jdTypeId::uuid>
 {
 	public:
 	
-	boost::uuids::uuid uuid;
+	union
+	{
+		boost::uuids::uuid uuid;
+		boost::uuids::uuid boost;
+	};
 	
 				JdUUID ();
 				JdUUID (stringRef_t i_stringUuid);

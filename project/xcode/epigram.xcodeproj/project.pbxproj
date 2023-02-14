@@ -51,6 +51,7 @@
 		B5379F48254253B1009A8047 /* libboost_timer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5379F3F2542537B009A8047 /* libboost_timer.a */; };
 		B5379F49254253C0009A8047 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5379F3C2542537B009A8047 /* libboost_system.a */; };
 		B5379F4A254253CF009A8047 /* libboost_chrono.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5379F3D2542537B009A8047 /* libboost_chrono.a */; };
+		B54EA7AA298DC083006D6FF2 /* libboost_program_options.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5379F3A2542537B009A8047 /* libboost_program_options.a */; };
 		B562BD771FB55D9500FDE277 /* test.epigram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B562BD761FB55D9500FDE277 /* test.epigram.cpp */; };
 		B583D0941FA97E85007C07F0 /* test.core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B583D0931FA97E85007C07F0 /* test.core.cpp */; };
 		B583D0C31FA97F20007C07F0 /* city.o in Frameworks */ = {isa = PBXBuildFile; fileRef = B583D0C21FA97F20007C07F0 /* city.o */; };
@@ -212,6 +213,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B54EA7AA298DC083006D6FF2 /* libboost_program_options.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -741,6 +743,7 @@
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
 			name = Release;

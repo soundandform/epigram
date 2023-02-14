@@ -16,7 +16,7 @@
 
 typedef JdMessageQueue <EpilogMsg> EpilogMsgQueue;
 
-
+using std::string, std::vector, std::map, std::unordered_map;
 
 const int c_epilogMaxTcpLength = 32768;
 
