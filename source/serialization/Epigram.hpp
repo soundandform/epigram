@@ -538,13 +538,13 @@ class EpigramT : public interface_t
 
 	static const size_t c_payloadMinSize = 3; // key-size, value-type + key-type
 
-	struct EpigramKV
+	struct KeyValue
 	{
 		friend class EpigramT;
 		
 		protected:
 		
-		EpigramKV			(EpigramT * i_epigram) : epigram (i_epigram) {}
+		KeyValue			(EpigramT * i_epigram) : epigram (i_epigram) {}
 		
 		EpigramT *			epigram;
 
@@ -1553,7 +1553,7 @@ class EpigramT : public interface_t
 	{
 		typedef CastingFetcher <T> fetcher_t;
 		
-		static void Fetch (T & o_value, const EpigramKV * i_data)
+		static void Fetch (T & o_value, const KeyValue * i_data)
 		{
 			fetcher_t fetcher;
 			
@@ -1569,7 +1569,7 @@ class EpigramT : public interface_t
 	{
 		typedef CastingFetcher <T> fetcher_t;
 		
-		static void Fetch (T & o_value, const EpigramKV * i_data)
+		static void Fetch (T & o_value, const KeyValue * i_data)
 		{
 			fetcher_t fetcher;
 			
@@ -1585,7 +1585,7 @@ class EpigramT : public interface_t
 	{
 		typedef CastingFetcher <T> fetcher_t;
 		
-		static void Fetch (T & o_value, const EpigramKV * i_data)
+		static void Fetch (T & o_value, const KeyValue * i_data)
 		{
 			fetcher_t fetcher;
 
@@ -1634,7 +1634,7 @@ class EpigramT : public interface_t
 		}
 		
 		
-		static void Fetch (T & o_container, const EpigramKV * i_data)
+		static void Fetch (T & o_container, const KeyValue * i_data)
 		{
 			type_if <std::is_base_of <versionedObject_t, R>::value,			std::true_type,						std::false_type>::type			t1;
 			type_if <std::is_base_of <unversionedObject_t, R>::value,		std::true_type,						t1>::type					t2;
@@ -1662,28 +1662,34 @@ class EpigramT : public interface_t
 	public:
 	
 	template <typename K>
-	struct EpigramKVBase : public EpigramKV
+	struct KVBase : public KeyValue
 	{
 		typedef K KEY;
 		type_def TypeT <K>::type key_t;
 
 		
-		EpigramKVBase									(EpigramT * i_epigram, const K & i_key)
+		KVBase											(EpigramT * i_epigram, const K & i_key)
 		:
-		EpigramKV										(i_epigram),
+		KeyValue										(i_epigram),
 		key												(i_key)
 		{ }
+		
+		
+//		KVBase &			operator = (const KVBase &)
+//		{
+//			return * this;
+//		}
 
 		const K &				key;
 	};
 	
 	
 	template <typename K>
-	struct KVAny : public EpigramKVBase <K>
+	struct KVAny : public KVBase <K>
 	{
 		KVAny											(EpigramT * i_epigram, const K & i_key)
 		:
-		EpigramKVBase <K>	(i_epigram, i_key)
+		KVBase <K>	(i_epigram, i_key)
 		{ }
 		
 		template <typename T>
@@ -1693,6 +1699,14 @@ class EpigramT : public interface_t
 			CastedFetch (value);
 			return value;
 		}
+
+		// TODO: implement. this would be useful		e1 ["whatever"] = e2 [key]
+//		KVAny & 				operator =				(const KVAny & i_kv)
+//		{
+//			jd::out ("KVAny::op=");
+//
+//			return * this;
+//		}
 
 		protected:
 		
@@ -1716,11 +1730,11 @@ class EpigramT : public interface_t
 	
 	
 	template <typename K, typename V>
-	struct KVSet : public EpigramKVBase <K>
+	struct KVSet : public KVBase <K>
 	{
 		KVSet											(EpigramT * i_epigram, const K & i_key)
 		:
-		EpigramKVBase <K>	(i_epigram, i_key)
+		KVBase <K>	(i_epigram, i_key)
 		{ }
 
 		operator				V 						() const
@@ -1779,20 +1793,27 @@ class EpigramT : public interface_t
 	};
 	
 	template <typename I>
-	struct EpigramKVT : public I
+	struct KVT : public I
 	{
 		public: //-----------------------------------------------------------------------------------------------------------------------------
 		
 		
-		EpigramKVT				(EpigramT * i_epigram, const typename I::KEY & i_key)
+		KVT				(EpigramT * i_epigram, const typename I::KEY & i_key)
 		:
 		I	(i_epigram, i_key)	{ }
 		
 		
 		type_def TypeT <typename I::KEY>::type key_t;
+
+		
+//		template <typename T>
+//		KVT &			operator =				(const KVT & i_value)
+//		{
+//
+//		}
 		
 		template <typename T>
-		EpigramKVT &			operator =				(const T & i_value)
+		KVT &			operator =				(const T & i_value)
 		{
 			if (this->IsSet ())
 				this->epigram->EraseItem (this);
@@ -1801,7 +1822,7 @@ class EpigramT : public interface_t
 			
 			return * this;
 		}
-		
+			
 		template <typename T>
 		T						To								() const
 		{
@@ -1978,11 +1999,11 @@ class EpigramT : public interface_t
 		
 		friend class EpigramT;
 		
-		template <typename II, typename T> friend void operator << (T & o_value, const EpigramKVT <II> & i_kv);
+		template <typename II, typename T> friend void operator << (T & o_value, const KVT <II> & i_kv);
 	};
 	
 	
-	typedef EpigramKVT <KVAny <EpNoType>> EpigramElement;
+	typedef KVT <KVAny <EpNoType>> EpigramElement;
 
 	public:
 	
@@ -2194,7 +2215,7 @@ class EpigramT : public interface_t
 
 	
 
-	EpigramT &					operator +=			(const EpigramKV & i_item)
+	EpigramT &					operator +=			(const KeyValue & i_item)
 	{
 		if (i_item.valueType != c_jdTypeId::unknown)
 		{
@@ -2265,16 +2286,8 @@ class EpigramT : public interface_t
 	}
 
 
-	operator const IIEpigram * () const
-	{
-		return this;
-	}
-
-	
-	operator IIEpigram * ()
-	{
-		return this;
-	}
+	operator const IIEpigram * () const 			{ return this; }
+	operator IIEpigram * ()							{ return this; }
 	
 	
 	explicit operator std::string () const
@@ -2441,7 +2454,6 @@ class EpigramT : public interface_t
 		return *this;
 	}
 
-
 	
 	struct EpDefault : Jd::TypedT <c_jdTypeId::none>
 	{
@@ -2457,18 +2469,18 @@ class EpigramT : public interface_t
 		return operator () (EpDefault (), i_value);
 	}
 
-	EpigramKVT <KVAny <EpDefault>> 		operator ()			() const
+	KVT <KVAny <EpDefault>> 		operator ()			() const
 	{
 		return operator [] (EpDefault ());
 	}	
 
-	EpigramKVT <KVAny <EpDefault>> 		Default				() const
+	KVT <KVAny <EpDefault>> 		Default				() const
 	{
 		return operator [] (EpDefault ());
 	}
 
 	
-	EpigramKVT <KVAny <EpDefault>> 		operator ()			() 
+	KVT <KVAny <EpDefault>> 		operator ()			() 
 	{
 		return operator [] (EpDefault ());
 	}
@@ -2521,45 +2533,6 @@ class EpigramT : public interface_t
 				m_kv.end = ptr + 1;
 			}
 
-#if 0
-			const u8 * ptr = m_ptr;
-			const u8 * end = m_allocator.GetBuffer () -1;
-			
-			if (ptr > end)
-			{
-				const u8 * decode = ptr;
-				
-				auto payloadSize = Jd::ReverseDecode7bRE <size_t> (decode, end) + c_payloadMinSize;
-				auto next = decode - payloadSize;
-				
-				u8 valueType = *decode--;
-				u8 keyType = *decode--;
-				
-				keyType &= c_jdTypeId::typeMask;
-				
-				bool isArray = valueType & c_jdTypeId::isArray;
-				valueType &= c_jdTypeId::typeMask;
-				
-				auto keySize = Jd::ReverseDecode7bRE <size_t> (decode, end);
-				
-				auto key = decode - keySize + 1;
-				
-				++next;
-				
-				if (isArray)
-					m_kv.count = Jd::Decode7bRE <size_t> (next, key);
-				else
-					m_kv.count = 1;
-				
-				m_kv.sequence = m_allocator.GetSequence ();
-				m_kv.keyType = keyType;
-				m_kv.valueType = valueType;
-				m_kv.payload = const_cast <u8 *> (next);
-				m_kv.endPayload = key;
-				m_kv.end = ptr + 1;
-			}
-#endif
-			
 			return m_kv;
 		}
 		
@@ -2694,7 +2667,7 @@ class EpigramT : public interface_t
 	
 
 	template <typename K>
-	EpigramKVT <KVAny <K>>				operator []				(const K & i_key) const
+	KVT <KVAny <K>>				operator []				(const K & i_key) const
 	{
 		auto _this = const_cast <EpigramT *> (this);
 		
@@ -2703,14 +2676,14 @@ class EpigramT : public interface_t
 
 	
 	template <typename K>
-	EpigramKVT <KVAny <K>>				operator []				(const K & i_key)
+	KVT <KVAny <K>>				operator []				(const K & i_key)
 	{
 		return FindItem <KVAny <K>> (i_key);
 	}
 
 
 	template <typename K, typename V>
-	EpigramKVT <KVSet <K, V>>			operator []				(const EpAttribute <K,V> & i_attribute) //const
+	KVT <KVSet <K, V>>			operator []				(const EpAttribute <K,V> & i_attribute) //const
 	{
 		return FindItem <KVSet <K, V>> ((K &) i_attribute);
 	}
@@ -2729,12 +2702,12 @@ class EpigramT : public interface_t
 	protected: //--------------------------------------------------------------------------------------------------------------------------------
 
 	template <typename I, typename K>
-	EpigramKVT <I>						FindItem					(const K & i_key)
+	KVT <I>						FindItem					(const K & i_key)
 	{
 		type_def TypeT <K>::type key_t;
 		//-------------------------------------------------------------------------------------------------------
 		
-		EpigramKVT <I> element (this, i_key);
+		KVT <I> element (this, i_key);
 		
 		auto d = m_allocator.GetBufferRange ();
 
@@ -2794,7 +2767,7 @@ class EpigramT : public interface_t
 	}
 
 
-	void						EraseItem				(EpigramKV * i_item)
+	void						EraseItem				(KeyValue * i_item)
 	{
 		d_jdAssert (i_item->sequence == m_allocator.GetSequence (), "epigram has been touched");
 		
@@ -2828,7 +2801,7 @@ class EpigramT : public interface_t
 
 
 template <typename I, typename T>
-void operator << (T & o_value, const EpigramT<>::EpigramKVT <I> & i_kv)
+void operator << (T & o_value, const EpigramT<>::KVT <I> & i_kv)
 {
 //	i_kv.template CastedFetch (o_value);
 	i_kv. CastedFetch(o_value);
