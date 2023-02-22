@@ -89,7 +89,7 @@ d_jdClass (JdUUID) : public Jd::TypedT <c_jdTypeId::uuid>
 			std::mutex 						m_lock;
 			boost::uuids::random_generator 	m_uuidGenerator;
 		#else
-			void Generate (boost::uuids::uuid & o_uuid) { o_uuid.Nullify (); }
+			void Generate (boost::uuids::uuid & o_uuid) { o_uuid = boost::uuids::uuid (); }
 		# endif
 	};
 	

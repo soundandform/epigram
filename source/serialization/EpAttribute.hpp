@@ -155,7 +155,7 @@ class EpAttribute : public H
 
 	EpArg <H, T> operator = (T && i_value) //const
 	{
-		return EpArg <H, T> (*this, forward <T> (i_value));
+		return EpArg <H, T> (*this, std::forward <T> (i_value));
 	}
 };
 

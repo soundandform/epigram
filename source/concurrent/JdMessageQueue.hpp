@@ -562,7 +562,7 @@ struct JdThreadStream
 	{
 		if (m_outPending)
 		{
-			size_t required = min ((size_t) i_required, m_outPending);
+			size_t required = std::min ((size_t) i_required, m_outPending);
 
 			auto i = t_packetSize - m_outPending;
 			memcpy (o_values, & m_outPacket.values [i], required * sizeof (T));
