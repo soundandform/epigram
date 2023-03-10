@@ -16,7 +16,7 @@ JdConfig::JdConfig ()
 }
 
 
-const bool JdConfig::IsPlatform (EJdPlatform i_platform)
+constexpr bool JdConfig::IsPlatform (EJdPlatform i_platform)
 {
 	EJdPlatform platform;
 	

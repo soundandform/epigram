@@ -22,7 +22,7 @@ struct JdConfig
 	
 	static constexpr bool IsDebug () { return m_isDebug; }
 	
-	static const bool IsPublicBuild ()
+	static constexpr bool IsPublicBuild ()
 	{
 		#if d_jdIsPublicBuild
 			return true;
@@ -31,7 +31,7 @@ struct JdConfig
 		#endif
 	}
 	
-	static const bool IsPlatform (EJdPlatform i_type);
+	static constexpr bool IsPlatform (EJdPlatform i_type);
 	
 	static void			EnableUnitTest ()
 	{

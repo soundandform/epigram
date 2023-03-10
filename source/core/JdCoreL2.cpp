@@ -17,8 +17,15 @@ namespace Jd
 {
     i32 HashCString31 (cstr_t i_string)
     {
-		u64 hash = std::hash <std::string> () (i_string);
+#		ifdef d_epigramUseCityHash
+			u64 hash = CityHash64 (i_string, strlen (i_string));
+#		else
+			u64 hash = std::hash <std::string_view> () (i_string);
+#		endif
+		
+		hash ^= (hash >> 32);
 		hash &= 0x000000007FFFFFFF;
+		
         return (i32) hash;
     }
 	
