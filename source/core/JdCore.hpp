@@ -12,6 +12,11 @@
 #ifndef Jigidesign_JdCore_h
 #define Jigidesign_JdCore_h
 
+
+# define d_jdStringify_(x) #x
+# define d_jdStringify(x) d_jdStringify_(x)
+
+
 #	ifndef d_objC
 #		if d_objCVersion
 #			define d_objC_(OBJ,VERSION)		OBJ ## _v ## VERSION
