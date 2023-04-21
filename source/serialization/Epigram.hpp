@@ -2285,6 +2285,13 @@ class EpigramT : public interface_t
 		else return false;
 	}
 
+	template <typename K, typename... Args>
+	void                        Erase				(const K & i_key, Args... i_args)
+	{
+		Erase (i_key);
+		Erase (i_args...);
+	}
+
 
 	operator const IIEpigram * () const 			{ return this; }
 	operator IIEpigram * ()							{ return this; }
