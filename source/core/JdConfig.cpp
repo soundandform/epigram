@@ -18,12 +18,12 @@ JdConfig::JdConfig ()
 
 constexpr bool JdConfig::IsPlatform (EJdPlatform i_platform)
 {
-	EJdPlatform platform;
+	EJdPlatform platform
 	
 	#if __APPLE__
-		platform = c_jdPlatform::macOS;
+		= c_jdPlatform::macOS;
 	#elif _WIN32
-		platform = c_jdPlatform::windows;
+		= c_jdPlatform::windows;
 	#endif
 	
 	return (i_platform == platform);
