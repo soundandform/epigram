@@ -734,7 +734,7 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 					
 					m_bindInfo.push_back (bi);
 				}
-				else if (item.IsType (c_jdTypeId::object))
+				else if (item.IsType (c_jdTypeId::object) or item.IsType (c_jdTypeId::pod))
 				{
 					f += "?";
 					auto raw = item.GetRawObject ();
