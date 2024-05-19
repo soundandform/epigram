@@ -17,6 +17,21 @@
 
 using std::string, std::vector;
 
+static void * luaAlloc (void *ud, void *ptr, size_t osize, size_t nsize)
+{
+  (void)ud;
+  (void)osize;
+	
+  if (nsize == 0) {
+	  //jd::out ("free: @", ptr);
+	free(ptr);
+	return NULL;
+  } else {
+//	  jd::out ("alloc: @ @", ptr, nsize);
+	return realloc(ptr, nsize);
+  }
+}
+
 class JdLua
 {
 	public:					JdLua						()
@@ -94,13 +109,13 @@ class JdLua
 	
 	
 	// this can push a function to the top of the stack (such as "Render") so it can be repeatedly called without lookup
-	void			GetGlobal				(cstr_t i_functionName)
+	void			PushGlobal				(cstr_t i_functionName)
 	{
 		lua_getglobal (L, i_functionName);
 	}
 	
 	
-	// GetGlobal (,,,) must be called before so that the function is sitting on the top of stack
+	// PushGlobal (...) must be called before so that the function is sitting on the top of stack
 	f64				CallTop					(f64 i_arg)
 	{
 		f64 r = 0.;
@@ -165,6 +180,18 @@ class JdLua
 		return e;
 	}
 	
+	void					SaveStackTop			()
+	{
+		m_stackTops.push_back (lua_gettop (L));
+	}
+
+	void					RestoreStackTop			()
+	{
+		int top = m_stackTops.back ();
+		m_stackTops.pop_back ();
+		lua_settop (L, top);
+	}
+
 	protected:
 	
 	
@@ -599,13 +626,17 @@ class JdLua
 	{
 		if (not L)
 		{
-			L = luaL_newstate ();
+			
+			L = lua_newstate (luaAlloc, nullptr);
+
+//			L = luaL_newstate ();
 			luaL_openlibs (L);
 		}
 	}
 	
 	string						m_scriptPath;
 	lua_State *                 L				= nullptr;
+	vector <int>				m_stackTops;
 };
 
 
