@@ -47,12 +47,10 @@ class JdLua
 	
 	lua_State *				Get							()					{ return L; }
 	
-	void					Swap					(JdLua & io_lua)
-	{
-		auto lua = L;
-		L = io_lua.L;
-		io_lua.L = lua;
-	}
+//	void					Swap						(JdLua & io_lua)
+//	{
+//		std::swap (L, io_lua.L);
+//	}
 	
 	JdResult				LoadScriptFromFile			(stringRef_t i_path)
 	{
