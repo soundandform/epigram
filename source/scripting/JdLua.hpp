@@ -23,11 +23,11 @@ static void * luaAlloc (void *ud, void *ptr, size_t osize, size_t nsize)
   (void)osize;
 	
   if (nsize == 0) {
-	  //jd::out ("free: @", ptr);
+	  jd::out ("free: @", ptr);
 	free(ptr);
 	return NULL;
   } else {
-//	  jd::out ("alloc: @ @", ptr, nsize);
+	  jd::out ("alloc: @ @", ptr, nsize);
 	return realloc(ptr, nsize);
   }
 }
@@ -625,9 +625,9 @@ class JdLua
 		if (not L)
 		{
 			
-			L = lua_newstate (luaAlloc, nullptr);
+//			L = lua_newstate (luaAlloc, nullptr);
 
-//			L = luaL_newstate ();
+			L = luaL_newstate ();
 			luaL_openlibs (L);
 		}
 	}
