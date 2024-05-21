@@ -78,6 +78,29 @@ class JdLua
 		return LoadScript (i_script.c_str ());
 	}
 	
+//	typedef int (*lua_Writer) (lua_State *L, const void* p, size_t sz, void* ud);
+
+	
+	struct ByteCodeWriter
+	{
+		static int Handler (lua_State *L,
+							const void* p,
+							size_t sz,
+							void* ud)
+		{
+		jd::out ("writer: @", sz);
+
+		string data ((const char *) p, sz);
+
+		//		jd::out (data);
+
+		return 0;
+		}
+		
+		
+		
+	};
+	
 	JdResult				LoadScript					(cstr_t i_script)
 	{
 		JdResult result;
@@ -94,6 +117,10 @@ class JdLua
 			}
 			else
 			{
+				ByteCodeWriter bcw;
+				
+//				lua_dump (L, & ByteCodeWriter::Handler, & bcw);
+
 				luaResult = lua_pcall (L, 0, 0, 0);
 				if (luaResult)
 				{
