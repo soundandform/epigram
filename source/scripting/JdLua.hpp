@@ -13,7 +13,9 @@
 # include "Epigram.hpp"
 # include "JdResult.hpp"
 # include "JdStopwatch.hpp"
+# include "JdMD5.hpp"
 # include "lua.hpp"
+
 
 using std::string, std::vector;
 
@@ -34,10 +36,7 @@ static void * luaAlloc (void *ud, void *ptr, size_t osize, size_t nsize)
 
 class JdLua
 {
-	public:					JdLua						()
-	{
-	}
-	
+	public:					JdLua						()					{}
 	
 	virtual					~JdLua						()
 	{
@@ -45,16 +44,32 @@ class JdLua
 			lua_close (L);
 	}
 	
-	lua_State *				Get							()					{ return L; }
+	lua_State *				Get							()
+	{
+		Initialize ();
+		return L;
+	}
 	
 //	void					Swap						(JdLua & io_lua)
 //	{
 //		std::swap (L, io_lua.L);
 //	}
 	
-	JdResult				LoadScriptFromFile			(stringRef_t i_path)
+	struct Result
 	{
-		JdResult result;
+//		/Users/smassey/Documents/Sluggo/library/scripts/dsp/svf.lua:6: attempt to perform arithmetic on a table value
+		
+		i32			resultCode			= 0;
+		string 		errorMsg;
+		string		location;
+		i32			lineNum				= 0;
+		
+		operator bool () const { return resultCode; }
+	};
+	
+	Result				LoadScriptFromFile			(stringRef_t i_path)
+	{
+		Result result;
 		
 		Initialize ();
 		
@@ -62,75 +77,56 @@ class JdLua
 		{
 			m_scriptPath = i_path;
 			
-			int luaResult = luaL_loadfile (L, i_path. c_str ());
+			i32 resultCode = luaL_loadfile (L, i_path. c_str ());
 			
-			if (luaResult)  result = GetErrorMessage ();
-			else            lua_pcall (L, 0, 0, 0);
+			if (resultCode)  	result = ParseErrorMessage (resultCode);
+			else      		 	lua_pcall (L, 0, 0, 0);
 		}
-		else result = d_jdError ("null lua state");
+		else
+		{
+			result.resultCode = -993652;
+			result.errorMsg = "null lua state";
+		}
 		
 		return result;
 	}
 	
 
-	JdResult				LoadScript					(stringRef_t i_script)
+	Result				HashScript					(JdMD5::MD5 & o_hash, cstr_t i_script);
+
+	Result				LoadScript					(stringRef_t i_script)
 	{
-		return LoadScript (i_script.c_str ());
+		return LoadScript (i_script.c_str (), nullptr);
 	}
-	
+
+	// If io_hashCheck is set, only loads script if hash differs. returns new hash
+	Result				LoadScript					(cstr_t i_script, JdMD5::MD5 * io_hashCheck);
+
 //	typedef int (*lua_Writer) (lua_State *L, const void* p, size_t sz, void* ud);
 
 	
-	struct ByteCodeWriter
+	struct ByteCodeWriter : JdMD5
 	{
-		static int Handler (lua_State *L,
-							const void* p,
+		static int Handler (lua_State * L,
+							const void * p,
 							size_t sz,
-							void* ud)
+							void * ud)
 		{
-		jd::out ("writer: @", sz);
-
-		string data ((const char *) p, sz);
-
-		//		jd::out (data);
-
-		return 0;
+			static_cast <ByteCodeWriter *> (ud)->Handle ((const u8 *) p, sz);
+			return 0;
+		}
+		
+		void		Handle   (const u8 * i_ptr, size_t i_size)
+		{
+			Add (i_ptr, i_size);
 		}
 		
 		
+		u32				callbackNum						= 0;
 		
+		vector <u8>		bytecode;
 	};
 	
-	JdResult				LoadScript					(cstr_t i_script)
-	{
-		JdResult result;
-		
-		Initialize ();
-
-		if (L)
-		{
-			i32 luaResult = luaL_loadstring (L, i_script);
-			
-			if (luaResult)
-			{
-				result = GetErrorMessage ();
-			}
-			else
-			{
-				ByteCodeWriter bcw;
-				
-//				lua_dump (L, & ByteCodeWriter::Handler, & bcw);
-
-				luaResult = lua_pcall (L, 0, 0, 0);
-				if (luaResult)
-				{
-					result = GetErrorMessage ();
-				}
-			}
-		}
-		
-		return result;
-	}
 	
 	
 	// this can push a function to the top of the stack (such as "Render") so it can be repeatedly called without lookup
@@ -140,22 +136,22 @@ class JdLua
 	}
 	
 	
-	// PushGlobal (...) must be called before so that the function is sitting on the top of stack
-	f64				CallTop					(f64 i_arg)
-	{
-		f64 r = 0.;
-		
-		if (L)
-		{
-			lua_pushvalue (L, -1);			// copy the function to be called
-			lua_pushnumber (L, i_arg);
-			lua_call (L, 1, 1);
-			r = lua_tonumber (L, -1);
-			lua_pop (L, 1);					// pop the result
-		}
-		
-		return r;
-	}
+	// PushGlobal (...) must be called before so that the function is sitting on the top of stack	Delete this?
+//	f64				CallTop					(f64 i_arg)
+//	{
+//		f64 r = 0.;
+//
+//		if (L)
+//		{
+//			lua_pushvalue (L, -1);			// copy the function to be called
+//			lua_pushnumber (L, i_arg);
+//			lua_call (L, 1, 1);
+//			r = lua_tonumber (L, -1);
+//			lua_pop (L, 1);					// pop the result
+//		}
+//
+//		return r;
+//	}
 	
 	
 	Epigram               Call 			           (stringRef_t i_functionName, Epigram i_args = Epigram ())
@@ -218,9 +214,42 @@ class JdLua
 	}
 
 	protected:
+
+	Result                    ParseErrorMessage         (i32 i_resultCode)
+	{
+		Result error { i_resultCode };
+		
+		if (L)
+		{
+			if (lua_isstring (L, -1))
+			{
+				std::string s = lua_tostring (L, -1);						jd::out (s);
+				lua_pop (L, 1);
+				
+//				cout << s << endl;
+				
+				size_t p = s.find (":");
+				
+				if (p != std::string::npos)
+				{
+					error.location = s.substr (0, p);
+					
+					std::string line = s.substr (p + 1);
+					
+					error.errorMsg = line.substr (line.find (":") + 2);
+					
+					line = line.substr (0, line.find (":"));
+					
+					sscanf (line.c_str(), "%d", & error.lineNum);
+				}
+			}
+		}
+		
+		return error;
+	}
 	
 	
-	JdResult                    GetErrorMessage         ()
+	JdResult                    GetErrorMessage2         ()
 	{
 		JdResult error;
 		
@@ -514,8 +543,8 @@ class JdLua
 				else
 				{
 					//cout << "result: " << result << endl;
-					JdResult msg = GetErrorMessage ();
-					result ("error", msg.GetMessage ());
+					Result r = ParseErrorMessage (luaResult);
+					result ("error", r.errorMsg);
 				}
 				
 				lua_settop (L, top);
