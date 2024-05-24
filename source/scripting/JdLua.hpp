@@ -94,13 +94,13 @@ class JdLua
 
 	Result				HashScript					(JdMD5::MD5 & o_hash, cstr_t i_script);
 
-	Result				LoadScript					(stringRef_t i_script)
+	Result				LoadAndCallScript					(stringRef_t i_script)
 	{
-		return LoadScript (i_script.c_str (), nullptr);
+		return LoadAndCallScript (i_script.c_str (), nullptr);
 	}
 
 	// If io_hashCheck is set, only loads script if hash differs. returns new hash
-	Result				LoadScript					(cstr_t i_script, JdMD5::MD5 * io_hashCheck);
+	Result				LoadAndCallScript					(cstr_t i_script, JdMD5::MD5 * io_hashCheck);
 
 //	typedef int (*lua_Writer) (lua_State *L, const void* p, size_t sz, void* ud);
 
@@ -130,10 +130,10 @@ class JdLua
 	
 	
 	// this can push a function to the top of the stack (such as "Render") so it can be repeatedly called without lookup
-	void			PushGlobal				(cstr_t i_functionName)
-	{
-		lua_getglobal (L, i_functionName);
-	}
+//	void			PushGlobal				(cstr_t i_functionName)
+//	{
+//		lua_getglobal (L, i_functionName);
+//	}
 	
 	
 	// PushGlobal (...) must be called before so that the function is sitting on the top of stack	Delete this?

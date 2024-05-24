@@ -35,7 +35,7 @@ JdLua::Result  JdLua::HashScript  (JdMD5::MD5 & o_hash, cstr_t i_script)
 }
 
 
-JdLua::Result  JdLua::LoadScript  (cstr_t i_script, JdMD5::MD5 * io_hashCheck)
+JdLua::Result  JdLua::LoadAndCallScript  (cstr_t i_script, JdMD5::MD5 * io_hashCheck)
 {
 	Result result;
 	
