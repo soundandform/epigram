@@ -370,6 +370,12 @@ class JdMessageQueue // (v2)
 		o_message = * ViewMessage ();
 		ReleaseMessage ();
 	}
+	
+	i64 debug_get_num_messages_in_queue ()
+	{
+		return m_signalCount.value;
+	}
+	
 
 	
 	protected:
