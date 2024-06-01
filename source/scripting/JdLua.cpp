@@ -29,6 +29,10 @@ JdLua::Result  JdLua::HashScript  (JdMD5::MD5 & o_hash, cstr_t i_script)
 			o_hash = bcw.Get ();
 		}
 		else result = ParseErrorMessage (luaResult);
+
+		// closing lua because i_script isn't preserved, so shouldn't attempt to keep using this context
+		lua_close (L);
+		L = nullptr;
 	}
 	
 	return result;
@@ -39,11 +43,13 @@ JdLua::Result  JdLua::LoadAndCallScript  (cstr_t i_script, JdMD5::MD5 * io_hashC
 {
 	Result result;
 	
+	auto script = PreserveString (i_script);
+	
 	Initialize ();
 
 	if (L)
 	{
-		int r = luaL_loadstring (L, i_script);
+		int r = luaL_loadstring (L, script);
 		
 		if (r)
 		{

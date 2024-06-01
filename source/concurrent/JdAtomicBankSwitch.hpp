@@ -60,6 +60,11 @@ struct JdAtomicBankSwitchT
 	{
 		return m_banks [m_switch.GetReadIndex ()];
 	}
+	
+	u32			SwitchReadBank		()
+	{
+		return m_switch.GetReadIndex ();
+	}
 
 //	protected:
 	// bank [2] is the static producer bank, that's copied to [0] or [1]

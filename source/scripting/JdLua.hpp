@@ -17,7 +17,7 @@
 # include "lua.hpp"
 
 
-using std::string, std::vector;
+using std::string, std::vector, std::unique_ptr;
 
 static void * luaAlloc (void *ud, void *ptr, size_t osize, size_t nsize)
 {
@@ -76,9 +76,9 @@ class JdLua
 		
 		if (L)
 		{
-			m_scriptPath = i_path;
+			auto path = PreserveString (i_path.c_str ());
 			
-			i32 resultCode = luaL_loadfile (L, i_path. c_str ());
+			i32 resultCode = luaL_loadfile (L, path);
 			
 			if (resultCode)  	result = ParseErrorMessage (resultCode);
 			else      		 	lua_pcall (L, 0, 0, 0);
@@ -93,7 +93,7 @@ class JdLua
 	}
 	
 
-	Result				HashScript					(JdMD5::MD5 & o_hash, cstr_t i_script);
+	Result				HashScript							(JdMD5::MD5 & o_hash, cstr_t i_script);
 
 	Result				LoadAndCallScript					(stringRef_t i_script)
 	{
@@ -214,7 +214,7 @@ class JdLua
 		lua_settop (L, top);
 	}
 
-	protected:
+//	protected:
 
 	Result                    ParseErrorMessage         (i32 i_resultCode)
 	{
@@ -249,45 +249,6 @@ class JdLua
 		return error;
 	}
 	
-	
-	JdResult                    GetErrorMessage2         ()
-	{
-		JdResult error;
-		
-		if (L)
-		{
-			if (lua_isstring (L, -1))
-			{
-				std::string s = lua_tostring (L, -1);						jd::out (s);
-				lua_pop (L, 1);
-				
-//				cout << s << endl;
-				
-				size_t p = s.find (":");
-				
-				std::string location;
-				
-				u32 lineNum = -1;
-				if (p != std::string::npos)
-				{
-					location = s.substr(0, p);
-					
-					std::string line = s.substr (p + 1);
-					
-					s = line.substr (line.find (":") + 2);
-					
-					line = line.substr (0, line.find (":"));
-					
-					sscanf (line.c_str(), "%ud", &lineNum);
-				}
-				
-				error = JdResult (s.c_str (), nullptr, lineNum);
-			}
-		}
-		else error = d_jdError ("null lua");
-		
-		return error;
-	}
 	
 	bool                        HasGlobal               (cstr_t i_name, i32 i_luaType)
 	{
@@ -689,9 +650,17 @@ class JdLua
 		}
 	}
 	
-	string						m_scriptPath;
-	lua_State *                 L				= nullptr;
-	vector <int>				m_stackTops;
+	// docs don't mention it, but LuaJIT doesn't seem to take ownership of/copy the script strings
+	// OR it does!?  TODO: investigate
+	cstr_t						PreserveString			(cstr_t i_string)
+	{
+		m_strings.push_back (i_string);
+		return m_strings.back ().c_str ();
+	}
+	
+	std::list <string>				m_strings;
+	lua_State *						L				= nullptr;
+	vector <int>					m_stackTops;
 };
 
 
