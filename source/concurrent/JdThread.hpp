@@ -272,8 +272,31 @@ class JdThreadT
 		return m_exited;
 	}
 	
+	
+	JdResult				CancelAndRestart	()
+	{
+		JdResult result;
+		
+		m_state = c_jdThreadState::zombie;
+		pthread_cancel (m_stdThread.native_handle ());
 
-	JdResult				Stop ()
+		result = m_implementation->Teardown (m_runResult);
+		delete m_implementation;
+		m_implementation = nullptr;
+		
+		if (not result)
+		{
+			m_state = c_jdThreadState::pending;
+			auto args = m_args;
+			
+			Start (args);
+		}
+		
+		return result;
+	}
+	
+
+	JdResult				Stop 				(u32 i_waitToExitMicroseconds = 5'000'000)
 	{
 		JdResult result;
 		
@@ -281,26 +304,36 @@ class JdThreadT
 			return d_jdError1 ("Thread not running.");
 		
         m_state = c_jdThreadState::quiting;
-        
+
+		auto p = static_cast <IJdThread *> (m_implementation);
+		result = p->Break ();
+
+		u32 sleepTime = i_waitToExitMicroseconds / 1000;
+		
         u32 breakAttempts = 0;
-        while (not DidExit () and breakAttempts++ < 30)
+        while (not DidExit () and breakAttempts++ < 1000)
         {
-			auto p = static_cast <IJdThread *> (m_implementation);
-            result = p->Break ();
-            if (result)
-				break;
+//			if (not result)
+//				break;
 			
-			std::this_thread::sleep_for (std::chrono::microseconds (10000));
+			std::this_thread::sleep_for (std::chrono::microseconds (sleepTime));
         }
-        
-        if (not result)
+		
+		if (not DidExit ())
+		{
+			m_state = c_jdThreadState::zombie;
+			pthread_cancel (m_stdThread.native_handle ());
+
+			result = m_implementation->Teardown (m_runResult);
+		}
+		else //if (not result)
 		{
 			m_stdThread.join ();   // FIX: could use do_try_join_until () then report zombie if fail
 			m_state = c_jdThreadState::quit;
 			
 			result = m_implementation->Teardown (m_runResult);
 		}
-		else m_state = c_jdThreadState::zombie;
+//		else m_state = c_jdThreadState::zombie;
 		
 		return result;
 	}

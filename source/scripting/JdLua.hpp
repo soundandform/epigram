@@ -34,6 +34,7 @@ static void * luaAlloc (void *ud, void *ptr, size_t osize, size_t nsize)
   }
 }
 
+
 class JdLua
 {
 	public:					JdLua						()					{}

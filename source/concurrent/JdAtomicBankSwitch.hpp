@@ -13,7 +13,7 @@
 #include <atomic>
 
 /*
- This class implementes an atomic "lock-free" single-consumer, single-producer 2-bank switcher.  It assumes that the reader doesn't need
+ This class implementes an atomic mutex-free single-consumer, single-producer 2-bank switcher.  It assumes that the reader doesn't need
  to access to every bank write. It just assures that the reader and writer are always looking at the opposing buffer. The Writer signals to the
  reader that a new bank is available. The reader is responsible for the switch. If the read doesn't happen, the writer just requires the same bank
  and writes new information on the next pass.
@@ -46,13 +46,13 @@ struct JdAtomicBankSwitchT
 {
 	T &			GetWriteBank 		()
 	{
-		m_writeAcquired = & m_banks [m_switch.GetWriteIndex ()];
+		m_writeAcquiredBank = & m_banks [m_switch.GetWriteIndex ()];
 		return m_banks [2];
 	}
 	
 	void		ReleaseWriteBank 	()
 	{
-		* m_writeAcquired = m_banks [2];
+		* m_writeAcquiredBank = m_banks [2];
 		m_switch.ReleaseWrite ();
 	}
 	
@@ -61,11 +61,12 @@ struct JdAtomicBankSwitchT
 		return m_banks [m_switch.GetReadIndex ()];
 	}
 
-	protected:
-	// bank 2 is the static producer bank, that's copied to 0 or 1
-	// when the write happens to send it to the consumer
-	T				m_banks 			[3];
-	T *				m_writeAcquired		= nullptr;
+//	protected:
+	// bank [2] is the static producer bank, that's copied to [0] or [1]
+	// when the write happens to send it to the consumer.
+	T				m_banks 				[3];
+	
+	T *				m_writeAcquiredBank		= nullptr;	// points to either bank 0 or 1
 	
 	JdAtomicSwitch	m_switch;
 };
