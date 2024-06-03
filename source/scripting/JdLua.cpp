@@ -85,3 +85,37 @@ JdLua::Result  JdLua::LoadAndCallScript  (cstr_t i_script, JdMD5::MD5 * io_hashC
 	
 	return result;
 }
+
+
+vector <string>  JdLua::GetGlobalFunctions  (JdLua::Result & result)
+{
+	vector <string> names;
+
+	lua_getglobal	(L, "_G");
+
+	int tableIndex = lua_gettop (L);
+	
+	if (lua_istable (L, tableIndex))
+	{
+		lua_pushnil (L);
+		
+		while (lua_next (L, tableIndex))
+		{
+			int keyType 	= lua_type (L, -2);
+			int valueType 	= lua_type (L, -1);
+			
+			if (keyType == LUA_TSTRING and valueType == LUA_TFUNCTION)
+			{
+				names.push_back (lua_tostring (L, -2));
+			}
+			
+			lua_pop (L, 1);
+		}
+
+		lua_pop (L, 1);
+	}
+	else result = { -1, "no global table" };
+
+	return names;
+}
+

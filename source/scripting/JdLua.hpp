@@ -265,6 +265,10 @@ class JdLua
 	}
 	
 	
+	vector <string>				GetGlobalFunctions			(JdLua::Result & result);
+
+	
+	
 	bool                        FindFunctionInTable         (i32 i_tableIndex, cstr_t i_path, EpDelivery i_args, EpDelivery *o_result,
 															 bool i_isObjectCall, i32 i_depth = 0)
 	{
@@ -445,6 +449,16 @@ class JdLua
 	}
 	
 	
+	template <typename T>
+	void				Bind					(cstr_t i_functionName, lua_CFunction i_cFunction, T & i_arg)
+	{
+		lua_pushlightuserdata	(L, & i_arg);
+		lua_pushcclosure		(L, i_cFunction, 1);
+		lua_setglobal			(L, i_functionName);
+	}
+	
+	
+	
 	private: //--------------------------------------------------------------------------------------------------------------------------------
 	
 	Epigram               ExecuteFunction         (stringRef_t i_functionName, EpigramRef i_args, i32 i_selfIndex)
@@ -489,18 +503,21 @@ class JdLua
 				{
 					int t = lua_gettop (L);
 					
-					int type = lua_type (L, t);						//				cout << "type: " << type << endl;
-					
-					if		(type == LUA_TTABLE)	ConvertLuaTableToEpigram (t, result);
-					else if (type == LUA_TSTRING)   result (lua_tostring (L, -1));
-					else if (type == LUA_TBOOLEAN)  result ((bool) lua_toboolean (L, -1));
-					else if (type == LUA_TNUMBER)   result (lua_tonumber (L, -1));
-					else if (type == LUA_TNIL or
-							 type == LUA_TLIGHTUSERDATA or
-							 type == LUA_TFUNCTION or
-							 type == LUA_TUSERDATA or
-							 type == LUA_TTHREAD)	result ("warning", "unimplemented Lua return type");
-					else d_jdThrow ("unknown return type");
+					if (t)
+					{
+						int type = lua_type (L, t);						//				cout << "type: " << type << endl;
+						
+						if		(type == LUA_TTABLE)	ConvertLuaTableToEpigram (t, result);
+						else if (type == LUA_TSTRING)   result (lua_tostring (L, -1));
+						else if (type == LUA_TBOOLEAN)  result ((bool) lua_toboolean (L, -1));
+						else if (type == LUA_TNUMBER)   result (lua_tonumber (L, -1));
+						else if (type == LUA_TNIL or
+								 type == LUA_TLIGHTUSERDATA or
+								 type == LUA_TFUNCTION or
+								 type == LUA_TUSERDATA or
+								 type == LUA_TTHREAD)	result ("warning", "unimplemented Lua return type");
+						else d_jdThrow ("unknown return type");
+					}
 				}
 				else
 				{
