@@ -52,7 +52,7 @@ void  JdStopwatch::Finish ()
 	m_timer.stop ();
 	
 	string t = m_timer.format (boost::timer::default_places, "%w"); // don't seem to get user/system time on mac
-	cout << setw (14) << m_label << ": " << t << "s" << endl;
+	cout << setw (20) << m_label << ": " << t << "s" << endl;
 	
 	m_display = false;
 }

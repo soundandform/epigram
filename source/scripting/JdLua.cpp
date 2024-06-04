@@ -61,6 +61,8 @@ JdLua::Result  JdLua::LoadAndCallScript  (cstr_t i_script, JdMD5::MD5 * io_hashC
 		{
 			if (io_hashCheck)
 			{
+//				JdStopwatch _ ("hash");
+				
 				ByteCodeWriter bcw;
 				lua_dump (L, & ByteCodeWriter::Handler, & bcw); 	// IMPORTANTE: Need to add BCDUMP_F_STRIP + BCDUMP_F_DETERMINISTIC flags to this function internally
 				
@@ -87,7 +89,7 @@ JdLua::Result  JdLua::LoadAndCallScript  (cstr_t i_script, JdMD5::MD5 * io_hashC
 }
 
 
-vector <string>  JdLua::GetGlobalFunctions  (JdLua::Result & result)
+vector <string>  JdLua::GetGlobalsOfType  (JdLua::Result & o_result, i32 i_luaType)
 {
 	vector <string> names;
 
@@ -101,10 +103,10 @@ vector <string>  JdLua::GetGlobalFunctions  (JdLua::Result & result)
 		
 		while (lua_next (L, tableIndex))
 		{
-			int keyType 	= lua_type (L, -2);
-			int valueType 	= lua_type (L, -1);
+			int keyType 	= lua_type (L, -2),
+				valueType 	= lua_type (L, -1);
 			
-			if (keyType == LUA_TSTRING and valueType == LUA_TFUNCTION)
+			if (keyType == LUA_TSTRING and valueType == i_luaType)
 			{
 				names.push_back (lua_tostring (L, -2));
 			}
@@ -114,8 +116,15 @@ vector <string>  JdLua::GetGlobalFunctions  (JdLua::Result & result)
 
 		lua_pop (L, 1);
 	}
-	else result = { -1, "no global table" };
+	else o_result = { -1, "no global table" };
 
 	return names;
+}
+
+
+
+vector <string>  JdLua::GetGlobalFunctions  (JdLua::Result & o_result)
+{
+	return GetGlobalsOfType (o_result, LUA_TFUNCTION);
 }
 

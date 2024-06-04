@@ -37,11 +37,19 @@ static void * luaAlloc (void *ud, void *ptr, size_t osize, size_t nsize)
 
 class JdLua
 {
-	public:					JdLua						()					{}
+	public:					JdLua						(u64 i_sequence = 0)
+	:						m_sequence					(i_sequence)
+	{ }
+
+							JdLua						(lua_State * i_lua)
+							:
+							L							(i_lua),
+							m_luaStateOwned				(false)
+	{ }
 	
 	virtual					~JdLua						()
 	{
-		if (L)
+		if (L and m_luaStateOwned)
 			lua_close (L);
 	}
 	
@@ -49,6 +57,11 @@ class JdLua
 	{
 		Initialize ();
 		return L;
+	}
+	
+	u64						GetSequenceNum				() const
+	{
+		return m_sequence;
 	}
 	
 //	void					Swap						(JdLua & io_lua)
@@ -60,10 +73,11 @@ class JdLua
 	{
 //		/Users/smassey/Documents/Sluggo/library/scripts/dsp/svf.lua:6: attempt to perform arithmetic on a table value
 		
-		i32			resultCode			= 0;
-		string 		errorMsg;
-		string		location;
-		i32			lineNum				= 0;
+		i32				resultCode			= 0;
+		string 			errorMsg;
+		string			location;
+		i32				lineNum				= 0;
+		u64				sequence			= 0;
 		
 		operator bool () const { return resultCode; }
 	};
@@ -216,18 +230,16 @@ class JdLua
 
 //	protected:
 
-	Result                    ParseErrorMessage         (i32 i_resultCode)
+	Result                    ParseErrorMessage         (i32 i_resultCode, bool i_printToStdOut = false)
 	{
-		Result error { i_resultCode };
+		Result error { .resultCode= i_resultCode, .sequence = m_sequence };
 		
 		if (L)
 		{
 			if (lua_isstring (L, -1))
 			{
-				std::string s = lua_tostring (L, -1);						jd::out (s);
+				std::string s = lua_tostring (L, -1);						if (i_printToStdOut) jd::out (s);
 				lua_pop (L, 1);
-				
-//				cout << s << endl;
 				
 				size_t p = s.find (":");
 				
@@ -265,6 +277,7 @@ class JdLua
 	}
 	
 	
+	vector <string>				GetGlobalsOfType			(JdLua::Result & o_result, i32 i_luaType);
 	vector <string>				GetGlobalFunctions			(JdLua::Result & result);
 
 	
@@ -457,6 +470,13 @@ class JdLua
 		lua_setglobal			(L, i_functionName);
 	}
 	
+	Epigram						ConvertLuaTableToEpigram (i32 i_tableIndex)
+	{
+		Epigram e;
+		ConvertLuaTableToEpigram (i_tableIndex, e);
+		return e;
+	}
+
 	
 	
 	private: //--------------------------------------------------------------------------------------------------------------------------------
@@ -536,6 +556,7 @@ class JdLua
 	}
 	
 	
+	
 	void                        ConvertLuaTableToEpigram (i32 i_tableIndex, Epigram & o_msg, u32 depth = 0)
 	{
 		if (not L)	return;
@@ -543,7 +564,6 @@ class JdLua
 		if (lua_istable (L, i_tableIndex))
 		{
 			lua_pushnil (L);
-
 			
 			while (lua_next (L, i_tableIndex))
 			{
@@ -671,13 +691,17 @@ class JdLua
 	// OR it does!?  TODO: investigate
 	cstr_t						PreserveString			(cstr_t i_string)
 	{
-		m_strings.push_back (i_string);
-		return m_strings.back ().c_str ();
+		return i_string;
+//		m_strings.push_back (i_string);
+//		return m_strings.back ().c_str ();
 	}
 	
-	std::list <string>				m_strings;
+//	std::list <string>				m_strings;
 	lua_State *						L				= nullptr;
+	bool							m_luaStateOwned	= true;
+
 	vector <int>					m_stackTops;
+	u64								m_sequence		= 0;
 };
 
 
