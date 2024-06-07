@@ -34,9 +34,13 @@ static void * luaAlloc (void *ud, void *ptr, size_t osize, size_t nsize)
   }
 }
 
+const i32 c_luaHashUnchanged = 123456;
+
 
 class JdLua
 {
+	static std::atomic <u64>		s_sequenceNum;
+	
 	public:					JdLua						(u64 i_sequence = 0)
 	:						m_sequence					(i_sequence)
 	{ }
@@ -76,12 +80,15 @@ class JdLua
 		i32				resultCode			= 0;
 		string 			errorMsg;
 		string			location;
+		string			function;
 		i32				lineNum				= 0;
 		u64				sequence			= 0;
 		
 		operator bool () const { return resultCode; }
 	};
 	
+	static int HandleLuaError (lua_State * L);
+
 	Result				LoadScriptFromFile			(stringRef_t i_path)
 	{
 		Result result;
@@ -94,7 +101,7 @@ class JdLua
 			
 			i32 resultCode = luaL_loadfile (L, path);
 			
-			if (resultCode)  	result = ParseErrorMessage (resultCode);
+			if (resultCode)  	result = ParseErrorMessage (resultCode, "");
 			else      		 	lua_pcall (L, 0, 0, 0);
 		}
 		else
@@ -107,21 +114,25 @@ class JdLua
 	}
 	
 
-	Result				HashScript							(JdMD5::MD5 & o_hash, cstr_t i_script);
+	Result				HashScript							(stringRef_t i_functionName, JdMD5::MD5 & o_hash, cstr_t i_script, vector <u8> * o_bytecode = nullptr);
 
-	Result				LoadAndCallScript					(stringRef_t i_script)
+	Result				LoadAndCallScript					(stringRef_t i_functionName, stringRef_t i_script, vector <u8> * o_bytecode = nullptr)
 	{
-		return LoadAndCallScript (i_script.c_str (), nullptr);
+		return LoadAndCallScript (i_functionName, i_script.c_str (), nullptr, o_bytecode);
 	}
 
 	// If io_hashCheck is set, only loads script if hash differs. returns new hash
-	Result				LoadAndCallScript					(cstr_t i_script, JdMD5::MD5 * io_hashCheck);
+	Result				LoadAndCallScript					(stringRef_t i_functionName, cstr_t i_script, JdMD5::MD5 * io_hashCheck, vector <u8> * o_bytecode = nullptr);
 
-//	typedef int (*lua_Writer) (lua_State *L, const void* p, size_t sz, void* ud);
 
-	
 	struct ByteCodeWriter : JdMD5
 	{
+		ByteCodeWriter		(vector <u8> * o_bytecode = nullptr, bool i_doHash = true)
+		:
+		doHash				(i_doHash),
+		bytecode			(o_bytecode)
+		{ }
+		
 		static int Handler (lua_State * L,
 							const void * p,
 							size_t sz,
@@ -133,15 +144,38 @@ class JdLua
 		
 		void		Handle   (const u8 * i_ptr, size_t i_size)
 		{
-			Add (i_ptr, i_size);
+			if (doHash)
+				Add (i_ptr, i_size);
+
+			if (bytecode)
+			{
+				bytecode->insert (bytecode->end (), i_ptr, i_ptr + i_size);
+			}
 		}
 		
-		
-		u32				callbackNum						= 0;
-		
-		vector <u8>		bytecode;
+		bool				doHash							= true;
+		vector <u8> *		bytecode						= nullptr;
 	};
 	
+	
+	
+	Result			CallStackTop			(stringRef_t i_functionLabel)	// no args, no return
+	{
+		Result result;
+
+		int errIndex = 0;
+		lua_pushcfunction	(L, HandleLuaError);
+		lua_insert 			(L, errIndex = -2);
+
+		int r = lua_pcall (L, 0, 0, errIndex);
+		if (r)
+			result = ParseErrorMessage (r, i_functionLabel);
+		
+		if (errIndex)
+			lua_pop (L, 1);
+
+		return result;
+	}
 	
 	
 	// this can push a function to the top of the stack (such as "Render") so it can be repeatedly called without lookup
@@ -151,8 +185,7 @@ class JdLua
 //	}
 	
 	
-	// PushGlobal (...) must be called before so that the function is sitting on the top of stack	Delete this?
-//	f64				CallTop					(f64 i_arg)
+//	f64				Call					(f64 i_arg)
 //	{
 //		f64 r = 0.;
 //
@@ -168,12 +201,9 @@ class JdLua
 //		return r;
 //	}
 	
-	
 	Epigram               Call 			           (stringRef_t i_functionName, Epigram i_args = Epigram ())
 	{
 		Epigram result;
-		
-		//		i_args.dump ();
 		
 		cstr_t functionName = i_functionName.c_str ();
 		
@@ -199,10 +229,11 @@ class JdLua
 		else return ExecuteFunction (i_functionName, i_args, 0);
 	}
 	
-	
 	Epigram					GetGlobalTable			(stringRef_t i_tableName)
 	{
 		Epigram e;
+		
+		int top = lua_gettop (L);
 		
 		lua_getglobal (L, i_tableName.c_str());
 		
@@ -211,7 +242,7 @@ class JdLua
 			ConvertLuaTableToEpigram (lua_gettop (L), e);
 		}
 		
-		lua_pop (L, 1);
+		lua_settop (L, top);
 		
 		return e;
 	}
@@ -229,23 +260,61 @@ class JdLua
 	}
 
 //	protected:
-
-	Result                    ParseErrorMessage         (i32 i_resultCode, bool i_printToStdOut = false)
+	
+	Result					GenerateError			(i32 i_resultCode, stringRef_t i_message)
 	{
-		Result error { .resultCode= i_resultCode, .sequence = m_sequence };
+		Result error { .resultCode= i_resultCode, .errorMsg= i_message, .sequence = m_sequence + s_sequenceNum++ };
+		
+		return error;
+	}
+	
+
+	Result                    ParseErrorMessage         (i32 i_resultCode, stringRef_t i_functionName)
+	{
+		Result error { .resultCode= i_resultCode };
 		
 		if (L)
 		{
 			if (lua_isstring (L, -1))
 			{
-				std::string s = lua_tostring (L, -1);						if (i_printToStdOut) jd::out (s);
+				std::string s = lua_tostring (L, -1);							 jd::out (s);
 				lua_pop (L, 1);
+				
+				// there's a specific error message from the package library / require (...). Example:
+				//
+				// error loading module 'spirit.dsp.lowpass' from file '/Users/smassey/Documents/Sluggo/library/spirit/dsp/lowpass.lua':
+				// .../smassey/Documents/Sluggo/library/spirit/dsp/lowpass.lua:15: '=' expected near 'function'
+				
+				if (s.find ("error loading module") != std::string::npos)
+				{
+					size_t p = s.find (":\n\t");
+					
+					if (p != std::string::npos)
+					{
+						string filename = s.substr (0, p);
+						s = s.substr (p + 3);
+						
+						p = filename.find ("' from file '");
+						if (p != std::string::npos)
+						{
+							filename = filename.substr (p + 13);
+							
+							p = filename.rfind ("'");
+							if (p != std::string::npos)
+							{
+								filename = filename.substr (0, p);
+								error.location = "@" + filename;
+							}
+						}
+					}
+				}
 				
 				size_t p = s.find (":");
 				
 				if (p != std::string::npos)
 				{
-					error.location = s.substr (0, p);
+					if (error.location.empty ())
+						error.location = s.substr (0, p);
 					
 					std::string line = s.substr (p + 1);
 					
@@ -255,6 +324,11 @@ class JdLua
 					
 					sscanf (line.c_str(), "%d", & error.lineNum);
 				}
+				
+				error.sequence = m_sequence + s_sequenceNum++;
+				
+				if (i_functionName.size ())
+					error.function = i_functionName;
 			}
 		}
 		
@@ -542,7 +616,7 @@ class JdLua
 				else
 				{
 					//cout << "result: " << result << endl;
-					Result r = ParseErrorMessage (luaResult);
+					Result r = ParseErrorMessage (luaResult, i_functionName);
 					result ("error", r.errorMsg);
 				}
 				
@@ -696,12 +770,29 @@ class JdLua
 //		return m_strings.back ().c_str ();
 	}
 	
-//	std::list <string>				m_strings;
 	lua_State *						L				= nullptr;
 	bool							m_luaStateOwned	= true;
 
 	vector <int>					m_stackTops;
 	u64								m_sequence		= 0;
+	
+	vector <string>					m_functionName;
+	
+	struct FunctionNamePusher
+	{
+		FunctionNamePusher (JdLua & i_lua, stringRef_t i_function)
+		:
+		lua (i_lua)
+		{
+			lua.m_functionName.push_back (i_function);
+		}
+		~FunctionNamePusher ()
+		{
+			lua.m_functionName.pop_back ();
+		}
+		
+		JdLua & lua;
+	};
 };
 
 
