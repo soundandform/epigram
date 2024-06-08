@@ -177,6 +177,23 @@ class JdLua
 		return result;
 	}
 	
+	Result			CallGlobalFunction		(stringRef_t i_functionName)
+	{
+		Result result;
+		
+		lua_getglobal (L, i_functionName.c_str ());
+		
+		if (lua_isfunction (L, -1))
+			result = CallStackTop (i_functionName);
+		else
+		{
+			lua_pop (L, 1);
+			result = GenerateError (-494, jd::sprintf ("function '@' not found", i_functionName));
+		}
+			
+		return result;
+	}
+	
 	
 	// this can push a function to the top of the stack (such as "Render") so it can be repeatedly called without lookup
 //	void			PushGlobal				(cstr_t i_functionName)
