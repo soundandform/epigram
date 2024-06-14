@@ -2205,6 +2205,11 @@ class EpigramT : public interface_t
 	void						Reset				()			{ m_allocator.Reset (); }
 	void						Clear				()			{ m_allocator.Clear (); }
 	
+	void						Load		(const std::string & i_string)
+	{
+		Load ((const u8 *) i_string.data (), i_string.size ());
+	}
+	
 	void						Load				(const u8 * i_bytes, size_t i_numBytes)
 	{
 		m_allocator.Clear ();
@@ -2299,10 +2304,14 @@ class EpigramT : public interface_t
 	
 	explicit operator std::string () const
 	{
+		return ToString ();
+	}
+
+	std::string			ToString  () const
+	{
 		auto payload = GetPayload ();
 		return std::string ((const char *) payload.bytes, payload.size);
 	}
-
 	
 	IIEpigramIn::Payload GetPayload () const
 	{

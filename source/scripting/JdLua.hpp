@@ -34,6 +34,10 @@ static void * luaAlloc (void *ud, void *ptr, size_t osize, size_t nsize)
   }
 }
 
+
+cstr_t  lua_gettype  (lua_State * L, int i_index);
+
+
 const i32 c_luaHashUnchanged = 123456;
 
 
@@ -164,15 +168,15 @@ class JdLua
 		Result result;
 
 		int errIndex = 0;
-		lua_pushcfunction	(L, HandleLuaError);
-		lua_insert 			(L, errIndex = -2);
+//		lua_pushcfunction	(L, HandleLuaError);
+//		lua_insert 			(L, errIndex = -2);
 
 		int r = lua_pcall (L, 0, 0, errIndex);
 		if (r)
 			result = ParseErrorMessage (r, i_functionLabel);
 		
-		if (errIndex)
-			lua_pop (L, 1);
+//		if (errIndex)
+//			lua_pop (L, 1);
 
 		return result;
 	}
@@ -278,9 +282,9 @@ class JdLua
 
 //	protected:
 	
-	Result					GenerateError			(i32 i_resultCode, stringRef_t i_message)
+	Result					GenerateError			(i32 i_resultCode, stringRef_t i_message, i32 i_lineNum = 0)
 	{
-		Result error { .resultCode= i_resultCode, .errorMsg= i_message, .sequence = m_sequence + s_sequenceNum++ };
+		Result error { .resultCode= i_resultCode, .errorMsg= i_message, .sequence = m_sequence + s_sequenceNum++, .lineNum = i_lineNum };
 		
 		return error;
 	}
@@ -294,7 +298,7 @@ class JdLua
 		{
 			if (lua_isstring (L, -1))
 			{
-				std::string s = lua_tostring (L, -1);							 jd::out (s);
+				std::string s = lua_tostring (L, -1);						//	 jd::out (s);
 				lua_pop (L, 1);
 				
 				// there's a specific error message from the package library / require (...). Example:
@@ -326,20 +330,22 @@ class JdLua
 					}
 				}
 				
-				size_t p = s.find (":");
+				size_t p = s.rfind (":");
 				
 				if (p != std::string::npos)
 				{
-					if (error.location.empty ())
-						error.location = s.substr (0, p);
+					error.errorMsg = s.substr (p + 1);
+					s = s.substr (0, p);
 					
-					std::string line = s.substr (p + 1);
+					p = s.rfind (":");
+															d_jdAssert (p != std::string::npos);
+					string line = s.substr (p + 1);
+					s = s.substr (0, p);
+
+					if (error.location.empty () and s.size () < 1083)
+						error.location = s;
 					
-					error.errorMsg = line.substr (line.find (":") + 2);
-					
-					line = line.substr (0, line.find (":"));
-					
-					sscanf (line.c_str(), "%d", & error.lineNum);
+					sscanf (line.c_str (), "%d", & error.lineNum);
 				}
 				
 				error.sequence = m_sequence + s_sequenceNum++;

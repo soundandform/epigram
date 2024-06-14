@@ -17,3 +17,10 @@ using namespace std;
 #define __doctest_hpp
 #endif
 
+#if 0
+	// useful doctest flags
+
+	--no-colors			// Xcode ain't colored
+	--no-version
+
+#endif

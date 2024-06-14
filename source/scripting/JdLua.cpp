@@ -10,14 +10,20 @@
 #include "JdLua.hpp"
 
 
+cstr_t  lua_gettype (lua_State * L, int i_index)
+{
+	return lua_typename (L, lua_type (L, i_index));
+}
+
+
 std::atomic <u64> JdLua::s_sequenceNum;
 
+#if 0
 int JdLua::HandleLuaError (lua_State * L)
 {
 	lua_Debug ar = {};
 	
 	string s = lua_tostring (L, -1);
-
 	
 	int r = lua_getstack (L, 1, & ar);	// 0 = this C function; +1 to get down into Lua
 	
@@ -41,7 +47,7 @@ int JdLua::HandleLuaError (lua_State * L)
 
 	return 1;
 }
-
+#endif
 
 
 
@@ -51,21 +57,18 @@ JdLua::Result  JdLua::HashScript  (stringRef_t i_functionName, JdMD5::MD5 & o_ha
 	
 	Initialize ();
 
-	if (L)
+	if (L and i_script)
 	{
-		i32 luaResult = luaL_loadstring (L, i_script);
+		i32 luaResult = (i_script [0] == '@') ? luaL_loadfile (L, i_script + 1) : luaL_loadstring (L, i_script);
 		
 		if (not luaResult)
 		{
 			ByteCodeWriter bcw (o_bytecode);
-			lua_dump (L, & ByteCodeWriter::Handler, & bcw); 	// IMPORTANTE: Need to add BCDUMP_F_STRIP + BCDUMP_F_DETERMINISTIC flags to this function internally
+			lua_dumpx (L, & ByteCodeWriter::Handler, & bcw, 0x80000002);//  BCDUMP_F_STRIP + BCDUMP_F_DETERMINISTIC
 
 			o_hash = bcw.Get ();
 		}
 		else result = ParseErrorMessage (luaResult, i_functionName);
-
-//		lua_close (L);
-//		L = nullptr;
 	}
 	
 	return result;
@@ -79,8 +82,6 @@ JdLua::Result  JdLua::LoadAndCallScript  (stringRef_t i_functionName, cstr_t i_s
 	auto script = PreserveString (i_script);
 	
 	Initialize ();
-
-//	lua_pushcfunction (L, JdLua::HandleLuaError);
 
 	if (L)
 	{
@@ -97,8 +98,8 @@ JdLua::Result  JdLua::LoadAndCallScript  (stringRef_t i_functionName, cstr_t i_s
 			if (io_hashCheck or o_bytecode)
 			{														//JdStopwatch _ ("hash");
 				ByteCodeWriter bcw (o_bytecode, io_hashCheck != nullptr);
-				lua_dump (L, & ByteCodeWriter::Handler, & bcw); 	// IMPORTANTE: Need to add BCDUMP_F_STRIP + BCDUMP_F_DETERMINISTIC flags to this function internally
-				
+				lua_dumpx (L, & ByteCodeWriter::Handler, & bcw, 0x80000002);//  BCDUMP_F_STRIP + BCDUMP_F_DETERMINISTIC
+
 				auto newHash = bcw.Get ();
 				
 				if (io_hashCheck)
