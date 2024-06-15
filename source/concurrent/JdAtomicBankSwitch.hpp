@@ -44,12 +44,17 @@ class JdAtomicSwitch
 template <typename T>
 struct JdAtomicBankSwitchT
 {
-	T &			GetWriteBank 		()
+	T &			ViewWriteBank 		()
+	{
+		return m_banks [2];
+	}
+
+	T &			AcquireWriteBank 	()			// was GetWriteBank
 	{
 		m_writeAcquiredBank = & m_banks [m_switch.GetWriteIndex ()];
 		return m_banks [2];
 	}
-	
+
 	void		ReleaseWriteBank 	()
 	{
 		* m_writeAcquiredBank = m_banks [2];
