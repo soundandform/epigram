@@ -10,6 +10,8 @@
 #ifndef JdLua_hpp
 #define JdLua_hpp
 
+# include <regex>
+
 # include "Epigram.hpp"
 # include "JdResult.hpp"
 # include "JdStopwatch.hpp"
@@ -330,6 +332,38 @@ class JdLua
 					}
 				}
 				
+				string wtf = R"(a)";
+				
+				jd::out (wtf);
+				
+				// :(\d+):
+				std::smatch m;
+//				bool matched = (std::regex_match (s, m, std::regex (R":([0-9]+):")));
+				bool matched = (std::regex_match (s, m, std::regex (wtf)));
+				jd::out (matched);
+							  
+							
+				
+				if (m.size () == 1)
+				{
+					string lineNum = m.str ();
+					
+					size_t p = s.find (lineNum);
+					
+					error.errorMsg = s.substr (p + lineNum.size ());
+
+					s = s.substr (0, p);
+					if (error.location.empty () and s.size () < 1083)
+						error.location = s;
+					
+					lineNum = lineNum.substr (1);
+					lineNum.pop_back ();
+
+					sscanf (lineNum.c_str (), "%d", & error.lineNum);
+				}
+				
+				
+/*
 				size_t p = s.rfind (":");
 				
 				if (p != std::string::npos)
@@ -347,7 +381,7 @@ class JdLua
 					
 					sscanf (line.c_str (), "%d", & error.lineNum);
 				}
-				
+				*/
 				error.sequence = m_sequence + s_sequenceNum++;
 				
 				if (i_functionName.size ())
