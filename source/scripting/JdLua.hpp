@@ -332,15 +332,6 @@ class JdLua
 					}
 				}
 				
-//				string wtf = R"(:(\d+):)";
-//
-//				jd::out (wtf);
-//
-////				s = "fjdskfjxdsafdsf";
-//				s = "fdjskfjdskfjs:75:kfgkfk";
-				
-//				s = "/Users/smassey/Documents/Sluggo/sluggo.lua:57: '=' expected near 'howdy'";
-				
 				std::smatch m;
 				bool matched = (std::regex_search (s, m, std::regex (R"(:(\d+):)")));
 				jd::out (matched);
@@ -355,27 +346,8 @@ class JdLua
 						error.location = location;
 
 					sscanf (m [1].str ().c_str (), "%d", & error.lineNum);
-//					jd::out (m[0].str ());
 				}
-/*
-				size_t p = s.rfind (":");
-				
-				if (p != std::string::npos)
-				{
-					error.errorMsg = s.substr (p + 1);
-					s = s.substr (0, p);
-					
-					p = s.rfind (":");
-															d_jdAssert (p != std::string::npos);
-					string line = s.substr (p + 1);
-					s = s.substr (0, p);
 
-					if (error.location.empty () and s.size () < 1083)
-						error.location = s;
-					
-					sscanf (line.c_str (), "%d", & error.lineNum);
-				}
-				*/
 				error.sequence = m_sequence + s_sequenceNum++;
 				
 				if (i_functionName.size ())
