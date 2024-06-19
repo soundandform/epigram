@@ -709,9 +709,13 @@ class JdLua
 		return result;
 	}
 	
+	void                        ConvertLuaTableToEpigram	(i32 i_tableIndex, Epigram & o_msg)
+	{
+		TableToEpigram (L, i_tableIndex, o_msg);
+	}
 	
-	
-	void                        ConvertLuaTableToEpigram (i32 i_tableIndex, Epigram & o_msg, u32 depth = 0)
+public:
+	static void					TableToEpigram				(lua_State * L, i32 i_tableIndex, Epigram & o_msg, u32 depth = 0)
 	{
 		if (not L)	return;
 		
@@ -745,7 +749,7 @@ class JdLua
 					else if (valueType == LUA_TTABLE)
 					{
 						Epigram archive;
-						ConvertLuaTableToEpigram (lua_gettop (L), archive, depth+1);
+						TableToEpigram (L, lua_gettop (L), archive, depth+1);
 						o_msg (archive);
 					}
 				}
@@ -760,7 +764,7 @@ class JdLua
 						else if (valueType == LUA_TTABLE)
 						{
 							Epigram msg;
-							ConvertLuaTableToEpigram (lua_gettop (L), msg, depth+1);
+							TableToEpigram (L, lua_gettop (L), msg, depth+1);
 							
 							bool isArray = false;
 							if (msg.Count() == 1)
