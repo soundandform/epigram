@@ -45,6 +45,63 @@ const i32 c_luaHashUnchanged = 123456;
 
 class JdLua
 {
+	public:
+	
+	template <typename T>
+	struct Caster
+	{
+		static void  Cast  (lua_State * L, i32 i_index, string & o_string)
+		{
+			if (lua_isstring (L, -1))
+				o_string = lua_tostring (L, -1);
+		}
+
+		static void  Cast  (lua_State * L, i32 i_index, f64 & o_value)
+		{
+			if (lua_isnumber (L, -1))
+				o_value = lua_tonumber (L, -1);
+		}
+
+		static void  Cast  (lua_State * L, i32 i_index, f32 & o_value)
+		{
+			if (lua_isnumber (L, -1))
+				o_value = (f32) lua_tonumber (L, -1);
+		}
+	};
+	
+	template <typename T>
+	static vector <T>   TableToVector  (lua_State * L, i32 i_tableIndex)
+	{
+		vector <T> array;
+		
+		if (lua_istable (L, i_tableIndex))
+		{
+			lua_pushnil (L);
+			
+			while (lua_next (L, i_tableIndex))
+			{
+				if (lua_isnumber (L, -2))
+				{
+					auto index = lua_tointeger (L, -2);
+					
+					if (index >= 1)
+					{
+						size_t s = std::max (array.size (), (size_t) index);
+						array.resize (s);
+
+						Caster <T>::Cast (L, -1, array [index - 1]);
+					}
+				}
+				
+				lua_pop (L, 1);
+			}
+		}
+		
+		return array;
+	}
+	
+	
+	
 	static std::atomic <u64>		s_sequenceNum;
 	
 	public:					JdLua						(u64 i_sequence = 0)
@@ -738,10 +795,12 @@ class JdLua
 		}
 	}
 	
+
 	
 	void                        ConvertLuaTableToArray (i32 i_tableIndex, vector <string> &o_strings, vector <f64> &o_doubles, int depth = 0)
 	{
-		if (!L)	return;
+		if (not L) return;
+		
 		if (lua_istable (L, i_tableIndex))
 		{
 			lua_pushnil (L);
