@@ -47,6 +47,12 @@ class JdLua
 {
 	public:
 	
+	static void Hook (lua_State * L, lua_Debug * ar)
+	{
+		jd::out ("hook!");
+		luaL_error (L, "infinite loop");
+	}
+	
 	template <typename T>
 	struct Caster
 	{
@@ -838,12 +844,11 @@ public:
 	void		Initialize			()
 	{
 		if (not L)
-		{
-			
-//			L = lua_newstate (luaAlloc, nullptr);
-
+		{										// L = lua_newstate (luaAlloc, nullptr);
 			L = luaL_newstate ();
 			luaL_openlibs (L);
+
+			lua_sethook (L, Hook, LUA_MASKCOUNT, 0xA0000000);
 		}
 	}
 	
@@ -868,14 +873,8 @@ public:
 	{
 		FunctionNamePusher (JdLua & i_lua, stringRef_t i_function)
 		:
-		lua (i_lua)
-		{
-			lua.m_functionName.push_back (i_function);
-		}
-		~FunctionNamePusher ()
-		{
-			lua.m_functionName.pop_back ();
-		}
+		lua (i_lua) 			{ lua.m_functionName.push_back (i_function); }
+		~FunctionNamePusher ()	{ lua.m_functionName.pop_back ();}
 		
 		JdLua & lua;
 	};
