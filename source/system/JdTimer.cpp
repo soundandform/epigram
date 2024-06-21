@@ -66,4 +66,9 @@ namespace Jd
 		return s_jdTimer.GetMilliseconds ();
 	}
 
+	u64  GetNanoseconds  ()
+	{
+		return s_jdTimer.GetNanoseconds ();
+	}
+
 } // end-namespace Jd

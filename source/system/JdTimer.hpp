@@ -36,6 +36,7 @@ namespace Jd
 {
 	u64 GetMicroseconds ();
 	u64 GetMilliseconds ();
+	u64 GetNanoseconds ();
 };
 
 #endif
