@@ -49,7 +49,7 @@ class JdLua
 	
 	static void Hook (lua_State * L, lua_Debug * ar)
 	{
-		jd::out ("hook!");
+//		jd::out ("hook!");
 		luaL_error (L, "infinite loop");
 	}
 	
@@ -848,7 +848,7 @@ public:
 			L = luaL_newstate ();
 			luaL_openlibs (L);
 
-			lua_sethook (L, Hook, LUA_MASKCOUNT, 0xA0000000);
+//			lua_sethook (L, Hook, LUA_MASKCOUNT, 0xA0000000);
 		}
 	}
 	

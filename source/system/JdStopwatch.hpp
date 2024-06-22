@@ -34,7 +34,7 @@ class JdStopwatch
 	
 	protected:
 	
-	JdString64					m_label;
+	JdString256					m_label;
     bool            			m_display;
 	boost::timer::cpu_timer		m_timer;
 };
