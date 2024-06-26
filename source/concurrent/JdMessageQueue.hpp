@@ -108,15 +108,15 @@ struct JdThreadPortPathway
 		- the claim sequence is incremented by the consumer once it has finished with the record
 	 */
 	
-	u32	GetPathwayNumBytes ()
+	u32	get_pathway_num_bytes ()
 	{
-		return m_queue.capacity () * sizeof (MessageRecord);
+		return m_queue.capacity () * sizeof (MessageRecord);		// note: capacity () not size (). this is a diagnostic API
 	}
 	
 	
-	JdPortSequence					insertSequence	{ c_jdThreadPort_startIndex }; // producer index
-	JdPortSequence					commitSequence	{ c_jdThreadPort_startIndex }; // producer "finished-with" index
-	JdPortSequence					claimSequence	{ c_jdThreadPort_startIndex }; // consumer index
+	JdPortSequence					insertSequence		{ c_jdThreadPort_startIndex }; // producer index
+	JdPortSequence					commitSequence		{ c_jdThreadPort_startIndex }; // producer "finished-with" index
+	JdPortSequence					claimSequence		{ c_jdThreadPort_startIndex }; // consumer index
 	
 	seq_t							m_sequenceMask;
 	std::vector <MessageRecord>		m_queue;
@@ -125,13 +125,13 @@ struct JdThreadPortPathway
 
 d_jdTrueFalse (MessagePort, waitForMessages, doNotWaitForMessages)
 
-// JdMessageQueue isn't multiple consumer safe nor easily compatible because of the disconnected atomic signal variable
-// and the sporadically triggered semaphore.  one thread might be expecting the signal but a different thread takes it. Two multiple consumer
-// strategies: i think just adding a comsumer mutex would do the trick and/or mutiple channels of MessageQueues
 
 template <typename T>
-class JdMessageQueue // (v2)
+class JdMessageQueue
 {
+	// JdMessageQueue is at it's core a multiple writer - single reader safe message queue.
+	// The Pop () and PopWait () functions add a mutex so that it can be multi-consumer safe/
+
 	public:
 	
 	JdMessageQueue								(u32 i_numMessagesInQueue = 512)
@@ -144,9 +144,14 @@ class JdMessageQueue // (v2)
 		// cout << "numSleeps: " << m_numSleeps << endl;
 	}
 	
-	u32 GetQueueSizeInBytes ()
+	u32  GetNumMessageCapacity  ()
 	{
-		return m_pathway.GetPathwayNumBytes ();
+		return m_pathway.m_queue.size ();
+	}
+	
+	u32 get_queue_size_in_bytes ()	// this is the amount of memory actually allocated
+	{
+		return m_pathway.get_pathway_num_bytes ();
 	}
 	
 	
@@ -155,7 +160,7 @@ class JdMessageQueue // (v2)
 	// 2. copy the message to the pointer
 	// 3. CommitMessage ()
 	//
-	// alternatively, use QueueMessage () which packages these three steps into one call
+	// alternatively, use Push () which packages these three steps into one call
 	
 	void Push (const T * i_messages, u32 i_count)
 	{
@@ -312,8 +317,7 @@ class JdMessageQueue // (v2)
 				available = m_acquiredPending;
 				m_acquiredPending = 0;
 			}
-			else
-				available = 0;
+			else available = 0;
 		}
 		
 		return available;
@@ -342,7 +346,8 @@ class JdMessageQueue // (v2)
 	}
 	
 	
-	// TODO: validate that m_consumerLock makes these multiple-consumer safe. Seems reasonable on the surface.
+	//--- Pop () and PopWait () are locked w/ a mutex for multi-consumer support ----------------------------------------------------------------
+	
 	bool Pop (T & o_message)
 	// no wait. claims and releases one message if it's available
 	{
