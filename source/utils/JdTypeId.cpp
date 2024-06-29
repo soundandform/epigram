@@ -173,7 +173,7 @@ TypeIdsMap::TypeIdsMap ()
 	longNames ['m'] = "function";
 	longNames ['n'] = "signature";
 	
-	longNames ['b'] = "bool ";
+	longNames ['b'] = "bool";
 	longNames ['c'] = "bool *";
 	
 	longNames ['F'] = "f64";

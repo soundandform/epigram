@@ -233,15 +233,19 @@ class JdLua
 		Result result;
 
 		int errIndex = 0;
-//		lua_pushcfunction	(L, HandleLuaError);
-//		lua_insert 			(L, errIndex = -2);
+		lua_pushcfunction	(L, HandleLuaError);
+		lua_insert 			(L, errIndex = -2);
 
+		m_errorInfo.lineNum = 0;
+		
 		int r = lua_pcall (L, 0, 0, errIndex);
 		if (r)
 			result = ParseErrorMessage (r, i_functionLabel);
 		
-//		if (errIndex)
-//			lua_pop (L, 1);
+		m_errorInfo.lineNum = 0;
+
+		if (errIndex)
+			lua_pop (L, 1);
 
 		return result;
 	}
@@ -256,7 +260,7 @@ class JdLua
 			result = CallStackTop (i_functionName);
 		else
 		{
-			lua_pop (L, 1);
+//			lua_pop (L, 1);
 			result = GenerateError (-494, jd::sprintf ("function '@' not found", i_functionName));
 		}
 			
@@ -361,6 +365,15 @@ class JdLua
 		
 		if (L)
 		{
+//			string rootLocation;
+//			if (lua_gettop (L) == 2)
+//			{
+//				jd::out (lua_gettype (L, -2));
+//
+//				rootLocation = lua_tostring (L, -1);		// this extra location string is pushed in HandleLuaError
+//				lua_pop (L, 1);
+//			}
+			
 			if (lua_isstring (L, -1))
 			{
 				std::string s = lua_tostring (L, -1);						//	 jd::out (s);
@@ -397,7 +410,6 @@ class JdLua
 				
 				std::smatch m;
 				bool matched = (std::regex_search (s, m, std::regex (R"(:(\d+):)")));
-				jd::out (matched);
 				
 				if (matched)
 				{
@@ -410,11 +422,18 @@ class JdLua
 
 					sscanf (m [1].str ().c_str (), "%d", & error.lineNum);
 				}
+				else error.errorMsg = s;
 
 				error.sequence = m_sequence + s_sequenceNum++;
 				
 				if (i_functionName.size ())
 					error.function = i_functionName;
+				
+				if (m_errorInfo.lineNum)
+				{
+					error.location = m_errorInfo.location;
+					error.lineNum = m_errorInfo.lineNum;
+				}
 			}
 		}
 		
@@ -846,7 +865,11 @@ public:
 		if (not L)
 		{										// L = lua_newstate (luaAlloc, nullptr);
 			L = luaL_newstate ();
-			luaL_openlibs (L);
+			luaL_openlibs 			(L);
+			
+			lua_pushstring			(L, "JdLua");
+			lua_pushlightuserdata	(L, this);
+			lua_settable			(L, LUA_REGISTRYINDEX);
 
 //			lua_sethook (L, Hook, LUA_MASKCOUNT, 0xA0000000);
 		}
@@ -868,6 +891,12 @@ public:
 	u64								m_sequence		= 0;
 	
 	vector <string>					m_functionName;
+	
+	struct ErrorStackInfo
+	{
+		string	location;
+		int		lineNum;
+	}								m_errorInfo;
 	
 	struct FunctionNamePusher
 	{

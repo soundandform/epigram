@@ -9,11 +9,7 @@
 #include <iostream>
 #include <atomic>
 
-using std::atomic;
-using std::mutex;
-using std::condition_variable;
-using std::lock_guard;
-using std::unique_lock;
+using std::atomic, std::mutex, std::condition_variable, std::lock_guard, std::unique_lock, std::deque;
 
 #include "JdAssert.hpp"
 #include "JdSemaphore.hpp"
@@ -43,17 +39,8 @@ class JdPortSequence : protected JdCacheLinePadded <atomic <seq_t>>
 	}
 	
 	
-	seq_t				Acquire				()
-	{
-		return value++; //atomic_inc32 (& value);
-	}
-
-	
-	void				Acquire				(seq_t i_value)
-	{
-		value += i_value;
-	}
-
+	seq_t				Acquire				() 							{ return value++; }
+	void				Acquire				(seq_t i_value)				{ value += i_value; }
 	
 	void				Update				(seq_t i_newSequenceNum)
 	{
@@ -67,15 +54,8 @@ class JdPortSequence : protected JdCacheLinePadded <atomic <seq_t>>
 		}
 	}
 	
-	seq_t				Value				()
-	{
-		return value;
-	}
-	
-	operator seq_t							()
-	{
-		return value;
-	}
+	seq_t				Value				() 		{ return value; }
+						operator seq_t		()		{ return value; }
 };
 
 
@@ -116,7 +96,7 @@ struct JdThreadPortPathway
 	
 	JdPortSequence					insertSequence		{ c_jdThreadPort_startIndex }; // producer index
 	JdPortSequence					commitSequence		{ c_jdThreadPort_startIndex }; // producer "finished-with" index
-	JdPortSequence					claimSequence		{ c_jdThreadPort_startIndex }; // consumer index
+	JdPortSequence					claimSequence		{ c_jdThreadPort_startIndex }; // consumer index  -- this doesn't need to be an atomic in single consumer case; mutex protected in Pop/PopWait.
 	
 	seq_t							m_sequenceMask;
 	std::vector <MessageRecord>		m_queue;
@@ -139,10 +119,7 @@ class JdMessageQueue
 		m_pathway.SetPathwaySize (i_numMessagesInQueue);
 	}
 	
-	~ JdMessageQueue ()
-	{
-		// cout << "numSleeps: " << m_numSleeps << endl;
-	}
+//	~ JdMessageQueue () {}
 	
 	u32  GetNumMessageCapacity  ()
 	{
@@ -180,9 +157,29 @@ class JdMessageQueue
 		slot = i_message;
 		CommitMessage (sequence);
 	}
+
 	
+	bool Push (const T & i_message, u32 i_waitMilliseconds)
+	{
+		seq_t sequence;
+		auto slot = AcquireMessageSlot (sequence, i_waitMilliseconds);
+		
+		if (slot)
+		{
+			* slot = i_message;
+			CommitMessage (sequence);
+			return true;
+		}
+		else
+		{
+			lock_guard <mutex> lock (m_consumerLock);
+			m_failedSequences.push_back (sequence);
+			return false;
+		}
+	}
+
 	
-	inline T * AcquireMessageSlot (seq_t & o_sequence)
+	inline T * AcquireMessageSlot (seq_t & o_sequence, u32 i_waitMilliseconds = std::numeric_limits <u32>::max ())
 	{
 		o_sequence = m_pathway.insertSequence.Acquire ();
 		
@@ -191,7 +188,7 @@ class JdMessageQueue
 		
 		const seq_t maxSequenceOffset = m_pathway.m_queue.size ();
 
-		// u32 tries = 0;
+		bool tried = false;
 		
 		while (true)
 		{
@@ -202,10 +199,14 @@ class JdMessageQueue
 				break;
 
 			std::unique_lock <std::mutex> lock (m_conditionLock);
-			m_condition.wait (lock);
+			m_condition.wait_for (lock, std::chrono::milliseconds (i_waitMilliseconds >> 1));	// div/2 because we loop twice
 			
-//			if (++tries > 100000000)
-//				d_jdThrow ("Deadlock. Or, more likely, you've blown out the queue. Each sequence (lock) can push up to 512 transactions (calls).");
+			if (tried)
+			{
+				record = nullptr;
+				break;
+			}
+			else tried = true;
 		}
 		
 		return record;
@@ -352,7 +353,9 @@ class JdMessageQueue
 	// no wait. claims and releases one message if it's available
 	{
 		lock_guard <mutex> lock (m_consumerLock);
-		
+
+		if (m_failedSequences.size ()) FlushQueueOverflows ();
+
 		i64 available = m_signalCount.value;
 		
 		if (available)
@@ -371,17 +374,30 @@ class JdMessageQueue
 	{
 		lock_guard <mutex> lock (m_consumerLock);
 		
+		if (m_failedSequences.size ()) FlushQueueOverflows ();
+		
 		WaitForMessages (1);
 		o_message = * ViewMessage ();
 		ReleaseMessage ();
 	}
 	
+	
+	void  FlushQueueOverflows ()
+	{
+		// m_consumerLock must be locked
+		while (m_pathway.claimSequence == m_failedSequences.front ())
+		{
+			CommitMessage (m_pathway.claimSequence);
+			ReleaseMessage ();
+			m_failedSequences.pop_front ();
+		}
+	}
+	
+	
 	i64 debug_get_num_messages_in_queue ()
 	{
 		return m_signalCount.value;
 	}
-	
-
 	
 	protected:
 	
@@ -390,7 +406,7 @@ class JdMessageQueue
 	JdSemaphore									m_signal			{ 0 };
 	i64											m_acquiredPending	= 0;
 
-	u64											m_numSleeps			= 0;
+	deque <seq_t>								m_failedSequences;
 	
 	mutex										m_conditionLock;
 	condition_variable							m_condition;

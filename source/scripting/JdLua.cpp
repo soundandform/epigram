@@ -18,33 +18,51 @@ cstr_t  lua_gettype (lua_State * L, int i_index)
 
 std::atomic <u64> JdLua::s_sequenceNum;
 
-#if 0
+#if 1
 int JdLua::HandleLuaError (lua_State * L)
 {
-	lua_Debug ar = {};
+	jd::out (lua_gettop (L));
 	
 	string s = lua_tostring (L, -1);
 	
-	int r = lua_getstack (L, 1, & ar);	// 0 = this C function; +1 to get down into Lua
+	u32 level = 1;
+	lua_Debug ar = {};
 	
-	if (r == 1)	// 1=ok. OK...
+	while (lua_getstack (L, level, & ar))
 	{
-		if (lua_getinfo (L, "S", & ar))
+		if (lua_getinfo (L, "Sl", & ar))
 		{
 			if (ar.source)
 			{
-				if (ar.source [0] == '@')	// if file, don't use short_src; otherwise filename can be truncated
+				if (ar.source [0] == '@')
 				{
-					string s = lua_tostring (L, -1);
-					lua_pop (L, 1);
-					s = s.substr (s.find (":"));
+					lua_getfield (L, LUA_REGISTRYINDEX, "JdLua");
 					
-					lua_pushfstring (L, "%s%s", ar.source, s.c_str ());
+					auto jdlua = (JdLua *) lua_touserdata (L, -1);
+					lua_pop (L, 1);
+					
+					if (jdlua)
+						jdlua->m_errorInfo = { ar.source, ar.currentline };
+
+//					lua_pop (L, 1);
+//
+//					lua_createtable (L, 1, 1);
+//
+//					lua_pushinteger (L, 1);
+//					lua_pushstring (L, s.c_str ());
+//					lua_settable (L, 1);
+//
+//					lua_pushstring (L, ar.source);
+//					lua_setfield (L, 1, "location");
+					break;
 				}
 			}
 		}
+		else break;
+		
+		++level;
 	}
-
+	
 	return 1;
 }
 #endif
