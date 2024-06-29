@@ -380,7 +380,23 @@ class JdMessageQueue
 		o_message = * ViewMessage ();
 		ReleaseMessage ();
 	}
+
 	
+	inline bool PopWait (T & o_message, u32 i_microsecondTimeout)
+	{
+		lock_guard <mutex> lock (m_consumerLock);
+		
+		if (m_failedSequences.size ()) FlushQueueOverflows ();
+		
+		if (TimedWaitForMessages (i_microsecondTimeout, 1))
+		{
+			o_message = * ViewMessage ();
+			ReleaseMessage ();
+			return true;
+		}
+		else return false;
+	}
+
 	
 	void  FlushQueueOverflows ()
 	{
