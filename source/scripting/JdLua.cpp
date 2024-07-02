@@ -18,7 +18,7 @@ cstr_t  lua_gettype (lua_State * L, int i_index)
 
 std::atomic <u64> JdLua::s_sequenceNum;
 
-#if 1
+
 int JdLua::HandleLuaError (lua_State * L)
 {
 	jd::out (lua_gettop (L));
@@ -28,6 +28,7 @@ int JdLua::HandleLuaError (lua_State * L)
 	u32 level = 1;
 	lua_Debug ar = {};
 	
+	// search the call stack until a file-based source is found
 	while (lua_getstack (L, level, & ar))
 	{
 		if (lua_getinfo (L, "Sl", & ar))
@@ -43,17 +44,7 @@ int JdLua::HandleLuaError (lua_State * L)
 					
 					if (jdlua)
 						jdlua->m_errorInfo = { ar.source, ar.currentline };
-
-//					lua_pop (L, 1);
-//
-//					lua_createtable (L, 1, 1);
-//
-//					lua_pushinteger (L, 1);
-//					lua_pushstring (L, s.c_str ());
-//					lua_settable (L, 1);
-//
-//					lua_pushstring (L, ar.source);
-//					lua_setfield (L, 1, "location");
+					
 					break;
 				}
 			}
@@ -65,7 +56,6 @@ int JdLua::HandleLuaError (lua_State * L)
 	
 	return 1;
 }
-#endif
 
 
 

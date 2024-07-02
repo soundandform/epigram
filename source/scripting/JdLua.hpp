@@ -863,7 +863,8 @@ public:
 	void		Initialize			()
 	{
 		if (not L)
-		{										// L = lua_newstate (luaAlloc, nullptr);
+		{
+//			 L = lua_newstate (luaAlloc, nullptr);
 			L = luaL_newstate ();
 			luaL_openlibs 			(L);
 			
