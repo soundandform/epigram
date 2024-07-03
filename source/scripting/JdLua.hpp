@@ -23,17 +23,17 @@ using std::string, std::vector, std::unique_ptr;
 
 static void * luaAlloc (void *ud, void *ptr, size_t osize, size_t nsize)
 {
-  (void)ud;
-  (void)osize;
-	
-  if (nsize == 0) {
-	  jd::out ("free: @", ptr);
-	free(ptr);
-	return NULL;
-  } else {
-	  jd::out ("alloc: @ @", ptr, nsize);
-	return realloc(ptr, nsize);
-  }
+	if (nsize == 0)
+	{
+		jd::out ("free: @", ptr);
+		free(ptr);
+		return NULL;
+	}
+	else
+	{
+		jd::out ("alloc: @ @", ptr, nsize);
+		return realloc (ptr, nsize);
+	}
 }
 
 
@@ -232,20 +232,16 @@ class JdLua
 	{
 		Result result;
 
-		int errIndex = 0;
-		lua_pushcfunction	(L, HandleLuaError);
-		lua_insert 			(L, errIndex = -2);
+//		int errIndex = 0;
+//		lua_insert 			(L, errIndex = -2);
 
 		m_errorInfo.lineNum = 0;
 		
-		int r = lua_pcall (L, 0, 0, errIndex);
+		int r = lua_pcall (L, 0, 0, 1);
 		if (r)
 			result = ParseErrorMessage (r, i_functionLabel);
 		
 		m_errorInfo.lineNum = 0;
-
-		if (errIndex)
-			lua_pop (L, 1);
 
 		return result;
 	}
@@ -865,12 +861,14 @@ public:
 		if (not L)
 		{
 //			 L = lua_newstate (luaAlloc, nullptr);
-			L = luaL_newstate ();
+			L = luaL_newstate ();	
 			luaL_openlibs 			(L);
 			
 			lua_pushstring			(L, "JdLua");
 			lua_pushlightuserdata	(L, this);
 			lua_settable			(L, LUA_REGISTRYINDEX);
+
+			lua_pushcfunction		(L, HandleLuaError);
 
 //			lua_sethook (L, Hook, LUA_MASKCOUNT, 0xA0000000);
 		}
