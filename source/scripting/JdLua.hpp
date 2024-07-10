@@ -232,9 +232,9 @@ class JdLua
 	{
 		Result result;
 
-		int errIndex = 0;
-		lua_pushcfunction	(L, HandleLuaError);
-		lua_insert 			(L, errIndex = -2);
+		int errIndex = 1;
+//		lua_pushcfunction	(L, HandleLuaError);
+//		lua_insert 			(L, errIndex = -2);
 
 		m_errorInfo.lineNum = 0;
 		
@@ -243,9 +243,6 @@ class JdLua
 			result = ParseErrorMessage (r, i_functionLabel);
 		
 		m_errorInfo.lineNum = 0;
-
-		if (errIndex)
-			lua_pop (L, 1);
 
 		return result;
 	}
@@ -365,15 +362,6 @@ class JdLua
 		
 		if (L)
 		{
-//			string rootLocation;
-//			if (lua_gettop (L) == 2)
-//			{
-//				jd::out (lua_gettype (L, -2));
-//
-//				rootLocation = lua_tostring (L, -1);		// this extra location string is pushed in HandleLuaError
-//				lua_pop (L, 1);
-//			}
-			
 			if (lua_isstring (L, -1))
 			{
 				std::string s = lua_tostring (L, -1);						//	 jd::out (s);
@@ -872,6 +860,8 @@ public:
 			lua_pushlightuserdata	(L, this);
 			lua_settable			(L, LUA_REGISTRYINDEX);
 
+			lua_pushcfunction 		(L, HandleLuaError);
+			
 //			lua_sethook (L, Hook, LUA_MASKCOUNT, 0xA0000000);
 		}
 	}
