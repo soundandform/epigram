@@ -24,7 +24,7 @@ namespace jd
 {
 	
 template <typename C>
-bool  erase_front  (C & io_container, size_t i_count)
+bool  erase_front  (C & io_container, size_t i_count = 1)
 {
 	if (io_container.size () >= i_count)
 	{
@@ -35,7 +35,7 @@ bool  erase_front  (C & io_container, size_t i_count)
 }
 
 template <typename C>
-bool  erase_back  (C & io_container, size_t i_count)
+bool  erase_back  (C & io_container, size_t i_count = 1)
 {
 	if (io_container.size () >= i_count)
 	{
