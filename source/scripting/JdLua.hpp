@@ -146,12 +146,24 @@ class JdLua
 	{
 //		/Users/smassey/Documents/Sluggo/library/scripts/dsp/svf.lua:6: attempt to perform arithmetic on a table value
 		
-		i32				resultCode			= 0;
-		string 			errorMsg;
-		string			location;
-		string			function;
-		i32				lineNum				= 0;
-		u64				sequence			= 0;
+		i32					resultCode			= 0;
+		u64					sequence			= 0;
+		string 				errorMsg;
+//		string				location;
+		string				function;
+
+		struct Location
+		{
+			string		file;
+			i32			lineNum				= 0;
+		};
+		
+		vector <Location>	location;
+
+		void   AddLocation  (stringRef_t i_file, i32 i_lineNum)
+		{
+			location.push_back ({ i_file, i_lineNum });
+		}
 		
 		operator bool () const { return resultCode; }
 	};
@@ -232,14 +244,12 @@ class JdLua
 	{
 		Result result;
 
-		m_errorInfo.lineNum = 0;
+		m_errorLocation.clear ();
 		
 		int r = lua_pcall (L, 0, 0, 1);
 		if (r)
 			result = ParseErrorMessage (r, i_functionLabel);
 		
-		m_errorInfo.lineNum = 0;
-
 		return result;
 	}
 	
@@ -344,9 +354,9 @@ class JdLua
 
 //	protected:
 	
-	Result					GenerateError			(i32 i_resultCode, stringRef_t i_message, i32 i_lineNum = 0)
+	Result					GenerateError			(i32 i_resultCode, stringRef_t i_message)
 	{
-		Result error { .resultCode= i_resultCode, .errorMsg= i_message, .sequence = m_sequence + s_sequenceNum++, .lineNum = i_lineNum };
+		Result error { .resultCode= i_resultCode, .errorMsg= i_message, .sequence = m_sequence + s_sequenceNum++ };
 		
 		return error;
 	}
@@ -356,10 +366,14 @@ class JdLua
 	{
 		Result error { .resultCode= i_resultCode };
 		
+		error.sequence = m_sequence + s_sequenceNum++;
+
 		if (L)
 		{
 			if (lua_isstring (L, -1))
 			{
+				Result::Location location;
+
 				std::string s = lua_tostring (L, -1);						//	 jd::out (s);
 				lua_pop (L, 1);
 				
@@ -386,7 +400,7 @@ class JdLua
 							if (p != std::string::npos)
 							{
 								filename = filename.substr (0, p);
-								error.location = "@" + filename;
+								location.file = "@" + filename;
 							}
 						}
 					}
@@ -397,27 +411,25 @@ class JdLua
 				
 				if (matched)
 				{
-					size_t p = s.find (m[0].str ());
-					error.errorMsg = s.substr (p + m[0].str().size ());
-					string location = s.substr (0, p);
+					size_t p = s.find (m [0].str ());
+					error.errorMsg = s.substr (p + m [0].str().size ());
+					string file = s.substr (0, p);
 					
-					if (error.location.empty () and s.size () < 1083)
-						error.location = location;
+					if (location.file.empty () and s.size () < 1083)
+						location.file = file;
 
-					sscanf (m [1].str ().c_str (), "%d", & error.lineNum);
+					sscanf (m [1].str ().c_str (), "%d", & location.lineNum);
 				}
 				else error.errorMsg = s;
 
-				error.sequence = m_sequence + s_sequenceNum++;
-				
 				if (i_functionName.size ())
 					error.function = i_functionName;
 				
-				if (m_errorInfo.lineNum)
+				if (m_errorLocation.size ())
 				{
-					error.location = m_errorInfo.location;
-					error.lineNum = m_errorInfo.lineNum;
+					error.location = m_errorLocation;
 				}
+				else error.location.push_back (location);		// FIX: refactor. all that parsing for nothing if m_errorLocation
 			}
 		}
 		
@@ -879,11 +891,13 @@ public:
 	
 	vector <string>					m_functionName;
 	
-	struct ErrorStackInfo
-	{
-		string	location;
-		int		lineNum;
-	}								m_errorInfo;
+//	struct StackInfo
+//	{
+//		string	location;
+//		int		lineNum;
+//	};//								m_errorInfo;
+	
+	vector <Result::Location>			m_errorLocation;
 	
 	struct FunctionNamePusher
 	{

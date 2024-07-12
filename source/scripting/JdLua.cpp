@@ -27,31 +27,30 @@ int JdLua::HandleLuaError (lua_State * L)
 	
 	u32 level = 1;
 	lua_Debug ar = {};
+
+	lua_getfield (L, LUA_REGISTRYINDEX, "JdLua");
+	auto jdlua = (JdLua *) lua_touserdata (L, -1);
+	lua_pop (L, 1);
 	
-	// search the call stack until a file-based source is found
-	while (lua_getstack (L, level, & ar))
+	if (jdlua)
 	{
-		if (lua_getinfo (L, "Sl", & ar))
+		// search the call stack until a file-based source is found
+		while (lua_getstack (L, level, & ar))
 		{
-			if (ar.source)
+			if (lua_getinfo (L, "Sl", & ar))
 			{
-				if (ar.source [0] == '@')
+				if (ar.source)
 				{
-					lua_getfield (L, LUA_REGISTRYINDEX, "JdLua");
-					
-					auto jdlua = (JdLua *) lua_touserdata (L, -1);
-					lua_pop (L, 1);
-					
-					if (jdlua)
-						jdlua->m_errorInfo = { ar.source, ar.currentline };
-					
-					break;
+					if (ar.source [0] == '@')
+					{
+						jdlua->m_errorLocation.push_back ({ ar.source, ar.currentline });
+					}
 				}
 			}
+			else break;
+			
+			++level;
 		}
-		else break;
-		
-		++level;
 	}
 	
 	return 1;
