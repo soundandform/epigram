@@ -19,7 +19,7 @@
 # include "lua.hpp"
 
 
-using std::string, std::vector, std::unique_ptr;
+using std::string, std::vector, std::unique_ptr, std::deque;
 
 static void * luaAlloc (void *ud, void *ptr, size_t osize, size_t nsize)
 {
@@ -158,7 +158,7 @@ class JdLua
 			i32			lineNum				= 0;
 		};
 		
-		vector <Location>	location;
+		deque <Location>	location;
 
 		void   AddLocation  (stringRef_t i_file, i32 i_lineNum)
 		{
@@ -374,6 +374,9 @@ class JdLua
 			{
 				Result::Location location;
 
+				// TODO: reimplement require () to add error handler
+				// can just wrap require. with pcall!?
+				
 				std::string s = lua_tostring (L, -1);						//	 jd::out (s);
 				lua_pop (L, 1);
 				
@@ -425,11 +428,10 @@ class JdLua
 				if (i_functionName.size ())
 					error.function = i_functionName;
 				
-				if (m_errorLocation.size ())
-				{
-					error.location = m_errorLocation;
-				}
-				else error.location.push_back (location);		// FIX: refactor. all that parsing for nothing if m_errorLocation
+				error.location = m_errorLocation;
+				
+				if (not location.file.empty ())
+					error.location.push_front (location);		// FIX: refactor. all that parsing for nothing if m_errorLocation
 			}
 		}
 		
@@ -891,13 +893,7 @@ public:
 	
 	vector <string>					m_functionName;
 	
-//	struct StackInfo
-//	{
-//		string	location;
-//		int		lineNum;
-//	};//								m_errorInfo;
-	
-	vector <Result::Location>			m_errorLocation;
+	deque <Result::Location>		m_errorLocation;
 	
 	struct FunctionNamePusher
 	{

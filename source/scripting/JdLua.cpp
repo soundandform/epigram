@@ -21,7 +21,7 @@ std::atomic <u64> JdLua::s_sequenceNum;
 
 int JdLua::HandleLuaError (lua_State * L)
 {
-	jd::out (lua_gettop (L));
+//	jd::out (lua_gettop (L));
 	
 	string s = lua_tostring (L, -1);
 	
