@@ -149,13 +149,17 @@ class JdLua
 		i32					resultCode			= 0;
 		u64					sequence			= 0;
 		string 				errorMsg;
-//		string				location;
 		string				function;
 
 		struct Location
 		{
 			string		file;
 			i32			lineNum				= 0;
+			
+			bool operator == (Location const & i_other)
+			{
+				return tie (file, lineNum) == tie (i_other.file, i_other.lineNum);
+			}
 		};
 		
 		deque <Location>	location;
@@ -419,7 +423,7 @@ class JdLua
 					string file = s.substr (0, p);
 					
 					if (location.file.empty () and s.size () < 1083)
-						location.file = file;
+						location.file = "@" + file;
 
 					sscanf (m [1].str ().c_str (), "%d", & location.lineNum);
 				}
