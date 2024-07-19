@@ -10,11 +10,55 @@
 #include "JdLua.hpp"
 
 
-cstr_t  lua_gettype (lua_State * L, int i_index)
+int jdlua_newmetatable (lua_State * L, cstr_t i_name)
 {
-	return lua_typename (L, lua_type (L, i_index));
+	int created = luaL_newmetatable (L, i_name);
+	
+	lua_pushstring (L, i_name);
+	lua_setfield (L, -2, "__name");
+	
+	return created;
 }
 
+
+cstr_t  jdlua_gettype (lua_State * L, int i_index)
+{
+	cstr_t name = nullptr;
+	
+	auto type = lua_type (L, i_index);
+	
+	if (type == LUA_TUSERDATA)
+		name = jdlua_getUserdataName (L, i_index);
+
+	if (not name)
+		name = lua_typename (L, type);
+	
+	return name;
+}
+
+cstr_t  jdlua_getUserdataName  (lua_State * L, int i_index)
+{
+	cstr_t name = nullptr;
+	
+	auto t = lua_gettop (L);
+
+	lua_getmetatable (L, i_index);
+
+	bool isTable = lua_istable (L, -1);
+
+	if (isTable)
+	{
+		lua_pushstring (L, "__name");
+		lua_rawget (L, -2);
+
+		name = lua_tostring (L, -1);
+
+	}
+	
+	lua_settop (L, t);
+
+	return name;
+}
 
 std::atomic <u64> JdLua::s_sequenceNum;
 

@@ -37,7 +37,10 @@ static void * luaAlloc (void *ud, void *ptr, size_t osize, size_t nsize)
 }
 
 
-cstr_t  lua_gettype  (lua_State * L, int i_index);
+cstr_t  jdlua_gettype			(lua_State * L, int i_index);
+int		jdlua_newmetatable		(lua_State * L, cstr_t i_name);
+cstr_t  jdlua_getUserdataName	(lua_State * L, int i_index);
+
 
 
 const i32 c_luaHashUnchanged = 123456;
