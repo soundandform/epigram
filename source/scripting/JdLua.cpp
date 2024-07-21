@@ -67,7 +67,7 @@ int JdLua::HandleLuaError (lua_State * L)
 {
 //	jd::out (lua_gettop (L));
 	
-	string s = lua_tostring (L, -1);
+//	string s = lua_tostring (L, -1);			jd::out ("@\n-------------------", s);
 	
 	u32 level = 1;
 	lua_Debug ar = {};
@@ -85,6 +85,8 @@ int JdLua::HandleLuaError (lua_State * L)
 			{
 				if (ar.source)
 				{
+//					jd::out ("   @ @", ar.source, ar.currentline);
+					
 					if (ar.source [0] == '@')
 					{
 						jdlua->m_errorLocation.push_back ({ ar.source, ar.currentline });

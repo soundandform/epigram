@@ -67,6 +67,7 @@ struct IJdThread
 {
     struct Info
     {
+		virtual ~					Info			() {}
         virtual bool                IsAlive         () = 0;
 		virtual cstr_t				GetName			() const = 0;
     };

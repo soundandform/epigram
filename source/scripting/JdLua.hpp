@@ -654,7 +654,7 @@ class JdLua
 		lua_setglobal			(L, i_functionName);
 	}
 	
-	Epigram						ConvertLuaTableToEpigram (i32 i_tableIndex)
+	Epigram						ConvertTableToEpigram (i32 i_tableIndex)
 	{
 		Epigram e;
 		ConvertLuaTableToEpigram (i_tableIndex, e);
