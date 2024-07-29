@@ -247,13 +247,13 @@ class JdLua
 	
 	
 	
-	Result			CallStackTop			(stringRef_t i_functionLabel)	// no args, no return
+	Result			CallStackTop			(stringRef_t i_functionLabel, u32 i_numReturns = 0)	// no args
 	{
 		Result result;
 
 		m_errorLocation.clear ();
 		
-		int r = lua_pcall (L, 0, 0, 1);
+		int r = lua_pcall (L, 0, i_numReturns, 1);
 		if (r)
 			result = ParseErrorMessage (r, i_functionLabel);
 		
