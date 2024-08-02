@@ -23,15 +23,22 @@ using std::string, std::vector, std::unique_ptr, std::deque;
 
 static void * luaAlloc (void *ud, void *ptr, size_t osize, size_t nsize)
 {
+	static u32 used = 0;
+	
+	used += nsize;
+	used -= osize;
+	
+	jd::out ("alloc: @ bytes", used);
+	
 	if (nsize == 0)
 	{
-		jd::out ("free: @", ptr);
-		free(ptr);
+	//	jd::out ("free: @", ptr);
+		free (ptr);
 		return NULL;
 	}
 	else
 	{
-		jd::out ("alloc: @ @", ptr, nsize);
+//		jd::out ("alloc: @ @", ptr, nsize);
 		return realloc (ptr, nsize);
 	}
 }
@@ -129,10 +136,37 @@ class JdLua
 			lua_close (L);
 	}
 	
+	u32						GetAllocatedBytes			()
+	{
+		u32 bytes = 0;
+		if (L)
+		{
+			bytes += lua_gc (L, LUA_GCCOUNT, 0) * 1024;
+			bytes += lua_gc (L, LUA_GCCOUNTB, 0);
+		}
+		return bytes;
+	}
+	
+	
 	lua_State *				Get							()
 	{
 		Initialize ();
 		return L;
+	}
+	
+	operator				lua_State *					()
+	{
+		return Get ();
+	}
+	
+	void					SetSearchPath				(stringRef_t i_path)
+	{
+		Initialize ();
+		
+		lua_getglobal	(L, "package");
+		lua_pushstring	(L, i_path.c_str ());
+		lua_setfield	(L, -2, "path");
+		lua_pop 		(L, 1);
 	}
 	
 	u64						GetSequenceNum				() const
@@ -185,12 +219,15 @@ class JdLua
 		
 		if (L)
 		{
-			auto path = PreserveString (i_path.c_str ());
+			i32 resultCode = luaL_loadfile (L, i_path.c_str ());
 			
-			i32 resultCode = luaL_loadfile (L, path);
-			
-			if (resultCode)  	result = ParseErrorMessage (resultCode, "");
-			else      		 	lua_pcall (L, 0, 0, 0);
+			if (not resultCode)
+			{
+				resultCode = lua_pcall (L, 0, 0, 0);
+				if (resultCode)
+					result = ParseErrorMessage (resultCode, "main");
+			}
+			else result = ParseErrorMessage (resultCode, "");
 		}
 		else
 		{
@@ -799,7 +836,8 @@ public:
 							bool isArray = false;
 							if (msg.Count() == 1)
 							{
-								auto & i = * msg.begin();
+								auto it = msg.begin ();
+								auto & i = * it;
 								
 								//							   auto & item = msg.Index (0);
 								if (i.IsType (c_jdTypeId::none /*default*/))
@@ -869,8 +907,8 @@ public:
 	{
 		if (not L)
 		{
-//			 L = lua_newstate (luaAlloc, nullptr);
-			L = luaL_newstate ();	
+//			L = lua_newstate (luaAlloc, nullptr);
+			L = luaL_newstate ();
 			luaL_openlibs 			(L);
 			
 			lua_pushstring			(L, "JdLua");
@@ -883,14 +921,6 @@ public:
 		}
 	}
 	
-	// docs don't mention it, but LuaJIT doesn't seem to take ownership of/copy the script strings
-	// OR it does!?  TODO: investigate
-	cstr_t						PreserveString			(cstr_t i_string)
-	{
-		return i_string;
-//		m_strings.push_back (i_string);
-//		return m_strings.back ().c_str ();
-	}
 	
 	lua_State *						L				= nullptr;
 	bool							m_luaStateOwned	= true;

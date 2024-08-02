@@ -7,6 +7,9 @@
  */
 
 #if 0
+	// FIX: this is invalid. the Iterator temporary goes away, invalidating the element reference.
+	auto & element = * msg.begin ();
+
 /*
 	Creation/Insertion
 	------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -132,13 +132,11 @@ JdLua::Result  JdLua::LoadAndCallScript  (stringRef_t i_functionName, cstr_t i_s
 {
 	Result result;
 	
-	auto script = PreserveString (i_script);
-	
 	Initialize ();
 
 	if (L)
 	{
-		int r = luaL_loadstring (L, script);
+		int r = luaL_loadstring (L, i_script);
 		
 		if (r)
 		{

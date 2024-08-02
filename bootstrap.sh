@@ -33,7 +33,7 @@ echo "/*" > boost/.gitignore
 echo "/*" > ../lib/.gitignore
 
 cd boost
-./bootstrap.sh --with-libraries=chrono,timer,filesystem,system,date_time,program_options
+./bootstrap.sh --with-libraries=chrono,timer,filesystem,system,date_time,program_options,context
 
 if [ $platform == "macOS" ]; then
 	./b2 toolset=clang cflags=-mmacosx-version-min=10.8 mflags=-mmacosx-version-min=10.8 mmflags=-mmacosx-version-min=10.8 cxxflags="-stdlib=libc++ -mmacosx-version-min=10.8" linkflags="-stdlib=libc++ -mmacosx-version-min=10.8" variant=release --layout=versioned
