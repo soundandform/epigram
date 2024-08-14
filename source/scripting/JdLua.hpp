@@ -21,6 +21,7 @@
 
 using std::string, std::vector, std::unique_ptr, std::deque;
 
+
 static void * luaAlloc (void *ud, void *ptr, size_t osize, size_t nsize)
 {
 	static u32 used = 0;
@@ -28,17 +29,17 @@ static void * luaAlloc (void *ud, void *ptr, size_t osize, size_t nsize)
 	used += nsize;
 	used -= osize;
 	
-	jd::out ("alloc: @ bytes", used);
+//	jd::out ("alloc: @ bytes", used);
 	
 	if (nsize == 0)
 	{
-	//	jd::out ("free: @", ptr);
+//		jd::out ("free: @ @", ptr, osize);
 		free (ptr);
 		return NULL;
 	}
 	else
 	{
-//		jd::out ("alloc: @ @", ptr, nsize);
+//		jd::out ("alloc: @ @->@", ptr, osize, nsize);
 		return realloc (ptr, nsize);
 	}
 }
@@ -47,7 +48,6 @@ static void * luaAlloc (void *ud, void *ptr, size_t osize, size_t nsize)
 cstr_t  jdlua_gettype			(lua_State * L, int i_index);
 int		jdlua_newmetatable		(lua_State * L, cstr_t i_name);
 cstr_t  jdlua_getUserdataName	(lua_State * L, int i_index);
-
 
 
 const i32 c_luaHashUnchanged = 123456;
@@ -134,6 +134,12 @@ class JdLua
 	{
 		if (L and m_luaStateOwned)
 			lua_close (L);
+	}
+	
+	void					SetAllocator				(lua_Alloc i_allocator, void * i_object)
+	{
+		m_allocator = i_allocator;
+		m_allocatorObj = i_object;
 	}
 	
 	u32						GetAllocatedBytes			()
@@ -421,7 +427,7 @@ class JdLua
 				// TODO: reimplement require () to add error handler
 				// can just wrap require. with pcall!?
 				
-				std::string s = lua_tostring (L, -1);						//	 jd::out (s);
+				std::string s = lua_tostring (L, -1);							// jd::out (s);
 				lua_pop (L, 1);
 				
 				// there's a specific error message from the package library / require (...). Example:
@@ -907,8 +913,8 @@ public:
 	{
 		if (not L)
 		{
-//			L = lua_newstate (luaAlloc, nullptr);
-			L = luaL_newstate ();
+			L = m_allocator ? lua_newstate (m_allocator, m_allocatorObj) : luaL_newstate ();
+			
 			luaL_openlibs 			(L);
 			
 			lua_pushstring			(L, "JdLua");
@@ -924,6 +930,9 @@ public:
 	
 	lua_State *						L				= nullptr;
 	bool							m_luaStateOwned	= true;
+	
+	lua_Alloc						m_allocator		= nullptr;
+	void *							m_allocatorObj	= nullptr;
 
 	vector <int>					m_stackTops;
 	u64								m_sequence		= 0;
