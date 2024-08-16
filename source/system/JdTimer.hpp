@@ -9,14 +9,17 @@
 #ifndef JDTIME_HPP
 #define JDTIME_HPP
 
-#include <boost/timer/timer.hpp>
 #include "JdNucleus.hpp"
 
+# if d_jdTimerUsesBoost
+#   include <boost/timer/timer.hpp>
+# else
+#   include <chrono>
+# endif
 
 class JdTimer
 {
-	public:
-				JdTimer				();
+	public:     JdTimer				();
 
 	void		Restart				();
 	
@@ -27,7 +30,12 @@ class JdTimer
 	u64			GetNanoseconds		();
 
 	protected:
-	boost::timer::cpu_timer			m_timer;
+
+#   if d_jdTimerUsesBoost
+        boost::timer::cpu_timer                 m_timer;
+#   else
+        std::chrono::steady_clock::time_point   m_start;
+#   endif
 };
 
 
