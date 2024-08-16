@@ -10,6 +10,7 @@
 
 #include <iomanip>
 #include <iostream>
+# include <functional>
 
 #include <boost/timer/timer.hpp>
 #include "JdNucleus.hpp"

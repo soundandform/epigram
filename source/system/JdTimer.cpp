@@ -9,45 +9,64 @@
 #include <iostream>
 #include "JdTimer.hpp"
 
+using namespace std;
 
 JdTimer::JdTimer ()
 {
-	m_timer.start ();
+#   if d_jdTimerUsesBoost
+        m_timer.start ();
+#   else
+        m_start = chrono::high_resolution_clock::now ();
+#   endif
 }
 
 
 void JdTimer::Restart()
 {
-	m_timer = boost::timer::cpu_timer ();
+#   if d_jdTimerUsesBoost
+        m_timer = boost::timer::cpu_timer ();
+#   else
+        m_start = chrono::high_resolution_clock::now ();
+#   endif
 }
 
-
-//u64 JdTimer::GetSeconds ()
-//{
-//	return m_timer.elapsed ().wall / 1000000000;
-//}
 
 
 f64 JdTimer::GetSeconds ()
 {
-	return f64 (m_timer.elapsed ().wall) * 1e-9;
+	return GetNanoseconds () * 1e-9;
 }
 
 
 u64 JdTimer::GetMilliseconds ()
 {
-	return m_timer.elapsed ().wall / 1000000;
+#   if d_jdTimerUsesBoost
+        return m_timer.elapsed ().wall / 1000000;
+#   else
+        auto diff = chrono::high_resolution_clock::now () - m_start;
+        return chrono::duration_cast <chrono::milliseconds> (diff).count ();
+#   endif
 }
 
 
 u64 JdTimer::GetMicroseconds ()
 {
-	return m_timer.elapsed ().wall / 1000;
+#   if d_jdTimerUsesBoost
+        return m_timer.elapsed ().wall / 1000;
+#   else
+        auto diff = chrono::high_resolution_clock::now () - m_start;
+        return chrono::duration_cast <chrono::microseconds> (diff).count ();
+#   endif
 }
 
 u64 JdTimer::GetNanoseconds ()
 {
-	return m_timer.elapsed ().wall;
+#   if d_jdTimerUsesBoost
+        return m_timer.elapsed ().wall;
+#   else
+        auto diff = chrono::high_resolution_clock::now () - m_start;
+        return chrono::duration_cast <chrono::nanoseconds> (diff).count ();
+#   endif
 }
 
 
