@@ -118,10 +118,11 @@ class JdLua
 	
 	
 	
-	static std::atomic <u64>		s_sequenceNum;
+	static std::atomic <u64>		s_instanceNum;
 	
-	public:					JdLua						(u64 i_sequence = 0)
-	:						m_sequence					(i_sequence)
+	public:					JdLua						(u64 i_instanceId = 0)
+							:
+							m_instanceId				(i_instanceId)
 	{ }
 
 							JdLua						(lua_State * i_lua)
@@ -175,9 +176,9 @@ class JdLua
 		lua_pop 		(L, 1);
 	}
 	
-	u64						GetSequenceNum				() const
+	u64						GetInstanceId				() const
 	{
-		return m_sequence;
+		return m_instanceId;
 	}
 	
 //	void					Swap						(JdLua & io_lua)
@@ -406,7 +407,7 @@ class JdLua
 	
 	Result					GenerateError			(i32 i_resultCode, stringRef_t i_message)
 	{
-		Result error { .resultCode= i_resultCode, .errorMsg= i_message, .sequence = m_sequence + s_sequenceNum++ };
+		Result error { .resultCode= i_resultCode, .errorMsg= i_message, .sequence = m_instanceId + s_instanceNum++ };
 		
 		return error;
 	}
@@ -416,7 +417,7 @@ class JdLua
 	{
 		Result error { .resultCode= i_resultCode };
 		
-		error.sequence = m_sequence + s_sequenceNum++;
+		error.sequence = m_instanceId + s_instanceNum++;
 
 		if (L)
 		{
@@ -935,7 +936,7 @@ public:
 	void *							m_allocatorObj	= nullptr;
 
 	vector <int>					m_stackTops;
-	u64								m_sequence		= 0;
+	u64								m_instanceId		= 0;
 	
 	vector <string>					m_functionName;
 	

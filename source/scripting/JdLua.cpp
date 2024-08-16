@@ -60,7 +60,7 @@ cstr_t  jdlua_getUserdataName  (lua_State * L, int i_index)
 	return name;
 }
 
-std::atomic <u64> JdLua::s_sequenceNum;
+std::atomic <u64> JdLua::s_instanceNum;
 
 
 int JdLua::HandleLuaError (lua_State * L)
