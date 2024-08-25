@@ -459,9 +459,12 @@ class JdSingleThreadEnforcer
 	std::thread::id				m_id;
 };
 
+static const std::thread::id 	s_mainThreadId = std::this_thread::get_id ();
+
 namespace Jd
 {
 	void			EnforceMainThread		();
+	bool			IsMainThread			();
 }
 
 
