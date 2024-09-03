@@ -18,7 +18,10 @@ using namespace std;
 #endif
 
 #if 0
+	// https://github.com/doctest/doctest/blob/master/doc/markdown/commandline.md
+
 	// useful doctest flags
+	--test-case=Name.*
 
 	--no-colors			// Xcode ain't colored
 	--no-version
