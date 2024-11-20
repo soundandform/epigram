@@ -6,8 +6,9 @@
 #ifndef JdMessageQueue_hpp
 #define JdMessageQueue_hpp
 
-#include <iostream>
-#include <atomic>
+# include <iostream>
+# include <atomic>
+# include <deque>
 
 using std::atomic, std::mutex, std::condition_variable, std::lock_guard, std::unique_lock, std::deque;
 
