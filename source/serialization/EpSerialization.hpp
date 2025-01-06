@@ -120,6 +120,8 @@ class EpMsgSerializerOut : public Epigram
 
 #define d_msgSerialize(...) d_msgSerializeChooser(__VA_ARGS__)(__VA_ARGS__)
 
+#define d_epSerialize(...) d_msgSerializeChooser(__VA_ARGS__)(__VA_ARGS__)
+
 
 #endif
 

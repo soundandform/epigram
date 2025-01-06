@@ -99,19 +99,35 @@ namespace c_jdTypeId
 
 struct TypeIdsMap
 {
-	static TypeIdsMap & Get ()
+	static const TypeIdsMap & Get ()
 	{
-		static TypeIdsMap m;
+		static const TypeIdsMap m;
 		return m;
 	}
 	
 	TypeIdsMap ();
 	
-	char	chars		[32] = {};
-	u8		sizes		[32] = {};
-	u8		ids			[128] = {};
-	cstr_t	names		[128] = {};
-	cstr_t	longNames	[128] = {};
+	char		chars		[32] = {};
+	
+	static constexpr
+	u8			sizes		[32] =
+	{
+		[c_jdTypeId::f64]				= sizeof (f64),
+		[c_jdTypeId::f32]				= sizeof (f32),
+		[c_jdTypeId::boolean]			= sizeof (bool),
+		[c_jdTypeId::i8]				= sizeof (i8),
+		[c_jdTypeId::u8]				= sizeof (u8),
+		[c_jdTypeId::i16]				= sizeof (i16),
+		[c_jdTypeId::u16]				= sizeof (u16),
+		[c_jdTypeId::i32]				= sizeof (i32),
+		[c_jdTypeId::u32]				= sizeof (u32),
+		[c_jdTypeId::i64]				= sizeof (i64),
+		[c_jdTypeId::u64]				= sizeof (u64)
+	};
+	
+	u8			ids			[128] = {};
+	cstr_t		names		[128] = {};
+	cstr_t		longNames	[128] = {};
 	
 	std::unordered_map <std::string, u8>		namesToIds;
 	
@@ -157,7 +173,10 @@ namespace Jd
 	
 	bool IsTypeSet (u8 i_typeId);
 
-	size_t TypeIdToSize (u8 i_typeId);
+	constexpr size_t TypeIdToSize (u8 i_typeId)
+	{
+		return TypeIdsMap::sizes [i_typeId];
+	}
 
 	struct Typed {};
 	struct NoType {};

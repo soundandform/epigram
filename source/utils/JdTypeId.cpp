@@ -82,17 +82,17 @@ TypeIdsMap::TypeIdsMap ()
 	
 	chars [c_jdTypeId::voidNull] =		'0';
 	
-	sizes [c_jdTypeId::f64]				= sizeof (f64);
-	sizes [c_jdTypeId::f32]				= sizeof (f32);
-	sizes [c_jdTypeId::boolean]			= sizeof (bool);
-	sizes [c_jdTypeId::i8]				= sizeof (i8);
-	sizes [c_jdTypeId::u8]				= sizeof (u8);
-	sizes [c_jdTypeId::i16]				= sizeof (i16);
-	sizes [c_jdTypeId::u16]				= sizeof (u16);
-	sizes [c_jdTypeId::i32]				= sizeof (i32);
-	sizes [c_jdTypeId::u32]				= sizeof (u32);
-	sizes [c_jdTypeId::i64]				= sizeof (i64);
-	sizes [c_jdTypeId::u64]				= sizeof (u64);
+//	sizes [c_jdTypeId::f64]				= sizeof (f64);
+//	sizes [c_jdTypeId::f32]				= sizeof (f32);
+//	sizes [c_jdTypeId::boolean]			= sizeof (bool);
+//	sizes [c_jdTypeId::i8]				= sizeof (i8);
+//	sizes [c_jdTypeId::u8]				= sizeof (u8);
+//	sizes [c_jdTypeId::i16]				= sizeof (i16);
+//	sizes [c_jdTypeId::u16]				= sizeof (u16);
+//	sizes [c_jdTypeId::i32]				= sizeof (i32);
+//	sizes [c_jdTypeId::u32]				= sizeof (u32);
+//	sizes [c_jdTypeId::i64]				= sizeof (i64);
+//	sizes [c_jdTypeId::u64]				= sizeof (u64);
 	
 	names ['O'] = "vob";
 	names ['P'] = "vob*";
@@ -355,13 +355,6 @@ namespace Jd
 		return (i_typeId != c_jdTypeId::unknown);
 			
 	}
-
-	size_t TypeIdToSize (u8 i_typeId)
-	{
-		auto & map = TypeIdsMap::Get ();
-		return map.sizes [i_typeId];
-	}
-
 	
 	u8 TypeNameToId (stringRef_t i_typeName)
 	{
