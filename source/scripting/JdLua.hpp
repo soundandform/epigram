@@ -253,9 +253,12 @@ class JdLua
 		return LoadAndCallScript (i_functionName, i_script.c_str (), nullptr, o_bytecode);
 	}
 
+	Result				CompileScript						(stringRef_t i_functionName, cstr_t i_script, JdMD5::MD5 * io_hashCheck, vector <u8> * o_bytecode = nullptr);
+	
 	// If io_hashCheck is set, only loads script if hash differs. returns new hash
 	Result				LoadAndCallScript					(stringRef_t i_functionName, cstr_t i_script, JdMD5::MD5 * io_hashCheck, vector <u8> * o_bytecode = nullptr);
 
+	
 
 	struct ByteCodeWriter : JdMD5
 	{

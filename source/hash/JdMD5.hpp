@@ -66,6 +66,24 @@ class JdMD5
 		}
 		
 		void Clear () { std::fill (std::begin (digest), std::end (digest), 0); }
+		
+		std::string  GetString  ()
+		{
+			std::string string;
+			
+			char temp [8];
+
+			for (int i = 0; i < 16; i++)
+			{
+				snprintf (temp, 8, "%02x", digest[i]);
+				string += temp;
+			}
+
+
+			return string;
+		}
+		
+		
 	};
 	
 	MD5						Get						()

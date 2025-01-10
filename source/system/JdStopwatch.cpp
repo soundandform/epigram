@@ -15,7 +15,7 @@ JdStopwatch::JdStopwatch	(cstr_t i_label, bool i_doDisplay)
 m_label		(i_label),
 m_display 	(i_doDisplay)
 {
-	Start ();
+	m_timer.Restart ();
 }
 
 JdStopwatch::JdStopwatch	(stringRef_t i_label, bool i_doDisplay)
@@ -23,36 +23,36 @@ JdStopwatch::JdStopwatch	(stringRef_t i_label, bool i_doDisplay)
 m_label		(i_label),
 m_display 	(i_doDisplay)
 {
-	Start ();
+	m_timer.Restart ();
 }
 
 
-JdStopwatch::operator bool () const
-{
-	auto self = const_cast <JdStopwatch *> (this);
-	self->m_timer.start ();
-	return true;
-}
+//JdStopwatch::operator bool () const
+//{
+//	auto self = const_cast <JdStopwatch *> (this);
+//	self->m_timer.start ();
+//	return true;
+//}
 
 void JdStopwatch::Start ()
 {
-	m_timer.start ();
+	m_timer.Restart ();
 }
 
 f64 JdStopwatch::End ()
 {
-	m_timer.stop ();
-	f64 elapsed = m_timer.elapsed ().wall;
-	elapsed /= 1e9;
-	return elapsed;
+	return m_timer.GetSeconds ();
+//	m_timer.stop ();
+//	f64 elapsed = m_timer.elapsed ().wall;
+//	elapsed /= 1e9;
+//	return elapsed;
 }
 
 void  JdStopwatch::Finish ()
 {
-	m_timer.stop ();
+	f64 secs = m_timer.GetSeconds ();
 	
-	string t = m_timer.format (boost::timer::default_places, "%w"); // don't seem to get user/system time on mac
-	cout << setw (20) << m_label << ": " << t << "s" << endl;
+	cout << setw (20) << m_label << ": " << secs << "s" << endl;
 	
 	m_display = false;
 }

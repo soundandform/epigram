@@ -128,8 +128,63 @@ JdLua::Result  JdLua::HashScript  (stringRef_t i_functionName, JdMD5::MD5 & o_ha
 }
 
 
+JdLua::Result  JdLua::CompileScript  (stringRef_t i_functionName, cstr_t i_script, JdMD5::MD5 * io_hashCheck, vector <u8> * o_bytecode)
+{
+	Result result;
+	
+	Initialize ();
+
+	if (L)
+	{
+		int r = luaL_loadstring (L, i_script);
+		
+		if (r)
+		{
+			result = ParseErrorMessage (r, i_functionName);
+			if (io_hashCheck)
+				io_hashCheck->Clear ();
+		}
+		else
+		{
+			if (io_hashCheck or o_bytecode)
+			{
+				ByteCodeWriter bcw (o_bytecode, io_hashCheck != nullptr);
+				lua_dumpx (L, & ByteCodeWriter::Handler, & bcw, 0x80000002);//  BCDUMP_F_STRIP + BCDUMP_F_DETERMINISTIC
+
+				auto newHash = bcw.Get ();
+				
+				if (io_hashCheck)
+				{
+					if (memcmp (io_hashCheck, & newHash, sizeof (JdMD5::MD5)))
+					{
+						* io_hashCheck = newHash;
+					}
+					else return { c_luaHashUnchanged };
+				}
+			}
+		}
+	}
+	
+	return result;
+}
+
+
 JdLua::Result  JdLua::LoadAndCallScript  (stringRef_t i_functionName, cstr_t i_script, JdMD5::MD5 * io_hashCheck, vector <u8> * o_bytecode)
 {
+	Result result = CompileScript (i_functionName, i_script, io_hashCheck, o_bytecode);
+	
+	if (not result)
+	{
+		int r = lua_pcall (L, 0, 0, 0);
+		if (r)
+		{
+			result = ParseErrorMessage (r, i_functionName);
+			if (io_hashCheck)
+				io_hashCheck->Clear ();
+		}
+	}
+	
+	/*
 	Result result;
 	
 	Initialize ();
@@ -172,7 +227,7 @@ JdLua::Result  JdLua::LoadAndCallScript  (stringRef_t i_functionName, cstr_t i_s
 			}
 		}
 	}
-	
+	*/
 	return result;
 }
 

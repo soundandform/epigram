@@ -12,9 +12,8 @@
 #include <iostream>
 # include <functional>
 
-#include <boost/timer/timer.hpp>
-#include "JdNucleus.hpp"
-
+# include "JdNucleus.hpp"
+# include "JdTimer.hpp"
 # include "JdFlatString.hpp"
 
 class JdStopwatch
@@ -24,7 +23,7 @@ class JdStopwatch
 	JdStopwatch	(cstr_t i_label, bool i_doDisplay = true);
 	JdStopwatch	(stringRef_t i_label, bool i_doDisplay = true);
 
-	operator bool () const;
+//	operator bool () const;
 	
 	void 	Start ();
 	f64 	End ();
@@ -37,7 +36,7 @@ class JdStopwatch
 	
 	JdString256					m_label;
     bool            			m_display;
-	boost::timer::cpu_timer		m_timer;
+	JdTimer						m_timer;
 };
 
 
