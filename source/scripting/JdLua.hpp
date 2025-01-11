@@ -137,6 +137,30 @@ class JdLua
 			lua_close (L);
 	}
 	
+	
+	// returns all paths of .lua scripts accessed via a 'require' call
+	// requires modified Lua library (lj_cf_package_loader_lua () in LuaJIT)
+	std::set <std::string>		GetDependencies			()
+	{
+		std::set <std::string> required;
+		
+		if (L)
+		{
+			lua_getfield (L, LUA_REGISTRYINDEX, "required");
+			if (lua_istable (L, -1))
+			{
+				Epigram e = ConvertTableToEpigram (-1);
+				
+				for (auto & kv : e)
+					required.insert (kv.GetKeyString ());
+			}
+			lua_pop (L, 1);
+		}
+	
+		return required;
+	}
+	
+	
 	void					SetAllocator				(lua_Alloc i_allocator, void * i_object)
 	{
 		m_allocator = i_allocator;
@@ -796,6 +820,11 @@ public:
 	{
 		if (not L)	return;
 		
+		if (i_tableIndex < 0)
+		{
+			i_tableIndex = lua_gettop (L) + i_tableIndex + 1;
+		}
+		
 		if (lua_istable (L, i_tableIndex))
 		{
 			lua_pushnil (L);
@@ -923,6 +952,11 @@ public:
 			
 			lua_pushstring			(L, "JdLua");
 			lua_pushlightuserdata	(L, this);
+			lua_settable			(L, LUA_REGISTRYINDEX);
+			
+			// LuaJIT modified to push require()'d .lua paths into this table
+			lua_pushstring			(L, "required");
+			lua_newtable			(L);
 			lua_settable			(L, LUA_REGISTRYINDEX);
 
 			lua_pushcfunction 		(L, HandleLuaError);
