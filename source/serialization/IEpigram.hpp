@@ -13,6 +13,7 @@
 
 struct IIEpigramIn // : Jd::TypedT <c_jdTypeId::epigram>
 {
+	virtual ~IIEpigramIn () { }
 	struct Payload
 	{
 		union
@@ -36,15 +37,15 @@ struct IIEpigramOut : IIEpigramIn
 	virtual void										Deliver					(const void * i_data, size_t i_size) = 0;
 };
 
-typedef IIEpigramOut IIEpigram;
 
 typedef IIEpigramOut * IEpigramOut;
 typedef const IIEpigramIn * IEpigramIn;
 
-typedef IIEpigram * IEpigram;
+typedef IIEpigramOut IIEpigram;
+//typedef IIEpigram * IEpigram;
+//typedef IIEpigram * EpReceiver;
 
 typedef const IIEpigramIn * EpDelivery;
-typedef IIEpigram * EpReceiver;
 
 
 #endif

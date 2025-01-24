@@ -60,7 +60,7 @@ cstr_t  jdlua_getUserdataName  (lua_State * L, int i_index)
 	return name;
 }
 
-std::atomic <u64> JdLua::s_instanceNum;
+//std::atomic <u64> JdLua::s_instanceNum;
 
 
 int JdLua::HandleLuaError (lua_State * L)
@@ -81,11 +81,11 @@ int JdLua::HandleLuaError (lua_State * L)
 		// search the call stack until a file-based source is found
 		while (lua_getstack (L, level, & ar))
 		{
-			if (lua_getinfo (L, "Sl", & ar))
+			if (lua_getinfo (L, "Sln", & ar))
 			{
 				if (ar.source)
 				{
-//					jd::out ("   @ @", ar.source, ar.currentline);
+					jd::out ("   @ @ @", ar.source, ar.currentline, ar.name ? ar.name : "");
 					
 					if (ar.source [0] == '@')
 					{

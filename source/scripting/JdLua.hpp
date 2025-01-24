@@ -118,7 +118,7 @@ class JdLua
 	
 	
 	
-	static std::atomic <u64>		s_instanceNum;
+//	static std::atomic <u64>		s_instanceNum;
 	
 	public:					JdLua						(u64 i_instanceId = 0)
 							:
@@ -335,6 +335,11 @@ class JdLua
 	{
 		Result result;
 		
+		if (i_functionName.find (":") != string::npos)
+		{
+		
+		}
+		
 		lua_getglobal (L, i_functionName.c_str ());
 		
 		if (lua_isfunction (L, -1))
@@ -372,7 +377,7 @@ class JdLua
 //		return r;
 //	}
 	
-	Epigram               Call 			           (stringRef_t i_functionName, Epigram i_args = Epigram ())
+	Epigram               Call1 			           (stringRef_t i_functionName, Epigram i_args = Epigram ())
 	{
 		Epigram result;
 		
@@ -380,8 +385,6 @@ class JdLua
 		
 		if (strstr (functionName, ".") or strstr (functionName, ":"))
 		{
-			EpDelivery result;
-			
 			string path = i_functionName;
 			
 			bool isObjectCall = false;
@@ -393,11 +396,51 @@ class JdLua
 				isObjectCall = true;
 			}
 			
-			FindFunctionInTable (0, path.c_str(), i_args, &result, isObjectCall);
+			FindFunctionInTable (0, path.c_str (), i_args, result, isObjectCall);
+			
+			return result;
+		}
+		else return ExecuteFunction (i_functionName.c_str (), i_args, 0);
+	}
+
+
+	Epigram               Call 			           (cstr_t i_functionName, Epigram i_args = Epigram (), Result * o_result = nullptr)
+	{
+		if (strstr (i_functionName, ".") or strstr (i_functionName, ":"))
+		{
+			string path = i_functionName;
+			
+			bool isObjectCall = false;
+			
+			auto pos = path.find (":");
+			if (pos != string::npos)
+			{
+				path [pos] = '.';
+				isObjectCall = true;
+			}
+			
+			Epigram result;
+			FindFunctionInTable (0, path.c_str (), i_args, result, isObjectCall);
 			
 			return result;
 		}
 		else return ExecuteFunction (i_functionName, i_args, 0);
+	}
+
+	Result					Call					(cstr_t i_functionName, IEpigramIn i_args = nullptr, IEpigramOut o_args = nullptr)
+	{
+		Result result;
+		
+		Epigram out = Call (i_functionName, i_args, & result);
+		if (o_args)
+			o_args->Deliver (out);
+		
+		return result;
+	}
+
+	Result					Call					(stringRef_t i_functionName, IEpigramIn i_args = nullptr, IEpigramOut o_args = nullptr)
+	{
+		return Call (i_functionName.c_str (), i_args, o_args);
 	}
 	
 	Epigram					GetGlobalTable			(stringRef_t i_tableName)
@@ -432,9 +475,14 @@ class JdLua
 
 //	protected:
 	
+	u64						GenerateErrorSequence	()
+	{
+		return (m_instanceId << 32) + ++m_exectionSequence;
+	}
+	
 	Result					GenerateError			(i32 i_resultCode, stringRef_t i_message)
 	{
-		Result error { .resultCode= i_resultCode, .errorMsg= i_message, .sequence = m_instanceId + s_instanceNum++ };
+		Result error { .resultCode= i_resultCode, .errorMsg= i_message, .sequence = GenerateErrorSequence () };
 		
 		return error;
 	}
@@ -444,7 +492,7 @@ class JdLua
 	{
 		Result error { .resultCode= i_resultCode };
 		
-		error.sequence = m_instanceId + s_instanceNum++;
+		error.sequence = GenerateErrorSequence ();
 
 		if (L)
 		{
@@ -455,7 +503,7 @@ class JdLua
 				// TODO: reimplement require () to add error handler
 				// can just wrap require. with pcall!?
 				
-				std::string s = lua_tostring (L, -1);							// jd::out (s);
+				std::string s = lua_tostring (L, -1);							 jd::out (s);
 				lua_pop (L, 1);
 				
 				// there's a specific error message from the package library / require (...). Example:
@@ -536,13 +584,13 @@ class JdLua
 	vector <string>				GetGlobalFunctions			(JdLua::Result & result);
 
 	
-	
-	bool                        FindFunctionInTable         (i32 i_tableIndex, cstr_t i_path, EpDelivery i_args, EpDelivery *o_result,
+
+	bool                        FindFunctionInTable         (i32 i_tableIndex, cstr_t i_path, EpDelivery i_args, IEpigramOut o_result,
 															 bool i_isObjectCall, i32 i_depth = 0)
 	{
-		if (! L) return false;
-		
 		bool found = false;
+		
+		if (not L) return found;
 		
 		cstr_t dot = strstr (i_path, ".");
 		
@@ -614,7 +662,10 @@ class JdLua
 							if (i_isObjectCall)
 								objectIndex = i_tableIndex;
 							
-							if (o_result) *o_result = ExecuteFunction (nullptr, i_args, objectIndex);
+							Epigram out = ExecuteFunction (nullptr, i_args, objectIndex);
+							
+							if (o_result)
+								o_result->Deliver (out);
 							
 							//                            cout << "function\n";
 							found = true;
@@ -736,33 +787,30 @@ class JdLua
 	
 	private: //--------------------------------------------------------------------------------------------------------------------------------
 	
-	Epigram               ExecuteFunction         (stringRef_t i_functionName, EpigramRef i_args, i32 i_selfIndex)
+	// TODO: change to IEpigramOut
+	// if i_functionName is nullptr, function is expected on top of stack
+	Epigram               ExecuteFunction         (cstr_t i_functionName, EpigramRef i_args, i32 i_selfIndex, Result * o_luaError = nullptr)
 	{
 		Epigram result;
 		
 		if (L)
 		{
-			
 			int top = lua_gettop (L);
 			
-			if (i_functionName.size ())
-			{
-				//            cout << "CALL: [" << i_functionName << "] " << endl;
-				lua_getglobal (L, i_functionName.c_str ());
-			}
+			if (i_functionName)
+				lua_getglobal (L, i_functionName);
 			
-			if (lua_isfunction (L, -1))
+			if (lua_isfunction (L, top))
 			{
-				
 				i32 numCallingArgs = 0;
 				
 				if (i_selfIndex)
 				{
-					++numCallingArgs;
+					++numCallingArgs;													d_jdAssert (lua_istable (L, i_selfIndex));
 					if (lua_istable (L, i_selfIndex))
-					{
 						lua_pushvalue (L, i_selfIndex);
-					}
+					else
+						return result;
 				}
 				
 				if (i_args.HasElements ())
@@ -796,9 +844,12 @@ class JdLua
 				}
 				else
 				{
-					//cout << "result: " << result << endl;
 					Result r = ParseErrorMessage (luaResult, i_functionName);
-					result ("error", r.errorMsg);
+					
+					if (o_luaError)
+						* o_luaError = r;
+					else
+						result ("error", r.errorMsg);
 				}
 				
 				lua_settop (L, top);
@@ -974,6 +1025,7 @@ public:
 
 	vector <int>					m_stackTops;
 	u64								m_instanceId		= 0;
+	u32								m_exectionSequence	= 0;
 	
 	vector <string>					m_functionName;
 	
