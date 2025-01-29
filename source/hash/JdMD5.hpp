@@ -11,7 +11,7 @@
 #include "JdNucleus.hpp"
 
 #include <string>
-//#include <iostream>
+#include <iostream>
 
 #include "MD5.h"
 
@@ -67,7 +67,7 @@ class JdMD5
 		
 		void Clear () { std::fill (std::begin (digest), std::end (digest), 0); }
 		
-		std::string  GetString  ()
+		std::string  GetString  () const
 		{
 			std::string string;
 			
@@ -115,5 +115,7 @@ class JdMD5
     u32                         m_totalBytes		= 0;
 };
 
+
+std::ostream & operator << (std::ostream & stream, const JdMD5::MD5 & i_md5);
 
 #endif

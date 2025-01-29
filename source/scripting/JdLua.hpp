@@ -205,6 +205,11 @@ class JdLua
 		return m_instanceId;
 	}
 	
+	u64						IncrementExecSequence		()
+	{
+		return ++m_exectionSequence;
+	}
+	
 //	void					Swap						(JdLua & io_lua)
 //	{
 //		std::swap (L, io_lua.L);
@@ -219,6 +224,11 @@ class JdLua
 		string 				errorMsg;
 		string				function;
 
+		u64				GetCodeSequence			() const
+		{
+			return sequence >> 32;
+		}
+		
 		struct Location
 		{
 			string		file;
@@ -477,7 +487,7 @@ class JdLua
 	
 	u64						GenerateErrorSequence	()
 	{
-		return (m_instanceId << 32) + ++m_exectionSequence;
+		return (m_instanceId << 32) | m_exectionSequence;
 	}
 	
 	Result					GenerateError			(i32 i_resultCode, stringRef_t i_message)
@@ -545,7 +555,12 @@ class JdLua
 					string file = s.substr (0, p);
 					
 					if (location.file.empty () and s.size () < 1083)
-						location.file = "@" + file;
+					{
+						if (file.substr (0, 7) != "[string")
+							location.file = "@";
+
+						location.file += file;
+					}
 
 					sscanf (m [1].str ().c_str (), "%d", & location.lineNum);
 				}
