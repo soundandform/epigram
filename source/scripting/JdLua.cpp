@@ -85,7 +85,7 @@ int JdLua::HandleLuaError (lua_State * L)
 			{
 				if (ar.source)
 				{
-					jd::out ("   @ @ @", ar.source, ar.currentline, ar.name ? ar.name : "");
+					// jd::out ("   @ @ @", ar.source, ar.currentline, ar.name ? ar.name : "");
 					
 					if (ar.source [0] == '@')
 					{
