@@ -10,6 +10,10 @@
 	// FIX: this is invalid. the Iterator temporary goes away, invalidating the element reference.
 	auto & element = * msg.begin ();
 
+	// FIX: frequent gotcha: key lookup is too explicit
+	msg [0] // a signed index won't find a key of type <u32>; should look for <i32> first then try <u32> if i_index >= 0, i reckon?
+
+
 /*
 	Creation/Insertion
 	------------------------------------------------------------------------------------------------------------------------------------------------------

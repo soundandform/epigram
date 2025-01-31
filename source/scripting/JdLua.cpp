@@ -271,3 +271,23 @@ vector <string>  JdLua::GetGlobalFunctions  (JdLua::Result & o_result)
 	return GetGlobalsOfType (o_result, LUA_TFUNCTION);
 }
 
+
+
+void  JdLua::LuaArgsToEpigram  (Epigram & o_args, lua_State * L, i32 const i_startIndex)
+{
+	i32 index = i_startIndex;
+	int type;
+
+	while ((type = lua_type (L, index)) != LUA_TNONE)
+	{
+		i32 i = index - i_startIndex;
+		
+			 if (type == LUA_TSTRING)			o_args [i] = lua_tostring (L, index);
+		else if (type == LUA_TNUMBER)			o_args [i] = lua_tonumber (L, index);
+		else if (type == LUA_TTABLE)			o_args [i] = TableToEpigram (L, index);
+			
+		++index;
+	}
+	
+//	o_args.dump ();
+}

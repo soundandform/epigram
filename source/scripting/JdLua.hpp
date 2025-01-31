@@ -881,7 +881,16 @@ class JdLua
 		TableToEpigram (L, i_tableIndex, o_msg);
 	}
 	
-public:
+	public:
+	static void					LuaArgsToEpigram			(Epigram & o_args, lua_State * L, i32 const i_startIndex);
+	
+	static Epigram				TableToEpigram				(lua_State * L, i32 i_tableIndex)
+	{
+		Epigram table;
+		TableToEpigram (L, i_tableIndex, table);
+		return table;
+	}
+	
 	static void					TableToEpigram				(lua_State * L, i32 i_tableIndex, Epigram & o_msg, u32 depth = 0)
 	{
 		if (not L)	return;
