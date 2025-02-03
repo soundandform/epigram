@@ -335,6 +335,8 @@ class JdMessageQueue
 	
 	inline void ReleaseMessage ()
 	{
+		* ViewMessage () = T ();
+		
 		m_pathway.claimSequence.Acquire ();
 
 		m_condition.notify_all ();
@@ -342,6 +344,7 @@ class JdMessageQueue
 	
 	inline void ReleaseMessages (seq_t i_numMessages)
 	{
+		// FIX: * ViewMessage () = T ();
 		m_pathway.claimSequence.Acquire (i_numMessages);
 		
 		m_condition.notify_all ();
@@ -547,6 +550,8 @@ struct JdMpMcQueueT
 };
 
 
+
+#if KILL
 // Hmm... does packetizing has more overhead than just pushing single values through the already efficient MessageQueue?
 template <typename T, u32 t_packetSize = 32>
 struct JdThreadStream
@@ -650,7 +655,7 @@ struct JdThreadStream
 	size_t						m_outPending					= 0;
 	
 };
-
+#endif
 
 
 

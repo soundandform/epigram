@@ -104,15 +104,15 @@ int JdLua::HandleLuaError (lua_State * L)
 
 
 
-JdLua::Result  JdLua::HashScript  (stringRef_t i_functionName, JdMD5::MD5 & o_hash, cstr_t i_script, vector <u8> * o_bytecode)
+JdLua::Result  JdLua::HashScript  (stringRef_t i_functionName, JdMD5::MD5 & o_hash, stringRef_t i_script, cstr_t i_scriptName, vector <u8> * o_bytecode)
 {
 	Result result;
 	
 	Initialize ();
 
-	if (L and i_script)
+	if (L)
 	{
-		i32 luaResult = (i_script [0] == '@') ? luaL_loadfile (L, i_script + 1) : luaL_loadstring (L, i_script);
+		i32 luaResult = (i_script [0] == '@') ? luaL_loadfile (L, i_script.substr (1).c_str ()) : luaL_loadbuffer (L, i_script.c_str (), i_script.size (), i_scriptName);
 		
 		if (not luaResult)
 		{

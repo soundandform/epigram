@@ -280,7 +280,7 @@ class JdLua
 	}
 	
 
-	Result				HashScript							(stringRef_t i_functionName, JdMD5::MD5 & o_hash, cstr_t i_script, vector <u8> * o_bytecode = nullptr);
+	Result				HashScript							(stringRef_t i_functionName, JdMD5::MD5 & o_hash, stringRef_t i_script, cstr_t i_scriptName, vector <u8> * o_bytecode = nullptr);
 
 	Result				LoadAndCallScript					(stringRef_t i_functionName, stringRef_t i_script, vector <u8> * o_bytecode = nullptr)
 	{
