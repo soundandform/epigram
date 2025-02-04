@@ -1,10 +1,8 @@
-//
 //  JdAtomicBankSwitch.h
 //  Jigidesign
 //
 //  Created by Steven Massey on 4/11/15.
 //  Copyright (c) 2015 Jigidesign. All rights reserved.
-//
 
 #ifndef __Jigidesign__JdAtomicBankSwitch__
 #define __Jigidesign__JdAtomicBankSwitch__
@@ -81,4 +79,5 @@ struct JdAtomicBankSwitchT
 	JdAtomicSwitch	m_switch;
 };
 
-#endif /* defined(__Jigidesign__JdAtomicBankSwitch__) */
+
+#endif

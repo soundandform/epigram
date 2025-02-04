@@ -784,12 +784,21 @@ class JdLua
 	
 	
 	template <typename T>
-	void				Bind					(cstr_t i_functionName, lua_CFunction i_cFunction, T & i_arg)
+	void				BindFunctionAndRef					(cstr_t i_functionName, lua_CFunction i_cFunction, T & i_arg)
 	{
 		lua_pushlightuserdata	(L, & i_arg);
 		lua_pushcclosure		(L, i_cFunction, 1);
 		lua_setglobal			(L, i_functionName);
 	}
+
+	template <typename T>
+	void				BindFunctionAndPtr					(cstr_t i_functionName, lua_CFunction i_cFunction, T * i_arg)
+	{
+		lua_pushlightuserdata	(L, i_arg);
+		lua_pushcclosure		(L, i_cFunction, 1);
+		lua_setglobal			(L, i_functionName);
+	}
+
 	
 	Epigram						ConvertTableToEpigram (i32 i_tableIndex)
 	{
