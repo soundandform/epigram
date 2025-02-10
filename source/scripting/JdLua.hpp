@@ -50,7 +50,7 @@ int		jdlua_newmetatable		(lua_State * L, cstr_t i_name);
 cstr_t  jdlua_getUserdataName	(lua_State * L, int i_index);
 
 
-const i32 c_luaHashUnchanged = 123456;
+const i32 c_luaHashUnchanged = 123456789;
 
 
 class JdLua
@@ -117,9 +117,7 @@ class JdLua
 	}
 	
 	
-	
-//	static std::atomic <u64>		s_instanceNum;
-	
+
 	public:					JdLua						(u64 i_instanceId = 0)
 							:
 							m_instanceId				(i_instanceId)
@@ -210,11 +208,7 @@ class JdLua
 		return ++m_exectionSequence;
 	}
 	
-//	void					Swap						(JdLua & io_lua)
-//	{
-//		std::swap (L, io_lua.L);
-//	}
-	
+
 	struct Result
 	{
 //		/Users/smassey/Documents/Sluggo/library/scripts/dsp/svf.lua:6: attempt to perform arithmetic on a table value
@@ -868,7 +862,9 @@ class JdLua
 				}
 				else
 				{
-					Result r = ParseErrorMessage (luaResult, i_functionName);
+					Result r = ParseErrorMessage (luaResult, i_functionName ? i_functionName : "");
+					
+					jd::out (r);
 					
 					if (o_luaError)
 						* o_luaError = r;
@@ -1074,6 +1070,9 @@ class JdLua
 		JdLua & lua;
 	};
 };
+
+
+std::ostream & operator << (std::ostream & output, JdLua::Result const & i_result);
 
 
 #endif

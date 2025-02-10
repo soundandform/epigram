@@ -118,7 +118,7 @@ JdLua::Result  JdLua::HashScript  (stringRef_t i_functionName, JdMD5::MD5 & o_ha
 		{
 			ByteCodeWriter bcw (o_bytecode);
 			lua_dumpx (L, & ByteCodeWriter::Handler, & bcw, 0x80000002);//  BCDUMP_F_STRIP + BCDUMP_F_DETERMINISTIC
-
+			
 			o_hash = bcw.Get ();
 		}
 		else result = ParseErrorMessage (luaResult, i_functionName);
@@ -290,4 +290,13 @@ void  JdLua::LuaArgsToEpigram  (Epigram & o_args, lua_State * L, i32 const i_sta
 	}
 	
 //	o_args.dump ();
+}
+
+
+
+std::ostream & operator << (std::ostream & out, JdLua::Result const & i_result)
+{
+	out << "(" << i_result.resultCode << ") " << i_result.errorMsg;
+	
+	return out;
 }

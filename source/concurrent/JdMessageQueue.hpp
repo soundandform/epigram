@@ -150,8 +150,9 @@ class JdMessageQueue
 			CommitMessage (sequence);
 		}
 	}
-	
-	void Push (const T & i_message)
+
+	template <typename P>
+	void Push (P const & i_message)
 	{
 		seq_t sequence;
 		auto & slot = * AcquireMessageSlot (sequence);
@@ -178,40 +179,6 @@ class JdMessageQueue
 			return false;
 		}
 	}
-
-	
-	inline T * AcquireMessageSlot (seq_t & o_sequence, u32 i_waitMilliseconds = std::numeric_limits <u32>::max ())
-	{
-		o_sequence = m_pathway.insertSequence.Acquire ();
-		
-		seq_t slotIndex = o_sequence & m_pathway.m_sequenceMask;
-		T * record = & m_pathway.m_queue [slotIndex];
-		
-		const seq_t maxSequenceOffset = m_pathway.m_queue.size ();
-
-		bool tried = false;
-		
-		while (true)
-		{
-			// getting an offset here first, instead of doing a one-to-one comparison, solves the issue of wrap-around
-			seq_t offset = o_sequence - m_pathway.claimSequence;
-			
-			if (offset < maxSequenceOffset)
-				break;
-
-			std::unique_lock <std::mutex> lock (m_conditionLock);
-			m_condition.wait_for (lock, std::chrono::milliseconds (i_waitMilliseconds >> 1));	// div/2 because we loop twice
-			
-			if (tried)
-			{
-				record = nullptr;
-				break;
-			}
-			else tried = true;
-		}
-		
-		return record;
-	}
 	
 	
 	inline
@@ -232,10 +199,12 @@ class JdMessageQueue
 	// 3. ReleaseMessage/s () when done with them.
 	// alternatively,
 	
-	inline u32 ClaimAvailableMessages () // don't wait; grab all available
+	inline u32 ClaimMessages (u32 i_maxMessagesToClaim = std::numeric_limits <u32>::max ())
 	{
 		i64 available = m_signalCount.value;	// available always monotonically increases from this perspective as the consumer
 
+		available = std::min (available, (i64) i_maxMessagesToClaim);
+		
 		m_signalCount.value -= available;
 		
 		return available;
@@ -324,18 +293,23 @@ class JdMessageQueue
 		
 		return available;
 	}
-	
-	inline T * ViewMessage (seq_t i_index = 0)
+
+	inline T & DerefMessage (seq_t i_index = 0)
 	{
 		seq_t sequence = m_pathway.claimSequence + i_index;
 		sequence &= m_pathway.m_sequenceMask;
 		
-		return & m_pathway.m_queue [sequence];
+		return m_pathway.m_queue [sequence];
+	}
+	
+	inline T * ViewMessage (seq_t i_index = 0)
+	{
+		return & DerefMessage (i_index);
 	}
 	
 	inline void ReleaseMessage ()
 	{
-		* ViewMessage () = T ();
+		DerefMessage () = T ();				// reset slot (release shared pointers, strings, whatever)
 		
 		m_pathway.claimSequence.Acquire ();
 
@@ -365,7 +339,7 @@ class JdMessageQueue
 		if (available)
 		{
 			m_signalCount.value--;
-			o_message = * ViewMessage ();
+			o_message = DerefMessage ();
 			ReleaseMessage ();
 
 			return true;
@@ -381,7 +355,7 @@ class JdMessageQueue
 		if (m_failedSequences.size ()) FlushQueueOverflows ();
 		
 		WaitForMessages (1);
-		o_message = * ViewMessage ();
+		o_message = DerefMessage ();
 		ReleaseMessage ();
 	}
 
@@ -394,12 +368,56 @@ class JdMessageQueue
 		
 		if (TimedWaitForMessages (i_microsecondTimeout, 1))
 		{
-			o_message = * ViewMessage ();
+			o_message = DerefMessage ();
 			ReleaseMessage ();
 			return true;
 		}
 		else return false;
 	}
+	
+	
+	i64 debug_get_num_messages_in_queue ()
+	{
+		return m_signalCount.value;
+	}
+	
+	
+	protected:
+	
+	
+	inline T * AcquireMessageSlot (seq_t & o_sequence, u32 i_waitMilliseconds = std::numeric_limits <u32>::max ())
+	{
+		o_sequence = m_pathway.insertSequence.Acquire ();
+		
+		seq_t slotIndex = o_sequence & m_pathway.m_sequenceMask;
+		T * record = & m_pathway.m_queue [slotIndex];
+		
+		const seq_t maxSequenceOffset = m_pathway.m_queue.size ();
+
+		bool tried = false;
+		
+		while (true)
+		{
+			// getting an offset here first, instead of doing a one-to-one comparison, solves the issue of wrap-around
+			seq_t offset = o_sequence - m_pathway.claimSequence;
+			
+			if (offset < maxSequenceOffset)
+				break;
+
+			std::unique_lock <std::mutex> lock (m_conditionLock);
+			m_condition.wait_for (lock, std::chrono::milliseconds (i_waitMilliseconds >> 1));	// div/2 because we loop twice
+			
+			if (tried)
+			{
+				record = nullptr;
+				break;
+			}
+			else tried = true;
+		}
+		
+		return record;
+	}
+
 
 	
 	void  FlushQueueOverflows ()
@@ -412,16 +430,12 @@ class JdMessageQueue
 			m_failedSequences.pop_front ();
 		}
 	}
-	
-	
-	i64 debug_get_num_messages_in_queue ()
-	{
-		return m_signalCount.value;
-	}
+
 	
 	protected:
 	
-	mutex										m_consumerLock;
+	mutex										m_consumerLock;		// makes Pop methods multi-consumer safe
+	
 	JdCacheLinePadded <atomic <i64>>			m_signalCount;
 	JdSemaphore									m_signal			{ 0 };
 	i64											m_acquiredPending	= 0;

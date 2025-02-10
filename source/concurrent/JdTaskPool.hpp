@@ -245,7 +245,7 @@ struct JdTaskBatch
 			
 			auto batch = (JdTask::Batch *) m_batch;
 			batch->Add ();
-			pool.m_queue.Push ({ batch, i_function });
+			pool.m_queue.Push <JdTask> ({ batch, i_function });
 		}
 		else i_function ();
 	}

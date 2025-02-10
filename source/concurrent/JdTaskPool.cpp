@@ -38,6 +38,6 @@ namespace jd
 		auto & pool = task_pool ();
 		
 		pool.m_globalBatch.Add ();
-		pool.m_queue.Push ({ & pool.m_globalBatch, i_function });
+		pool.m_queue.Push <JdTask> ({ & pool.m_globalBatch, i_function });
 	}
 }
