@@ -205,7 +205,7 @@ class JdLua
 	
 	u64						IncrementExecSequence		()
 	{
-		return ++m_exectionSequence;
+		return m_exectionSequence++;
 	}
 	
 
@@ -214,14 +214,15 @@ class JdLua
 //		/Users/smassey/Documents/Sluggo/library/scripts/dsp/svf.lua:6: attempt to perform arithmetic on a table value
 		
 		i32					resultCode			= 0;
+		u32					execSequence		= 0;
 		u64					sequence			= 0;
 		string 				errorMsg;
-		string				function;
+		JdString64			function;			// this is the pcall () entry point
 
-		u64				GetCodeSequence			() const
-		{
-			return sequence >> 32;
-		}
+//		u64				GetCodeSequence			() const
+//		{
+//			return sequence;
+//		}
 		
 		struct Location
 		{
@@ -241,7 +242,7 @@ class JdLua
 			location.push_back ({ i_file, i_lineNum });
 		}
 		
-		operator bool () const { return resultCode; }
+		explicit operator bool () const { return resultCode; }
 	};
 	
 	static int HandleLuaError (lua_State * L);
@@ -381,6 +382,7 @@ class JdLua
 //		return r;
 //	}
 	
+#if 0
 	Epigram               Call1 			           (stringRef_t i_functionName, Epigram i_args = Epigram ())
 	{
 		Epigram result;
@@ -406,10 +408,15 @@ class JdLua
 		}
 		else return ExecuteFunction (i_functionName.c_str (), i_args, 0);
 	}
+#endif
 
-
-	Epigram               Call 			           (cstr_t i_functionName, Epigram i_args = Epigram (), Result * o_result = nullptr)
+	
+	Epigram               CallObject		           (cstr_t i_functionName, Epigram && i_args = Epigram (), Result * o_result = nullptr)
 	{
+		Epigram returns;
+		
+		Result result;
+		
 		if (strstr (i_functionName, ".") or strstr (i_functionName, ":"))
 		{
 			string path = i_functionName;
@@ -422,15 +429,27 @@ class JdLua
 				path [pos] = '.';
 				isObjectCall = true;
 			}
-			
-			Epigram result;
-			FindFunctionInTable (0, path.c_str (), i_args, result, isObjectCall);
-			
-			return result;
+
+			auto top = lua_gettop (L);
+
+			if (FindFunctionInTable (0, path.c_str ()))
+			{
+				m_functionName = i_functionName;
+				result = ExecuteFunction (nullptr, returns, i_args, -1);
+				m_functionName = nullptr;
+			}
+
+			lua_settop (L, top);
 		}
-		else return ExecuteFunction (i_functionName, i_args, 0);
+//		else return ExecuteFunction (i_functionName, i_args, 0, o_result);
+		
+		if (o_result)
+			* o_result = result;
+		
+		return returns;
 	}
 
+	/*
 	Result					Call					(cstr_t i_functionName, IEpigramIn i_args = nullptr, IEpigramOut o_args = nullptr)
 	{
 		Result result;
@@ -446,6 +465,7 @@ class JdLua
 	{
 		return Call (i_functionName.c_str (), i_args, o_args);
 	}
+	*/
 	
 	Epigram					GetGlobalTable			(stringRef_t i_tableName)
 	{
@@ -479,14 +499,10 @@ class JdLua
 
 //	protected:
 	
-	u64						GenerateErrorSequence	()
-	{
-		return (m_instanceId << 32) | m_exectionSequence;
-	}
-	
+
 	Result					GenerateError			(i32 i_resultCode, stringRef_t i_message)
 	{
-		Result error { .resultCode= i_resultCode, .errorMsg= i_message, .sequence = GenerateErrorSequence () };
+		Result error { .resultCode= i_resultCode, .errorMsg= i_message, .sequence = m_instanceId, .execSequence= m_exectionSequence, .function = m_functionName };
 		
 		return error;
 	}
@@ -494,9 +510,10 @@ class JdLua
 
 	Result                    ParseErrorMessage         (i32 i_resultCode, stringRef_t i_functionName)
 	{
-		Result error { .resultCode= i_resultCode };
+		Result error { .resultCode= i_resultCode, .sequence = m_instanceId, .execSequence= m_exectionSequence, .function = m_functionName };
 		
-		error.sequence = GenerateErrorSequence ();
+		if (i_functionName.size ())
+			error.function = i_functionName;
 
 		if (L)
 		{
@@ -559,9 +576,6 @@ class JdLua
 					sscanf (m [1].str ().c_str (), "%d", & location.lineNum);
 				}
 				else error.errorMsg = s;
-
-				if (i_functionName.size ())
-					error.function = i_functionName;
 				
 				error.location = m_errorLocation;
 				
@@ -593,7 +607,156 @@ class JdLua
 	vector <string>				GetGlobalFunctions			(JdLua::Result & result);
 
 	
+	bool						FindFunctionInTable			(i32 i_tableIndex, cstr_t i_path)
+	{
+		bool found = false;
 
+		if (L)
+		{
+			auto top = lua_gettop (L);
+		
+			lua_pushnil (L); // function
+			lua_pushnil (L); // table (self)
+
+			found = FindFunctionInTable (i_tableIndex, i_path, top + 2, 0);
+			
+			if (not found)
+				lua_settop (L, top);
+		}
+		
+		return found;
+	}
+	
+	bool                        FindFunctionInTable         (i32 i_tableIndex, cstr_t i_path, i32 const i_stackTop, i32 i_depth)
+	{
+		cstr_t dot = strstr (i_path, ".");
+		
+		string searchFor;
+		string subPath;
+		
+		if (dot)
+		{
+			string path = i_path;
+			searchFor = path.substr (0, dot - i_path);
+			subPath = dot + 1;
+			
+			//			cout << "searchFor: " << searchFor << endl;
+			//			cout << "subPath: " << subPath << endl;
+			
+			if (i_depth == 0)	// and i_tableIndex = 0 ??
+			{
+//				i32 top = lua_gettop (L);
+				
+				lua_getglobal (L, searchFor.c_str ());
+				
+				if (FindFunctionInTable (lua_gettop (L), subPath.c_str (), i_stackTop, i_depth + 1))
+					return true;
+				
+				lua_pop (L, 1);
+			}
+		}
+		else searchFor = i_path;
+		
+		//        cout << "find: " << searchFor << " in " << i_tableIndex << endl;
+		//		cout << "tableindex: " << i_tableIndex << endl;
+		
+		if (lua_istable (L, i_tableIndex))
+		{
+			lua_pushnil (L);
+			
+			while (lua_next (L, i_tableIndex))
+			{
+				int keyType = lua_type (L, -2);
+				int valueType = lua_type (L, -1);
+				
+				if (keyType == LUA_TSTRING)
+				{
+					string key = lua_tostring (L, -2);
+					
+					//					cout << "searching for " << searchFor << " : " << key << "....\n";
+					
+					if (key == searchFor)
+					{
+						//                        cout << "found\n";
+						
+						if (valueType == LUA_TTABLE)
+						{
+							if (FindFunctionInTable (lua_gettop (L), subPath.c_str (), i_stackTop, i_depth + 1))
+								return true;
+						}
+						else if (valueType == LUA_TFUNCTION)
+						{
+							lua_replace		(L, i_stackTop - 1);		// return function
+							lua_pushvalue	(L, i_tableIndex);
+							lua_replace		(L, i_stackTop);			// return table
+							lua_settop		(L, i_stackTop);
+							
+							return true;
+						}
+						
+						lua_pop (L, 2);
+						break;
+					}
+				}
+				
+				lua_pop (L, 1); // pop value
+			}
+			
+			// look through metatable
+			{
+				if (lua_getmetatable (L, i_tableIndex))
+				{
+					i32 metatable = lua_gettop (L);
+					
+					//					cout << "searching metatable...\n";
+					lua_pushnil (L);
+					
+					while (lua_next (L, metatable))
+					{
+						int keyType = lua_type (L, -2);
+						int valueType = lua_type (L, -1);
+						
+						if (keyType == LUA_TSTRING)
+						{
+							string key = lua_tostring (L, -2);
+							
+							//							cout << "searching  metatable for " << searchFor << " : " << key << "....\n";
+							
+							if (key == "__index")
+							{
+								if (valueType == LUA_TTABLE)
+								{
+									if (FindFunctionInTable (lua_gettop (L), searchFor.c_str (), i_stackTop, i_depth + 1))
+										return true;
+								}
+								
+								//								else if (valueType == LUA_TFUNCTION)
+								//								{
+								//									d_mpAssert (subPath.size() == 0, "found a function when looking for a table");
+								//
+								//									if (o_result) *o_result = ExecuteFunction (nullptr, i_args);
+								//
+								//									//                            cout << "function\n";
+								//									found = true;
+								//								}
+								//
+								lua_pop (L, 2);
+								break;
+							}
+						}
+						
+						lua_pop (L, 1); // pop value
+					}
+					
+					lua_pop (L, 1); // pop metatable
+				}
+			}
+		}
+		
+		return false;
+	}
+
+#if 0
 	bool                        FindFunctionInTable         (i32 i_tableIndex, cstr_t i_path, EpDelivery i_args, IEpigramOut o_result,
 															 bool i_isObjectCall, i32 i_depth = 0)
 	{
@@ -740,6 +903,7 @@ class JdLua
 		
 		return found;
 	}
+#endif
 	
 	int                         PushTableFromEpigram      (EpigramRef i_msg)
 	{
@@ -807,30 +971,44 @@ class JdLua
 	
 	// TODO: change to IEpigramOut
 	// if i_functionName is nullptr, function is expected on top of stack
-	Epigram               ExecuteFunction         (cstr_t i_functionName, EpigramRef i_args, i32 i_selfIndex, Result * o_luaError = nullptr)
+//	Epigram               ExecuteFunction         (cstr_t i_functionName, EpigramRef i_args, i32 i_selfIndex, Result * o_luaError = nullptr)
+	
+	Result               ExecuteFunction         (cstr_t i_functionName, Epigram & o_return, EpigramRef i_args, i32 i_selfIndex)
 	{
-		Epigram result;
+		Result result;
 		
 		if (L)
 		{
 			int top = lua_gettop (L);
-			
-			if (i_functionName)
+			int funcIndex = top;
+
+			i32 numCallingArgs = 0;
+	
+			if (i_selfIndex)
+			{
+				numCallingArgs = 1;
+				
+				if (i_selfIndex < 0)
+					i_selfIndex = top + 1 + i_selfIndex;
+
+				if (i_selfIndex == top)
+					--funcIndex;
+
+				if (i_selfIndex < funcIndex)
+					lua_pushvalue (L, i_selfIndex);
+				
+				if (not lua_istable (L, lua_gettop (L)))
+				{
+					result = GenerateError (-84745, "missing self argument");
+					goto exit;
+				}
+			}
+			else if (i_functionName)
 				lua_getglobal (L, i_functionName);
 			
-			if (lua_isfunction (L, top))
+			
+			if (lua_isfunction (L, funcIndex))
 			{
-				i32 numCallingArgs = 0;
-				
-				if (i_selfIndex)
-				{
-					++numCallingArgs;													d_jdAssert (lua_istable (L, i_selfIndex));
-					if (lua_istable (L, i_selfIndex))
-						lua_pushvalue (L, i_selfIndex);
-					else
-						return result;
-				}
-				
 				if (i_args.HasElements ())
 				{
 					++numCallingArgs;  // 1 lua table
@@ -848,35 +1026,31 @@ class JdLua
 					{
 						int type = lua_type (L, t);						//				cout << "type: " << type << endl;
 						
-						if		(type == LUA_TTABLE)	ConvertLuaTableToEpigram (t, result);
-						else if (type == LUA_TSTRING)   result (lua_tostring (L, -1));
-						else if (type == LUA_TBOOLEAN)  result ((bool) lua_toboolean (L, -1));
-						else if (type == LUA_TNUMBER)   result (lua_tonumber (L, -1));
+						if		(type == LUA_TTABLE)	ConvertLuaTableToEpigram (t, o_return);
+						else if (type == LUA_TSTRING)   o_return (lua_tostring (L, -1));
+						else if (type == LUA_TBOOLEAN)  o_return ((bool) lua_toboolean (L, -1));
+						else if (type == LUA_TNUMBER)   o_return (lua_tonumber (L, -1));
 						else if (type == LUA_TNIL or
 								 type == LUA_TLIGHTUSERDATA or
 								 type == LUA_TFUNCTION or
 								 type == LUA_TUSERDATA or
-								 type == LUA_TTHREAD)	result ("warning", "unimplemented Lua return type");
+								 type == LUA_TTHREAD)	o_return ("warning", "unimplemented Lua return type");
 						else d_jdThrow ("unknown return type");
 					}
+					
+					lua_pop (L, 1);
 				}
 				else
 				{
-					Result r = ParseErrorMessage (luaResult, i_functionName ? i_functionName : "");
-					
-					jd::out (r);
-					
-					if (o_luaError)
-						* o_luaError = r;
-					else
-						result ("error", r.errorMsg);
+					result = ParseErrorMessage (luaResult, i_functionName ? i_functionName : "");
 				}
 				
-				lua_settop (L, top);
 			}
-			else result (d_jdError ("no lua function to call"));
+			else result = GenerateError (-84745, "no lua function to call");
 		}
-		else result (d_jdError ("lua state is null"));
+		else result = GenerateError (-393, "lua state is null");
+		
+		exit:
 		
 		return result;
 	}
@@ -1046,29 +1220,19 @@ class JdLua
 	}
 	
 	
-	lua_State *						L				= nullptr;
-	bool							m_luaStateOwned	= true;
+	lua_State *						L					= nullptr;
+	bool							m_luaStateOwned		= true;
 	
-	lua_Alloc						m_allocator		= nullptr;
-	void *							m_allocatorObj	= nullptr;
+	lua_Alloc						m_allocator			= nullptr;
+	void *							m_allocatorObj		= nullptr;
 
 	vector <int>					m_stackTops;
 	u64								m_instanceId		= 0;
 	u32								m_exectionSequence	= 0;
 	
-	vector <string>					m_functionName;
+	JdString64						m_functionName;					// trying to limit mallocs in audio thread
 	
 	deque <Result::Location>		m_errorLocation;
-	
-	struct FunctionNamePusher
-	{
-		FunctionNamePusher (JdLua & i_lua, stringRef_t i_function)
-		:
-		lua (i_lua) 			{ lua.m_functionName.push_back (i_function); }
-		~FunctionNamePusher ()	{ lua.m_functionName.pop_back ();}
-		
-		JdLua & lua;
-	};
 };
 
 

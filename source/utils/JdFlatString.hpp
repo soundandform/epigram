@@ -70,6 +70,8 @@ class JdFlatString
 			strncpy (m_cstring, i_cstring, t_length);
 			m_cstring [t_length-1] = 0;
 		}
+		else m_cstring [0] = 0;
+		
 		return *this;
 	}
 	
@@ -134,10 +136,8 @@ class JdFlatString
 									operator const char * 	() const 	{ return m_cstring; }
 									operator std::string 	() const 	{ return m_cstring; }
 	
-	size_t							Length					() const
-	{	
-		return strlen (m_cstring);
-	}
+	size_t							Length					() const	{ return strlen (m_cstring); }
+	size_t							Size					() const	{ return Length (); }
 	
 	u32								Capacity				() const 	{ return t_length - 1; }
 	
