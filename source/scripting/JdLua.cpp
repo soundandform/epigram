@@ -10,7 +10,7 @@
 #include "JdLua.hpp"
 
 
-int jdlua_newmetatable (lua_State * L, cstr_t i_name)
+int jdlua_newMetatable (lua_State * L, cstr_t i_name)
 {
 	int created = luaL_newmetatable (L, i_name);
 	
@@ -21,7 +21,23 @@ int jdlua_newmetatable (lua_State * L, cstr_t i_name)
 }
 
 
-cstr_t  jdlua_gettype (lua_State * L, int i_index)
+int  jdlua_checkForSelf  (lua_State * L, cstr_t i_libName)
+{
+	int index = 1;
+	
+	if (lua_type (L, 1) == LUA_TTABLE)
+	{
+		lua_getfield (L, 1, "__name");
+		if (std::string_view (lua_tostring (L, -1)) == i_libName)
+			index = 2;
+		lua_pop (L, 1);
+	}
+	
+	return index;
+}
+
+
+cstr_t  jdlua_getType (lua_State * L, int i_index)
 {
 	cstr_t name = nullptr;
 	
@@ -35,6 +51,7 @@ cstr_t  jdlua_gettype (lua_State * L, int i_index)
 	
 	return name;
 }
+
 
 cstr_t  jdlua_getUserdataName  (lua_State * L, int i_index)
 {
@@ -52,7 +69,6 @@ cstr_t  jdlua_getUserdataName  (lua_State * L, int i_index)
 		lua_rawget (L, -2);
 
 		name = lua_tostring (L, -1);
-
 	}
 	
 	lua_settop (L, t);

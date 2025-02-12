@@ -45,9 +45,14 @@ static void * luaAlloc (void *ud, void *ptr, size_t osize, size_t nsize)
 }
 
 
-cstr_t  jdlua_gettype			(lua_State * L, int i_index);
-int		jdlua_newmetatable		(lua_State * L, cstr_t i_name);
-cstr_t  jdlua_getUserdataName	(lua_State * L, int i_index);
+// jdlua_checkForSelf requires __name be assigned to the library table; maybe should go in a metatable for consistency &
+// compatibility with jdlua_getType
+
+int /* index */ 	jdlua_checkForSelf		(lua_State * L, cstr_t i_libName);	// returns 1 if no self obj provided in args stack; otherwise 2
+
+cstr_t  			jdlua_getType			(lua_State * L, int i_index);
+int					jdlua_newMetatable		(lua_State * L, cstr_t i_name);
+cstr_t				jdlua_getUserdataName	(lua_State * L, int i_index);
 
 
 const i32 c_luaHashUnchanged = 123456789;
@@ -1016,7 +1021,7 @@ class JdLua
 					PushTableFromEpigram (i_args);
 				}
 				
-				int luaResult = lua_pcall (L, numCallingArgs, 1, 0);
+				int luaResult = lua_pcall (L, numCallingArgs, 1, 1);
 				
 				if (not luaResult)
 				{
