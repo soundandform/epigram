@@ -22,11 +22,11 @@ class JdFlatString
 	public:
 	JdFlatString				()	{}
 
-	JdFlatString					(const JdFlatString & i_string)
-	{
-		strncpy (m_cstring, i_string.m_cstring, t_length);
-		m_cstring [t_length-1] = 0;
-	}
+//	JdFlatString					(const JdFlatString & i_string)
+//	{
+//		strncpy (m_cstring, i_string.m_cstring, t_length);
+//		m_cstring [t_length-1] = 0;
+//	}
 
 	JdFlatString					(stringRef_t i_stdString)
 	{
@@ -41,6 +41,13 @@ class JdFlatString
 			strncpy (m_cstring, i_cstring, t_length);
 			m_cstring [t_length-1] = 0;
 		}
+
+	}
+
+	JdFlatString					(std::string_view const i_string)
+	{
+		strncpy (m_cstring, i_string.data (), t_length);
+		m_cstring [t_length-1] = 0;
 	}
 	
 //	#if __OBJC__
@@ -56,14 +63,25 @@ class JdFlatString
 		Set (i_start, i_end);
 	}
 
-	JdFlatString& operator =		(const JdFlatString & i_string)
+//	JdFlatString& operator =		(const JdFlatString & i_string)
+//	{
+//		strncpy (m_cstring, i_string.m_cstring, t_length);
+//		m_cstring [t_length-1] = 0;
+//		return *this;
+//	}
+
+	JdFlatString & operator =		(std::string_view i_string)
 	{
-		strncpy (m_cstring, i_string.m_cstring, t_length);
-		m_cstring [t_length-1] = 0;
-		return *this;
+//		if (i_string.data ())
+//		{
+			strncpy (m_cstring, i_string.data (), t_length);
+//		}
+//		else m_cstring [0] = 0;
+		
+		return * this;
 	}
 	
-	JdFlatString& operator =		(const char * i_cstring)
+	JdFlatString& operator =		(cstr_t i_cstring)
 	{
 		if (i_cstring)
 		{
@@ -74,40 +92,43 @@ class JdFlatString
 		
 		return *this;
 	}
+//	
+//	JdFlatString& operator =		(const std::string &i_stdString)
+//	{
+//		strncpy (m_cstring, i_stdString.c_str(), t_length);
+//		m_cstring [t_length-1] = 0;
+//		return *this;
+//	}
 	
-	JdFlatString& operator =		(const std::string &i_stdString)
+	JdFlatString& operator +=	(std::string_view i_string)
 	{
-		strncpy (m_cstring, i_stdString.c_str(), t_length);
-		m_cstring [t_length-1] = 0;
-		return *this;
-	}
-	
-	JdFlatString& operator +=	(const char *i_cstring)
-	{
-		strncat (m_cstring, i_cstring, t_length - strlen (m_cstring));
+		strncat (m_cstring, i_string.data (), t_length - strlen (m_cstring));
 		m_cstring [t_length-1] = 0;
 		return *this;
 	}
 
 
-	JdFlatString& operator +=	(const std::string & i_string)
-	{
-		strncat (m_cstring, i_string.c_str(), t_length - strlen (m_cstring));
-		m_cstring [t_length-1] = 0;
-		return *this;
-	}
+//	JdFlatString& operator +=	(const std::string & i_string)
+//	{
+//		strncat (m_cstring, i_string.c_str(), t_length - strlen (m_cstring));
+//		m_cstring [t_length-1] = 0;
+//		return *this;
+//	}
 
 
 	bool		operator <		(const JdFlatString & i_string)
 	{
 		return (strcmp (m_cstring, i_string.m_cstring) < 0);
 	}
+
+	bool		operator ==		(std::string_view i_string)			{ return i_string == CString (); }
+	bool		operator !=		(std::string_view i_string)			{ return i_string != CString (); }
+
+	bool		operator ==		(cstr_t i_cstring)					{ return i_cstring ? (strcmp (m_cstring, i_cstring) == 0) : false; }
+	bool		operator !=		(cstr_t i_cstring)					{ return i_cstring ? (strcmp (m_cstring, i_cstring) != 0) : true; }
 	
-	bool		operator ==		(cstr_t i_cstring)					{ return (strcmp (m_cstring, i_cstring) == 0); }
-	bool		operator !=		(cstr_t i_cstring)					{ return (strcmp (m_cstring, i_cstring) != 0); }
-	
-	bool		operator ==		(const JdFlatString & i_string)		{ return (strcmp (m_cstring, i_string.m_cstring) == 0); }
-	bool		operator !=		(const JdFlatString & i_string)		{ return (strcmp (m_cstring, i_string.m_cstring) != 0); }
+//	bool		operator ==		(const JdFlatString & i_string)		{ return (strcmp (m_cstring, i_string.m_cstring) == 0); }
+//	bool		operator !=		(const JdFlatString & i_string)		{ return (strcmp (m_cstring, i_string.m_cstring) != 0); }
 
 	void							Set						(const uint8_t * i_bytes, uint32_t i_numBytes)
 	{
@@ -131,13 +152,17 @@ class JdFlatString
 	}
 
 	
-	//	char *							CString					() { return m_cstring; }
+	char *							CString					()			{ return m_cstring; }
 	const char *					CString					() const 	{ return m_cstring; }
 									operator const char * 	() const 	{ return m_cstring; }
-									operator std::string 	() const 	{ return m_cstring; }
+//									operator std::string 	() const 	{ return m_cstring; }
 	
+								operator std::string_view 	() const	{ return m_cstring; }
+
 	size_t							Length					() const	{ return strlen (m_cstring); }
 	size_t							Size					() const	{ return Length (); }
+	
+	void							clear					()			{ m_cstring [0] = 0; }
 	
 	u32								Capacity				() const 	{ return t_length - 1; }
 	
@@ -148,12 +173,12 @@ class JdFlatString
 
 
 
-template <int t_length>
-std::ostream & operator << (std::ostream &output, const JdFlatString <t_length> & i_string)
-{
-	output << i_string.CString ();
-	return output;
-}
+//template <int t_length>
+//std::ostream & operator << (std::ostream &output, const JdFlatString <t_length> & i_string)
+//{
+//	output << i_string.CString ();
+//	return output;
+//}
 
 // --------------------------------------------------------------------------------------------------------
 // needed for map & unordered_map key compatibility

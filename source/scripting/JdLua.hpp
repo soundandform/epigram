@@ -19,7 +19,7 @@
 # include "lua.hpp"
 
 
-using std::string, std::vector, std::unique_ptr, std::deque;
+using std::string, std::vector, std::unique_ptr, std::deque, std::string_view;
 
 
 static void * luaAlloc (void *ud, void *ptr, size_t osize, size_t nsize)
@@ -280,7 +280,7 @@ class JdLua
 	}
 	
 
-	Result				HashScript							(stringRef_t i_functionName, JdMD5::MD5 & o_hash, stringRef_t i_script, cstr_t i_scriptName, vector <u8> * o_bytecode = nullptr);
+	Result				HashScript							(string_view i_functionName, JdMD5::MD5 & o_hash, string_view i_script, string_view i_scriptName, vector <u8> * o_bytecode = nullptr);
 
 	Result				LoadAndCallScript					(stringRef_t i_functionName, stringRef_t i_script, vector <u8> * o_bytecode = nullptr)
 	{
@@ -328,7 +328,7 @@ class JdLua
 	
 	
 	
-	Result			CallStackTop			(stringRef_t i_functionLabel, u32 i_numReturns = 0)	// no args
+	Result			CallStackTop			(string_view i_functionLabel, u32 i_numReturns = 0)	// no args
 	{
 		Result result;
 
@@ -341,7 +341,7 @@ class JdLua
 		return result;
 	}
 	
-	Result			CallGlobalFunction		(stringRef_t i_functionName)
+	Result			CallGlobalFunction		(string_view i_functionName)
 	{
 		Result result;
 		
@@ -350,7 +350,7 @@ class JdLua
 		
 		}
 		
-		lua_getglobal (L, i_functionName.c_str ());
+		lua_getglobal (L, i_functionName.data ());
 		
 		if (lua_isfunction (L, -1))
 			result = CallStackTop (i_functionName);
@@ -416,15 +416,15 @@ class JdLua
 #endif
 
 	
-	Epigram               CallObject		           (cstr_t i_functionName, Epigram && i_args = Epigram (), Result * o_result = nullptr)
+	Epigram               CallObject		           (string_view i_functionName, Epigram && i_args = Epigram (), Result * o_result = nullptr)
 	{
 		Epigram returns;
 		
 		Result result;
 		
-		if (strstr (i_functionName, ".") or strstr (i_functionName, ":"))
+		if (i_functionName.find (".") != string_view::npos or i_functionName.find (":") != string_view::npos)
 		{
-			string path = i_functionName;
+			string path (i_functionName);
 			
 			bool isObjectCall = false;
 			
@@ -441,7 +441,7 @@ class JdLua
 			{
 				m_functionName = i_functionName;
 				result = ExecuteFunction (nullptr, returns, i_args, -1);
-				m_functionName = nullptr;
+				m_functionName.clear ();
 			}
 
 			lua_settop (L, top);
@@ -472,13 +472,13 @@ class JdLua
 	}
 	*/
 	
-	Epigram					GetGlobalTable			(stringRef_t i_tableName)
+	Epigram					GetGlobalTable			(string_view i_tableName)
 	{
 		Epigram e;
 		
 		int top = lua_gettop (L);
 		
-		lua_getglobal (L, i_tableName.c_str());
+		lua_getglobal (L, i_tableName.data ());
 		
 		if (lua_type (L, -1) == LUA_TTABLE)
 		{
@@ -505,15 +505,15 @@ class JdLua
 //	protected:
 	
 
-	Result					GenerateError			(i32 i_resultCode, stringRef_t i_message)
+	Result					GenerateError			(i32 i_resultCode, string_view i_message)
 	{
-		Result error { .resultCode= i_resultCode, .errorMsg= i_message, .sequence = m_instanceId, .execSequence= m_exectionSequence, .function = m_functionName };
+		Result error { .resultCode= i_resultCode, .errorMsg= i_message.data (), .sequence = m_instanceId, .execSequence= m_exectionSequence, .function = m_functionName };
 		
 		return error;
 	}
 	
 
-	Result                    ParseErrorMessage         (i32 i_resultCode, stringRef_t i_functionName)
+	Result                    ParseErrorMessage         (i32 i_resultCode, string_view i_functionName)
 	{
 		Result error { .resultCode= i_resultCode, .sequence = m_instanceId, .execSequence= m_exectionSequence, .function = m_functionName };
 		

@@ -10,7 +10,7 @@
 
 using namespace std;
 
-JdStopwatch::JdStopwatch	(cstr_t i_label, bool i_doDisplay)
+JdStopwatch::JdStopwatch	(string_view const i_label, bool i_doDisplay)
 :
 m_label		(i_label),
 m_display 	(i_doDisplay)
@@ -18,13 +18,6 @@ m_display 	(i_doDisplay)
 	m_timer.Restart ();
 }
 
-JdStopwatch::JdStopwatch	(stringRef_t i_label, bool i_doDisplay)
-:
-m_label		(i_label),
-m_display 	(i_doDisplay)
-{
-	m_timer.Restart ();
-}
 
 
 //JdStopwatch::operator bool () const

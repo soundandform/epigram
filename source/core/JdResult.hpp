@@ -108,7 +108,7 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 								m_message = i_result.m_message;
 							}
 
-							JdResultT				(stringRef_t i_message)
+							JdResultT				(std::string_view i_message)
 							:
 							m_message				(i_message),
 							m_resultCode			(-1)
@@ -121,7 +121,7 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 							{ }
 
 	
-							JdResultT				(i32 i_resultCode, cstr_t i_message, location_t i_location = 0, u32 i_lineNum = 0)
+							JdResultT				(i32 i_resultCode, std::string_view i_message, location_t i_location = 0, u32 i_lineNum = 0)
 							:
 							m_resultCode			(i_resultCode),
 							m_message				(i_message)
@@ -131,7 +131,7 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 							}
 
 	
-							JdResultT				(cstr_t i_message, location_t i_location, u32 i_lineNum = 0)
+							JdResultT				(std::string_view i_message, location_t i_location, u32 i_lineNum = 0)
 							:
 							m_message				(i_message),
 							m_resultCode			(-1)
@@ -141,18 +141,18 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 							}
 
 	
-							JdResultT				(cstr_t i_message, bool i_isError, bool) // use this to define constants (d_jdResult)
+							JdResultT				(std::string_view i_message, bool i_isError, bool) // use this to define constants (d_jdResult)
 							:
 							m_message				(i_message)
 	{
-		i32 hash = Jd::HashCString31 (i_message);
+		i32 hash = Jd::HashCString31 (i_message.data ());
 		hash |= (0x80000000 * (i32) i_isError);
 		m_resultCode = (i32) hash;
 	}
 
-	JdResultT &				operator =				(cstr_t i_message)
+	JdResultT &				operator =				(std::string_view i_message)
 	{
-		if (i_message)
+		if (i_message.data ())
 		{
 			m_message = i_message;
 			m_resultCode = -100;

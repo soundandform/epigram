@@ -335,19 +335,23 @@ class JdFormatter
 */	
 		cstr_t CString () const
 		{
-			formatted = oss.str();
-			return formatted.c_str();
+			formatted = oss.str ();
+			return formatted.c_str ();
 		}
 	
-		operator std::string () const
+//		operator std::string () const
+//		{
+//			return oss.str ();
+//		}
+		operator std::string_view () const
 		{
-			return oss.str();
+			return CString ();
 		}
-		
-		operator cstr_t () const 
-		{
-			return CString();
-		}
+	
+//		operator cstr_t () const
+//		{
+//			return CString();
+//		}
 		
 	/*
 		const char* operator () () const

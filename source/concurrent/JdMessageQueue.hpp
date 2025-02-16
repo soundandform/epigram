@@ -449,6 +449,7 @@ class JdMessageQueue
 };
 
 
+#if KILL
 template <typename T>
 struct JdMpMcQueueT
 {
@@ -563,114 +564,7 @@ struct JdMpMcQueueT
 	u32											m_maxNumElements		= std::numeric_limits <u32>::max ();
 };
 
-
-
-#if KILL
-// Hmm... does packetizing has more overhead than just pushing single values through the already efficient MessageQueue?
-template <typename T, u32 t_packetSize = 32>
-struct JdThreadStream
-{
-	struct Packet
-	{
-		T 	values  	[t_packetSize];
-	};
-	
-	JdThreadStream ()
-	{
-	}
-	
-	void	Insert			(u32 i_count, const T * i_values)
-	{
-		if (m_inPending)
-		{
-			size_t required = t_packetSize - m_inPending;
-			size_t available = std::min (required, (size_t) i_count);
-			
-			memcpy (& m_inPacket.values [m_inPending], i_values, sizeof (T) * available);
-			
-			i_count -= available;
-			i_values += available;
-			m_inPending += available;
-			
-			if (m_inPending == t_packetSize)
-			{
-				m_queue.Push (m_inPacket);
-				m_inPending = 0;
-			}
-		}
-		
-		while (i_count >= t_packetSize)
-		{
-			auto packet = (Packet *) i_values;
-			m_queue.Push (* packet);
-			
-			i_count -= t_packetSize;
-			i_values += t_packetSize;
-		}
-		
-		if (i_count)
-		{
-			memcpy (& m_inPacket.values [0], i_values, sizeof (T) * i_count);
-			m_inPending = i_count;
-		}
-	}
-	
-	
-	bool	TryFetch		(T * o_values, u32 i_required)
-	{
-	}
-	
-	
-	void	Fetch			(T * o_values, u32 i_required)
-	{
-		if (m_outPending)
-		{
-			size_t required = std::min ((size_t) i_required, m_outPending);
-
-			auto i = t_packetSize - m_outPending;
-			memcpy (o_values, & m_outPacket.values [i], required * sizeof (T));
-			
-			m_outPending -= required;
-			o_values += required;
-			i_required -= required;
-		}
-		
-		while (i_required >= t_packetSize)
-		{
-			auto packet = (Packet *) o_values;
-			m_queue.PopWait (* packet);
-			
-			o_values += t_packetSize;
-			i_required -= t_packetSize;
-		}
-		
-		if (i_required)
-		{
-			m_queue.PopWait (m_outPacket);
-			
-			memcpy (o_values, & m_outPacket.values [0], i_required * sizeof (T));
-			m_outPending = t_packetSize - i_required;
-		}
-	}
-	
-	
-//	void	SetSize			(u32 i_size)
-//	{
-//	}
-	
-	protected:
-	
-	JdMessageQueue <Packet>		m_queue;
-
-	Packet						m_inPacket;
-	size_t						m_inPending						= 0;
-
-	Packet						m_outPacket;
-	size_t						m_outPending					= 0;
-	
-};
 #endif
-
 
 
 #endif /* JdMessageQueue_hpp */

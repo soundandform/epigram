@@ -20,8 +20,7 @@ class JdStopwatch
 {
 	public:
 	
-	JdStopwatch	(cstr_t i_label, bool i_doDisplay = true);
-	JdStopwatch	(stringRef_t i_label, bool i_doDisplay = true);
+	JdStopwatch	(std::string_view const i_label, bool i_doDisplay = true);
 
 //	operator bool () const;
 	
