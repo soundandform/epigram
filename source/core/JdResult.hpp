@@ -263,11 +263,9 @@ class JdResultT : public t_locationInfo, public JdSerialize::Versioned <JdResult
 		m_message = i_message;
 	}
 	
-	std::string				GetMessage				() const
-	{
-		return m_message;
-	}
-	
+	std::string				GetMessage				() const		{ return m_message; }
+	std::string				getMessage				() const		{ return m_message; }
+
 	bool					IsError () const
 	{
 		return (m_resultCode < 0);
@@ -324,9 +322,9 @@ std::ostream & operator << (std::ostream &output, const JdResultT <L, R1> & i_re
 	
 	i32 resultCode = i_result.Code();
 	if (resultCode == 0)
-		sprintf (code, "ok");
+		snprintf (code, 16, "ok");
 	else
-		sprintf (code, "%d", i_result.Code ());
+		snprintf (code, 16, "%d", i_result.Code ());
 	
 	string msg = i_result.GetMessage ();
 	

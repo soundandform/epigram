@@ -72,11 +72,7 @@ class JdFlatString
 
 	JdFlatString & operator =		(std::string_view i_string)
 	{
-//		if (i_string.data ())
-//		{
-			strncpy (m_cstring, i_string.data (), t_length);
-//		}
-//		else m_cstring [0] = 0;
+		strncpy (m_cstring, i_string.data (), t_length);
 		
 		return * this;
 	}
@@ -92,13 +88,13 @@ class JdFlatString
 		
 		return *this;
 	}
-//	
-//	JdFlatString& operator =		(const std::string &i_stdString)
-//	{
-//		strncpy (m_cstring, i_stdString.c_str(), t_length);
-//		m_cstring [t_length-1] = 0;
-//		return *this;
-//	}
+
+	JdFlatString &  operator =		(const std::string &i_stdString)
+	{
+		strncpy (m_cstring, i_stdString.c_str(), t_length);
+		m_cstring [t_length-1] = 0;
+		return *this;
+	}
 	
 	JdFlatString& operator +=	(std::string_view i_string)
 	{
@@ -151,11 +147,10 @@ class JdFlatString
 		return m_cstring;
 	}
 
-	
 	char *							CString					()			{ return m_cstring; }
 	const char *					CString					() const 	{ return m_cstring; }
 									operator const char * 	() const 	{ return m_cstring; }
-//									operator std::string 	() const 	{ return m_cstring; }
+									operator std::string 	() const 	{ return m_cstring; }
 	
 								operator std::string_view 	() const	{ return m_cstring; }
 

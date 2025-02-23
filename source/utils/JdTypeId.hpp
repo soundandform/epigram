@@ -170,6 +170,7 @@ namespace Jd
 	bool IsFloatingPointType (u8 i_typeId);
 	bool IsSignedIntegerType (u8 i_typeId);
 	bool IsUnsignedIntegerType (u8 i_typeId);
+	bool IsNumberType (u8 i_typeId);
 	
 	bool IsTypeSet (u8 i_typeId);
 
@@ -388,7 +389,7 @@ class JdTypeId
 	bool 			IsFloatingPointType		() const 	{ return Jd::IsFloatingPointType (m_typeId); }
 	bool 			IsSignedIntegerType		() const 	{ return Jd::IsSignedIntegerType (m_typeId); }
 	bool 			IsUnsignedIntegerType	() const 	{ return Jd::IsUnsignedIntegerType (m_typeId); }
-
+	
 	static bool		IsObject				(u8 i_typeId);
 
 	std::string		GetTypeName				() const;

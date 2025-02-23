@@ -2322,6 +2322,9 @@ class EpigramT : public interface_t
 		auto payload = GetPayload ();
 		return std::string ((const char *) payload.bytes, payload.size);
 	}
+
+	std::string			toString  () const  { return ToString (); }
+
 	
 	IIEpigramIn::Payload GetPayload () const
 	{
