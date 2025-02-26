@@ -22,7 +22,7 @@
 using std::string, std::vector, std::unique_ptr, std::deque, std::string_view;
 
 
-static void * luaAlloc (void *ud, void *ptr, size_t osize, size_t nsize)
+/*static void * luaAlloc (void *ud, void *ptr, size_t osize, size_t nsize)
 {
 	static u32 used = 0;
 	
@@ -42,7 +42,7 @@ static void * luaAlloc (void *ud, void *ptr, size_t osize, size_t nsize)
 //		jd::out ("alloc: @ @->@", ptr, osize, nsize);
 		return realloc (ptr, nsize);
 	}
-}
+}*/
 
 
 // jdlua_checkForSelf requires __name be assigned to the library table; maybe should go in a metatable for consistency &
@@ -224,11 +224,6 @@ class JdLua
 		string 				errorMsg;
 		JdString64			function;			// this is the pcall () entry point
 
-//		u64				GetCodeSequence			() const
-//		{
-//			return sequence;
-//		}
-		
 		struct Location
 		{
 			string		file;

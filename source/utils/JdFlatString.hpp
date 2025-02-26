@@ -63,12 +63,14 @@ class JdFlatString
 		Set (i_start, i_end);
 	}
 
-//	JdFlatString& operator =		(const JdFlatString & i_string)
-//	{
-//		strncpy (m_cstring, i_string.m_cstring, t_length);
-//		m_cstring [t_length-1] = 0;
-//		return *this;
-//	}
+	
+	template <int length>
+	JdFlatString & operator =		(JdFlatString <length> const & i_string)
+	{
+		strncpy (m_cstring, i_string.cString (), t_length);
+		m_cstring [t_length-1] = 0;
+		return *this;
+	}
 
 	JdFlatString & operator =		(std::string_view i_string)
 	{
@@ -149,6 +151,8 @@ class JdFlatString
 
 	char *							CString					()			{ return m_cstring; }
 	const char *					CString					() const 	{ return m_cstring; }
+	const char *					cString					() const 	{ return m_cstring; }
+
 									operator const char * 	() const 	{ return m_cstring; }
 									operator std::string 	() const 	{ return m_cstring; }
 	
