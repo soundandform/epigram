@@ -49,6 +49,7 @@ using std::string, std::vector, std::unique_ptr, std::deque, std::string_view;
 // compatibility with jdlua_getType
 
 int /* index */ 	jdlua_checkForSelf		(lua_State * L, cstr_t i_libName);	// returns 1 if no self obj provided in args stack; otherwise 2
+void				jdlua_removeSelf		(lua_State * L, cstr_t i_libName);	// deletes the stack entry if self obj is provided
 
 cstr_t  			jdlua_getType			(lua_State * L, int i_index);
 int					jdlua_newMetatable		(lua_State * L, cstr_t i_name);
@@ -416,6 +417,8 @@ class JdLua
 		Epigram returns;
 		
 		Result result;
+		
+		m_errorLocation.clear ();
 		
 		if (i_functionName.find (".") != string_view::npos or i_functionName.find (":") != string_view::npos)
 		{

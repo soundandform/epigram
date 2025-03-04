@@ -245,7 +245,8 @@ namespace jd
 	{
 		d_jdGlobalLock ('cout');
 		
-		outHandler () (i_format);
+		if (i_format)
+			outHandler () (i_format);
 
 //		cout << i_format << "\r" << endl;
 	}

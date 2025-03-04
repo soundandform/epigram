@@ -37,6 +37,21 @@ int  jdlua_checkForSelf  (lua_State * L, cstr_t i_libName)
 }
 
 
+void  jdlua_removeSelf  (lua_State * L, cstr_t i_libName)
+{
+	if (lua_type (L, 1) == LUA_TTABLE)
+	{
+		lua_getfield (L, 1, "__name");
+		
+		bool hasSelfArg = std::string_view (lua_tostring (L, -1)) == i_libName;
+		lua_pop (L, 1);
+		
+		if (hasSelfArg)
+			lua_remove (L, 1);
+	}
+}
+
+
 cstr_t  jdlua_getType (lua_State * L, int i_index)
 {
 	cstr_t name = nullptr;
@@ -49,7 +64,7 @@ cstr_t  jdlua_getType (lua_State * L, int i_index)
 	if (not name)
 		name = lua_typename (L, type);
 	
-	return name;
+	return name ? name : "";
 }
 
 
