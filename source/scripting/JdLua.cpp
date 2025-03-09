@@ -52,6 +52,19 @@ void  jdlua_removeSelf  (lua_State * L, cstr_t i_libName)
 }
 
 
+void  jdlua_ref  (lua_State * L, int & io_ref)
+{														d_jdAssert (io_ref == 0);
+	io_ref = luaL_ref (L, LUA_REGISTRYINDEX);
+}
+
+
+void  jdlua_unRef  (lua_State *L, int & io_ref)
+{
+	luaL_unref (L, LUA_REGISTRYINDEX, io_ref);
+	io_ref = 0;
+}
+
+
 cstr_t  jdlua_getType (lua_State * L, int i_index)
 {
 	cstr_t name = nullptr;

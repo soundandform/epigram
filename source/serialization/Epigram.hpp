@@ -212,6 +212,7 @@
 #include <list>
 #include <deque>
 #include <set>
+#include <map>
 #include <functional>
 
 #include "JdTypeId.hpp"
@@ -779,6 +780,7 @@ class EpigramT : public interface_t
 	};
 	
 	
+	template <typename CastFrom>
 	struct EpigramType
 	{
 		static bool			IsType				(u8 i_type, PayloadRef)
@@ -788,8 +790,8 @@ class EpigramT : public interface_t
 		
 		static void StoreHeader (allocator_t &) { }
 		
-		template <typename T>
-		static void StoreItem (allocator_t & i_allocator, const T & i_value)
+//		template <typename T>
+		static void StoreItem (allocator_t & i_allocator, const CastFrom & i_value)
 		{
 			auto epigram = i_value.GetPayload ();
 
@@ -1186,7 +1188,7 @@ class EpigramT : public interface_t
 		type_if <std::is_same <std::string, R>::value,				StringType,						storerP>::type					storerB;
 		type_if <jd::is_cstring <R>::value,							StringType,						storerB>::type					storerC;
 		
-		type_if <std::is_base_of <IIEpigram, R>::value,				EpigramType,					storerC>::type					storerD;
+		type_if <std::is_base_of <IIEpigram, R>::value,				EpigramType <R>,				storerC>::type					storerD;
 
 		type_if <std::is_base_of <Jd::Typed, R>::value,				IntrinsicPodT <R>,				storerD>::type					storerE;
 
@@ -1196,8 +1198,10 @@ class EpigramT : public interface_t
 		type_if <std::is_base_of <string_t, R>::value,				StringType,						storerG>::type					storerH;
 
 		type_if <std::is_enum <R>::value,							EnumT <R>,						storerH>::type					storerI;
-		type_if <std::is_base_of <binary_t, R>::value,				BinaryT <R>,					storerI>::type					storerX;
+		type_if <std::is_base_of <binary_t, R>::value,				BinaryT <R>,					storerI>::type					storerJ;
 
+		type_if <jd::is_mappish <R>::value,							EpigramType <EpigramT>,			storerJ>::type					storerX;
+		
 		public: typedef storerX	type;
 	};
 	
@@ -1230,9 +1234,12 @@ class EpigramT : public interface_t
 	};
 	
 	
+	
 	template <typename T>
 	struct ItemStorer
 	{
+		type_def TypeT <T>::type	storer_t;
+		
 		static u8		GetTypeId		()					{ return Jd::TypeId <T> (); }
 		static size_t	GetItemCount	(const T &)			{ return 1; }
 		
@@ -1243,13 +1250,31 @@ class EpigramT : public interface_t
 			
 			return 0; // not an array
 		}
+	};
+
+	
+	template <typename T>
+	struct MapStorer
+	{
+		type_def TypeT <T>::type	storer_t;		// maps map to an Epigram; maybe could just be explicit here.
 		
-		type_def TypeT <T>::type	storer_t;
+		static u8		GetTypeId		()					{ return c_jdTypeId::epigram; }
+		static size_t	GetItemCount	(const T &)			{ return 1; }
+		
+		static u8		Store			(allocator_t & i_allocator, const T & i_value, size_t /* i_count */)
+		{
+			storer_t::StoreHeader	(i_allocator);
+			storer_t::StoreItem		(i_allocator, i_value);
+			
+			return 0; // not an array
+		}
 	};
 	
 	template <typename R>
 	struct ArrayStorer
 	{
+		type_def TypeT <R>::type storer_t;
+		
 		static u8 GetTypeId () { return Jd::TypeId <R> (); }
 		
 		template <typename T, size_t t_length>
@@ -1272,10 +1297,9 @@ class EpigramT : public interface_t
 			
 			return c_jdTypeId::isArray;
 		}
-		
-		protected:
-		type_def TypeT <R>::type storer_t;
 	};
+	
+	
 	
 	template <typename T, typename IT = T> // IT = inner type.  allows the store to cast container contents to pre-defined attribute types (or simply enforce & fail)
 	class StorerType
@@ -1285,10 +1309,11 @@ class EpigramT : public interface_t
 		type_if <jd::has_iterator	<T>::value,		ContainerStorer <T, IT>,	ItemStorer <T>	>::type		A;
 		type_if <std::is_array		<T>::value,		ArrayStorer <R>,			A				>::type		B;
 		type_if <jd::is_cstring		<T>::value,		ItemStorer <cstr_t>,		B				>::type		C;
+		type_if <jd::is_mappish		<T>::value,		MapStorer <T>,				C				>::type		D;
 		
 		public:
 		
-		typedef C type;
+		typedef D type;
 	};
 	
 	
@@ -1680,12 +1705,6 @@ class EpigramT : public interface_t
 		KeyValue										(i_epigram),
 		key												(i_key)
 		{ }
-		
-		
-//		KVBase &			operator = (const KVBase &)
-//		{
-//			return * this;
-//		}
 
 		const K &				key;
 	};
@@ -1751,22 +1770,6 @@ class EpigramT : public interface_t
 			return value;
 		}
 
-//		template <typename T>
-//		operator				T						() const
-//		{
-//			T value = EpigramDefaultValue <T> ();
-//			CastedFetch (value);						// FIX: don't cast?
-//			return value;
-//		}
-
-//		template <typename T>
-//		T						Get						() const
-//		{
-//			T value = EpigramDefaultValue <V> ();
-//			CastedFetch (value);						// FIX: don't cast?
-//			return value;
-//		}
-		
 		V						Value					() const
 		{
 			V value = EpigramDefaultValue <V> ();
@@ -1812,13 +1815,6 @@ class EpigramT : public interface_t
 		
 		type_def TypeT <typename I::KEY>::type key_t;
 
-		
-//		template <typename T>
-//		KVT &			operator =				(const KVT & i_value)
-//		{
-//
-//		}
-		
 		template <typename T>
 		KVT &			operator =				(const T & i_value)
 		{
@@ -1847,16 +1843,6 @@ class EpigramT : public interface_t
 		
 		template <typename T>
 		T						as								() const { return To <T> (); }
-
-//		template <typename K>
-//		EpigramKVT				operator []						(const K & i_key) const
-//		{
-//			EpigramT e;	// maybe if this was a ConstEpigram ?
-//			this->CastedFetch (e);
-//			
-//			return e.operator [] (i_key);
-//		}
-		
 		
 		// Raw gets the direct pointer to the element inside the epigram.  This is primary for referencing elements during
 		// SQL binding.  Obviously these pointers are fragile and only persistent as long as the Epigrm remains untouched.
@@ -2054,6 +2040,13 @@ class EpigramT : public interface_t
 		this->operator = (i_epigram);
 	}
 	
+	template <typename K, typename V, typename Compare, typename Allocator>
+	EpigramT 			(std::map <K, V, Compare, Allocator> const & i_map)
+	{
+		this->operator = (i_map);
+	}
+
+	
 	// Movers ----------------------------------------------------------------------------------------------------------------
 
 	EpigramT			(EpigramT && i_epigram)
@@ -2164,7 +2157,19 @@ class EpigramT : public interface_t
 		return * this;
 	}
 	
+	
+	template <typename K, typename V, typename Compare, typename Allocator>
+	EpigramT &					operator =			(std::map <K, V, Compare, Allocator> const & i_map)
+	{
+		for (auto & i : i_map)
+		{
+			(* this) [i.first] = i.second;
+		}
+		
+		return * this;
+	}
 
+	
 	size_t						Count               () const
 	{
 		size_t count = 0;
@@ -2189,7 +2194,10 @@ class EpigramT : public interface_t
 	{
 		return not IsEmpty ();
 	}
-	
+
+	bool						hasElements			() const { return not IsEmpty (); }
+
+
 	bool						IsEmpty				() const
 	{
 		return (m_allocator.GetCapacity () == m_allocator.GetNumFreeBytes ());
@@ -2211,6 +2219,7 @@ class EpigramT : public interface_t
 	
 	size_t						GetCapacity			() const	{ return m_allocator.GetCapacity (); }
 	size_t						GetSize				() const	{ return m_allocator.GetNumUsedBytes (); }
+	size_t						size				() const	{ return GetSize (); }
 	u32							GetSequence			() const	{ return m_allocator.GetSequence (); }		// starts at 0
 	void						Reset				()			{ m_allocator.Reset (); }
 	void						Clear				()			{ m_allocator.Clear (); }
@@ -2331,6 +2340,10 @@ class EpigramT : public interface_t
 		return IIEpigramIn::Payload { m_allocator.GetBuffer (), m_allocator.GetNumUsedBytes () };
 	}
 	
+	
+	u8 const *			data				() { return m_allocator.GetBuffer (); }
+	size_t				size				() { return m_allocator.GetNumUsedBytes (); }
+
 	
 	void				Deliver				(IEpigramIn i_epigram)
 	{

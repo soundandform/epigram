@@ -51,6 +51,9 @@ using std::string, std::vector, std::unique_ptr, std::deque, std::string_view;
 int /* index */ 	jdlua_checkForSelf		(lua_State * L, cstr_t i_libName);	// returns 1 if no self obj provided in args stack; otherwise 2
 void				jdlua_removeSelf		(lua_State * L, cstr_t i_libName);	// deletes the stack entry if self obj is provided
 
+void				jdlua_ref				(lua_State * L, int & io_ref);
+void				jdlua_unRef				(lua_State * L, int & io_ref);
+
 cstr_t  			jdlua_getType			(lua_State * L, int i_index);
 int					jdlua_newMetatable		(lua_State * L, cstr_t i_name);
 cstr_t				jdlua_getUserdataName	(lua_State * L, int i_index);
