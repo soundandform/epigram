@@ -20,7 +20,7 @@ class JdStopwatch
 {
 	public:
 	
-	JdStopwatch	(std::string_view const i_label, bool i_doDisplay = true);
+	JdStopwatch	(std::string_view const i_label = "", bool i_doDisplay = true);
 
 //	operator bool () const;
 	
@@ -87,7 +87,7 @@ namespace Jd
 	
 	inline f64 MeasureTime (const std::function <void()> &i_toBeMeasured)
 	{
-		JdStopwatch stopwatch (nullptr);
+		JdStopwatch stopwatch;
 		
 		stopwatch.Start ();
 		i_toBeMeasured ();
@@ -96,7 +96,7 @@ namespace Jd
 
 	inline f64 MeasureTime (u64 i_numLoops, const std::function <void (u32)> &i_toBeMeasured)
 	{
-		JdStopwatch stopwatch (nullptr);
+		JdStopwatch stopwatch;
 		
 		stopwatch.Start ();
 		i_toBeMeasured (i_numLoops);
@@ -106,7 +106,7 @@ namespace Jd
 	
 	inline f64 MeasureTime (u64 i_numLoops, const std::function <void ()> &i_toBeMeasured)
 	{
-		JdStopwatch stopwatch ( nullptr);
+		JdStopwatch stopwatch;
 		
 		stopwatch.Start ();
 		for (u32 i = 0; i < i_numLoops; ++i)

@@ -911,41 +911,48 @@ class JdLua
 	}
 #endif
 	
-	int                         PushTableFromEpigram      (EpigramRef i_msg)
+	template <typename EpigramType>
+	static void  PushEpigramToTable  (lua_State * L, EpigramType const & i_epigram, i32 i_tableIndex = 0)
 	{
-		if (L)
+		if (i_tableIndex == 0)
 		{
 			lua_newtable (L);
-			
-			//        for (i32 i = 0; i_msg [i].IsSet(); ++i)
-			for (auto & i : i_msg)
-			{
-				//				cout << Jd::TypeIdToChar (i.GetKeyTypeId ());
-				
-				if (Jd::IsIntegerType (i.GetKeyTypeId ()))
-				{
-					d_jdThrow ("fix");
-//					i64 key = i.Key <i64> ();
-//					lua_pushnumber (m_lua, key);
-					
-				}
-				else if (i.HasKeyType (c_jdTypeId::string))
-				{
-					cstr_t name = i.GetKeyString ();
-					lua_pushstring (L, name);
-				}
-				else continue;
-				
-				if (i.Is <string> ())		lua_pushstring (L, i.To <cstr_t>());
-				else						lua_pushnumber (L, i);
-				
-				lua_settable (L, -3);
-			}
+			i_tableIndex = lua_gettop (L);
 		}
 		
-		return 0;
+		for (auto & i : i_epigram)
+		{
+			u8 keyType = i.GetKeyTypeId ();
+
+			if (Jd::IsFloatingPointType (keyType))
+			{
+				f64 key = i.template GetKey <f64> ();
+				lua_pushnumber (L, key);
+			}
+			else if (Jd::IsNumberType (keyType))
+			{
+				i64 key = i.template GetKey <i64> ();
+				lua_pushnumber (L, key);
+			}
+			else if (keyType == c_jdTypeId::string)
+			{
+				cstr_t name = i.GetKeyString ();
+				lua_pushstring (L, name);
+			}
+
+			if (i.template is <string> ())			lua_pushstring (L, i.template as <cstr_t> ());
+			else if (i.template is <Epigram> ())
+			{
+				d_jdThrow("implme");
+			}
+			else									lua_pushnumber (L, i);
+			
+			lua_settable (L, -3);
+		}
+		
 	}
 	
+
 	
 	template <typename T>
 	void				BindFunctionAndRef					(cstr_t i_functionName, lua_CFunction i_cFunction, T & i_arg)
@@ -1019,7 +1026,7 @@ class JdLua
 				{
 					++numCallingArgs;  // 1 lua table
 					
-					PushTableFromEpigram (i_args);
+					PushEpigramToTable (L, i_args);
 				}
 				
 				int luaResult = lua_pcall (L, numCallingArgs, 1, 1);

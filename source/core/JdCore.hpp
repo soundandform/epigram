@@ -281,6 +281,15 @@ namespace jd
 		typedef decltype (a*b) fused;
 		return std::max ((fused) a, (fused) b);
 	}
+
+
+template <typename A, typename B>
+auto limitMin (const A & a, const B & b) { return jd::max (a,b); }
+
+template <typename A, typename B>
+auto limitMax (const A & a, const B & b) { return jd::min (a,b); }
+
+	
 }
 
 #define debug(OUTPUT) std::cout << OUTPUT << endl

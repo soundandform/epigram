@@ -1978,10 +1978,10 @@ class EpigramT : public interface_t
 		bool						Is						() const
 		{
 			type_def TypeT <T>::type compare_t;
-
 			return compare_t::IsType (this->valueType, { this->payload, this->endPayload });
 		}
-		
+
+		template <typename T> bool	is						() const { return Is <T> (); }
 		
 		typedef typename RawFetcher::RawValue rawobj_t;
 		
@@ -2161,10 +2161,16 @@ class EpigramT : public interface_t
 	template <typename K, typename V, typename Compare, typename Allocator>
 	EpigramT &					operator =			(std::map <K, V, Compare, Allocator> const & i_map)
 	{
+		Clear ();
+		
+		return operator << (i_map);
+	}
+
+	template <typename K, typename V, typename Compare, typename Allocator>
+	EpigramT &					operator <<			(std::map <K, V, Compare, Allocator> const & i_map)
+	{
 		for (auto & i : i_map)
-		{
 			(* this) [i.first] = i.second;
-		}
 		
 		return * this;
 	}
@@ -2272,11 +2278,15 @@ class EpigramT : public interface_t
 			// find existing/duplicates and erase
 			for (auto & i : i_merging)
 			{
-				cstr_t hacked = i.GetKeyString ();
-				
-//				if (hacked)
-					Erase (hacked);
-				
+				u8 keyType = i.GetKeyTypeId ();
+
+				if (keyType == c_jdTypeId::string)
+				{
+					cstr_t key = i.GetKeyString ();
+					Erase (key);
+				}
+				else d_jdThrow ("fix");
+					
 				// options: examine raw key. fastest, but only perfectly works for fundamentals and simple POD. probably good enough. having an epigram as the key is kinda fringe usage
 				// create FetchAndCompare <f32>... etc. and run through a list.
 			}

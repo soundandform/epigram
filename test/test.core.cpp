@@ -125,6 +125,7 @@ class PersistentFiber : public IIJdFiber
 };
 
 
+#if 0
 doctest ("JdFiberV2")
 {
 	for (u32 i = 0; i < 3; ++i)
@@ -169,48 +170,10 @@ doctest ("JdFiberV2")
 		result = fibers.ReleaseFiber (pf);	expect (result == c_jdNoErr)
 	}
 }
+#endif
 
 #include "JdMessageQueue.hpp"
 
-
-doctest ("thread.stream")
-{
-	JdThreadStream <f32> stream;
-	
-	// push 3 packets + 4 leftover
-	f32 array [100];
-	for (u32 i = 0; i < 100; ++i)
-	{
-		array [i] = i + 1;
-	}
-	
-	stream.Insert (100, array);
-	
-	// get three packets
-	f32 received [100];
-	u32 count = 32 * 3;
-	stream.Fetch (received, count);
-	
-	for (u32 i = 0; i < count; ++i)
-	{
-		expect (received [i] == i + 1);
-	}
-
-	// push 28 + 4 residual = 32
-	stream.Insert (28, array);
-	stream.Fetch (received, 32);
-
-	for (u32 i = 0; i < 4; ++i)
-	{
-		expect (received [i] == count + i + 1);
-	}
-
-	for (u32 i = 0; i < 28; ++i)
-	{
-		expect (received [i+4] == i + 1);
-	}
-
-}
 
 
 

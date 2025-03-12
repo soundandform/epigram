@@ -45,7 +45,6 @@
 		B5379F422542537B009A8047 /* libboost_context.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5379F3B2542537B009A8047 /* libboost_context.a */; };
 		B5379F432542537B009A8047 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5379F3C2542537B009A8047 /* libboost_system.a */; };
 		B5379F442542537B009A8047 /* libboost_chrono.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5379F3D2542537B009A8047 /* libboost_chrono.a */; };
-		B5379F452542537B009A8047 /* libboost_thread.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5379F3E2542537B009A8047 /* libboost_thread.a */; };
 		B5379F462542537B009A8047 /* libboost_timer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5379F3F2542537B009A8047 /* libboost_timer.a */; };
 		B5379F472542537B009A8047 /* libboost_date_time.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5379F402542537B009A8047 /* libboost_date_time.a */; };
 		B5379F48254253B1009A8047 /* libboost_timer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5379F3F2542537B009A8047 /* libboost_timer.a */; };
@@ -168,27 +167,15 @@
 		B5379F3B2542537B009A8047 /* libboost_context.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_context.a; path = ../../lib/libboost_context.a; sourceTree = "<group>"; };
 		B5379F3C2542537B009A8047 /* libboost_system.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_system.a; path = ../../lib/libboost_system.a; sourceTree = "<group>"; };
 		B5379F3D2542537B009A8047 /* libboost_chrono.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_chrono.a; path = ../../lib/libboost_chrono.a; sourceTree = "<group>"; };
-		B5379F3E2542537B009A8047 /* libboost_thread.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_thread.a; path = ../../lib/libboost_thread.a; sourceTree = "<group>"; };
 		B5379F3F2542537B009A8047 /* libboost_timer.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_timer.a; path = ../../lib/libboost_timer.a; sourceTree = "<group>"; };
 		B5379F402542537B009A8047 /* libboost_date_time.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_date_time.a; path = ../../lib/libboost_date_time.a; sourceTree = "<group>"; };
 		B562BD761FB55D9500FDE277 /* test.epigram.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = test.epigram.cpp; path = ../../test/test.epigram.cpp; sourceTree = "<group>"; };
-		B580E2411FB64CF100DD177B /* libboost_timer-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_timer-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_timer-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
-		B580E2421FB64CF100DD177B /* libboost_chrono-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_chrono-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_chrono-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
-		B580E2451FB64D0A00DD177B /* libboost_system-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_system-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_system-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
 		B583D0921FA97E85007C07F0 /* doctest.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = doctest.hpp; path = ../../test/doctest.hpp; sourceTree = "<group>"; };
 		B583D0931FA97E85007C07F0 /* test.core.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test.core.cpp; path = ../../test/test.core.cpp; sourceTree = "<group>"; };
-		B583D0C01FA97F0D007C07F0 /* libboost_context-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_context-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_context-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
 		B583D0C21FA97F20007C07F0 /* city.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = city.o; path = ../../external/cityhash/src/city.o; sourceTree = "<group>"; };
 		B584EF391FA97E2E00A8B431 /* epitest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = epitest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5C695B82029E42A001DC0F3 /* epilog */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = epilog; sourceTree = BUILT_PRODUCTS_DIR; };
-		B5C695CA202A1553001DC0F3 /* libboost_date_time-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_date_time-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_date_time-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
-		B5C695CB202A1553001DC0F3 /* libboost_program_options-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_program_options-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_program_options-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
-		B5C695CC202A1553001DC0F3 /* libboost_thread-clang-darwin42-mt-x64-1_67.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_thread-clang-darwin42-mt-x64-1_67.a"; path = "../../lib/libboost_thread-clang-darwin42-mt-x64-1_67.a"; sourceTree = "<group>"; };
 		B5D09CED20AE740C0036BB57 /* libepilogger.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libepilogger.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		B5F6F2BB24E7437C006627C7 /* libboost_program_options-clang-darwin110-mt-x64-1_74.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_program_options-clang-darwin110-mt-x64-1_74.a"; path = "../../lib/libboost_program_options-clang-darwin110-mt-x64-1_74.a"; sourceTree = "<group>"; };
-		B5F6F2BD24E74ED9006627C7 /* libboost_timer-clang-darwin110-mt-x64-1_74.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_timer-clang-darwin110-mt-x64-1_74.a"; path = "../../lib/libboost_timer-clang-darwin110-mt-x64-1_74.a"; sourceTree = "<group>"; };
-		B5F6F2BF24E74EEC006627C7 /* libboost_chrono-clang-darwin110-mt-x64-1_74.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_chrono-clang-darwin110-mt-x64-1_74.a"; path = "../../lib/libboost_chrono-clang-darwin110-mt-x64-1_74.a"; sourceTree = "<group>"; };
-		B5F6F2C124E7507A006627C7 /* libboost_context-clang-darwin110-mt-x64-1_74.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_context-clang-darwin110-mt-x64-1_74.a"; path = "../../lib/libboost_context-clang-darwin110-mt-x64-1_74.a"; sourceTree = "<group>"; };
 		B5F6F2C524E750A3006627C7 /* EpAttribute.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EpAttribute.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -202,7 +189,6 @@
 				B5379F442542537B009A8047 /* libboost_chrono.a in Frameworks */,
 				B5379F472542537B009A8047 /* libboost_date_time.a in Frameworks */,
 				B583D0C31FA97F20007C07F0 /* city.o in Frameworks */,
-				B5379F452542537B009A8047 /* libboost_thread.a in Frameworks */,
 				B5379F462542537B009A8047 /* libboost_timer.a in Frameworks */,
 				B5379F412542537B009A8047 /* libboost_program_options.a in Frameworks */,
 				B5379F422542537B009A8047 /* libboost_context.a in Frameworks */,
@@ -421,20 +407,8 @@
 				B5379F402542537B009A8047 /* libboost_date_time.a */,
 				B5379F3A2542537B009A8047 /* libboost_program_options.a */,
 				B5379F3C2542537B009A8047 /* libboost_system.a */,
-				B5379F3E2542537B009A8047 /* libboost_thread.a */,
 				B5379F3F2542537B009A8047 /* libboost_timer.a */,
-				B5F6F2C124E7507A006627C7 /* libboost_context-clang-darwin110-mt-x64-1_74.a */,
-				B5F6F2BF24E74EEC006627C7 /* libboost_chrono-clang-darwin110-mt-x64-1_74.a */,
-				B5F6F2BD24E74ED9006627C7 /* libboost_timer-clang-darwin110-mt-x64-1_74.a */,
-				B5F6F2BB24E7437C006627C7 /* libboost_program_options-clang-darwin110-mt-x64-1_74.a */,
-				B5C695CA202A1553001DC0F3 /* libboost_date_time-clang-darwin42-mt-x64-1_67.a */,
-				B5C695CB202A1553001DC0F3 /* libboost_program_options-clang-darwin42-mt-x64-1_67.a */,
-				B5C695CC202A1553001DC0F3 /* libboost_thread-clang-darwin42-mt-x64-1_67.a */,
-				B580E2451FB64D0A00DD177B /* libboost_system-clang-darwin42-mt-x64-1_67.a */,
-				B580E2421FB64CF100DD177B /* libboost_chrono-clang-darwin42-mt-x64-1_67.a */,
-				B580E2411FB64CF100DD177B /* libboost_timer-clang-darwin42-mt-x64-1_67.a */,
 				B583D0C21FA97F20007C07F0 /* city.o */,
-				B583D0C01FA97F0D007C07F0 /* libboost_context-clang-darwin42-mt-x64-1_67.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -562,9 +536,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B584EF381FA97E2E00A8B431 /* epitest */,
 				B5C695B72029E42A001DC0F3 /* epilog */,
 				B5D09CEC20AE740C0036BB57 /* epilogger */,
+				B584EF381FA97E2E00A8B431 /* epitest */,
 			);
 		};
 /* End PBXProject section */
@@ -751,6 +725,7 @@
 		B584EF411FA97E2E00A8B431 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CODE_SIGN_STYLE = Automatic;
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../boost/",
@@ -765,6 +740,7 @@
 		B584EF421FA97E2E00A8B431 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CODE_SIGN_STYLE = Automatic;
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../boost/",

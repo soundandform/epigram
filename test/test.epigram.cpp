@@ -137,3 +137,154 @@ doctest ("epigram.delivery")
 
 
 
+
+template <typename ... types_t>
+struct JdThreadedObjPool
+{
+	// reuses objects to avoid (but not eliminate) allocating in realtime threads
+	// also manages lifetimes so that "garbage collection" can happen in main or bookkeeping thread
+	
+	template <typename ... T>
+	vector <size_t> GetHashCodes  ()
+	{
+		return { typeid (T).hash_code ()... };
+	}
+
+	static constexpr size_t SharedPtrSize ()	// always 16 on clang
+	{
+		size_t size = 0;
+		auto s = { sizeof (shared_ptr <types_t>)... };
+		
+		for (auto i : s)
+			size = std::max (i, size);
+		
+		return size;
+	}
+
+	
+	void  Setup  ()
+	{
+		SharedPtrSize ();
+		
+		auto codes = GetHashCodes <types_t...> ();
+		u32 tableSize = codes.size ();
+		
+		set <u32> collisions;
+		
+		retry: collisions.clear ();
+		
+		for (auto hc : codes)
+		{
+			auto m = hc % tableSize;
+
+			if (collisions.count (m))
+			{
+				++tableSize;
+				goto retry;
+			}
+			
+			collisions.insert (m);
+		}
+		
+		jd::out ("tablesize: @", tableSize);
+		
+		m_objList.resize (tableSize);
+		
+
+		for (auto hc : codes)
+		{
+			auto m = hc % m_objList.size ();
+			
+			m_objList [m] = { new mutex, hc };
+		}
+	}
+
+
+	JdThreadedObjPool ()
+	{
+		jd::out ("obj pool");
+		
+		Setup ();
+	}
+	
+	
+	template <typename T, typename ... Args>
+	shared_ptr <T>  New  (Args && ... i_args)
+	{
+		shared_ptr <T> obj;
+		
+		size_t hashCode = typeid (T).hash_code ();
+		u32 index = hashCode % m_objList.size ();
+		
+		auto & objs = m_objList [index];		 		d_jdAssert (hashCode == objs.hashCode, "object type not added to JdThreadedObjPool <Types>");
+		{
+			mutex_lock l (* objs.lock);
+			
+			if (objs.sharedPtrs.empty ())
+			{
+				
+			}
+		}
+		
+		if (not obj)
+		{
+			obj = make_shared <T> (forward <Args> (i_args)...);
+		}
+		
+		return obj;
+	}
+	
+	
+	struct PooledObjs
+	{
+		mutex *					lock								= nullptr;		// todo delete
+		size_t					hashCode							= 0;
+	
+		struct SharedOpaque
+		{
+			u8 						sharedPtr		[SharedPtrSize ()]	= {};
+		};
+		
+		list <SharedOpaque>		free;
+	};
+
+	
+	vector <PooledObjs>					m_objList;
+};
+	
+	
+
+struct TypeA
+{
+	
+};
+
+
+struct TypeB
+{
+	TypeB (stringRef_t i_name) {}
+};
+
+struct TypeC
+{
+	
+};
+
+struct TypeD
+{
+	
+};
+
+
+doctest ("epigram.objpool")
+{
+	JdThreadedObjPool <TypeA, TypeB, TypeC> pool;
+	
+	
+	pool.New <TypeB> ("type B");
+	
+	
+}
+
+
+
