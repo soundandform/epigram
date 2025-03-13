@@ -408,12 +408,8 @@ doctest ("epigram.tasks")
 	
 	auto x = make_shared <ObjX> ();
 	auto y = make_shared <ObjY> ();
-	
-//	shared_ptr <ObjY> y;
 
-	task.getReply (y, &ObjY::GetReply, x, &ObjX::Simple, 123);
-//	task.wtf (y, &ObjY::GetReply);
-//	task.wtf (y);
+	task.replyTo (y, & ObjY::GetReply).call (x, &ObjX::Simple, 123);
 
 	std::this_thread::sleep_for (1ms);
 

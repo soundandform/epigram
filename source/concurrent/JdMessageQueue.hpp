@@ -134,6 +134,7 @@ class JdMessageQueue
 		return m_pathway.get_pathway_num_bytes ();
 	}
 	
+	u32  getMessageSize  ()  { return sizeof (T); }
 	
 	// producer --------------------------------------------------------------------------------------------------------------------------------
 	// 1. AcquireMessageSlot ()
@@ -448,123 +449,6 @@ class JdMessageQueue
 	JdThreadPortPathway <T>						m_pathway;
 };
 
-
-#if KILL
-template <typename T>
-struct JdMpMcQueueT
-{
-	void SetMaxNumElements (u32 i_numElements)
-	{
-		m_maxNumElements = Jd::RoundUpToAPowerOf2 (i_numElements);
-		m_queue.resize (m_maxNumElements);
-	}
-	
-	void Push (T && i_value)
-	{
-		unique_lock <mutex> lock (m_mutex);
-		
-		while (m_queue.size () == m_maxNumElements)
-			m_queueNotFull.wait (lock);
-
-		m_queue.push_front (i_value);
-		
-		if (m_queue.size () == 1)
-			m_queueNotEmpty.notify_one ();
-	}
-	
-	T Pop ()
-	{
-		unique_lock <mutex> lock (m_mutex);
-		
-		while (m_queue.empty ())
-			m_queueNotEmpty.wait (lock);
-
-//		T back = m_queue.back ();
-		T back = m_queue.pop_back ();
-		
-		if (m_queue.size () == m_maxNumElements - 1)
-			m_queueNotFull.notify_one ();
-
-		return back;
-	}
-	
-	
-	bool Pop (T & o_value, u32 i_microsecondsWait)
-	{
-		bool notifyProducer;
-		
-		{
-			unique_lock <mutex> lock (m_mutex);
-			
-			while (m_queue.empty ())
-			{
-				auto waitTime = std::chrono::microseconds (i_microsecondsWait);
-				
-				if (m_queueNotEmpty.wait_for (lock, waitTime) == std::cv_status::timeout)
-					return false;
-			}
-			
-			notifyProducer = (m_queue.size () == m_maxNumElements);
-
-			o_value = m_queue.pop_back ();
-//			m_queue.pop_back ();
-		}
-		
-		if (notifyProducer)
-			m_queueNotFull.notify_one ();
-
-		return true;
-	}
-	
-//	template <typename TT>
-	struct queue
-	{
-		void resize (size_t i_size)
-		{
-			m_elements.resize (i_size);
-			m_mask = i_size - 1;
-			
-		}
-		
-		size_t size () const
-		{
-			return m_frontIndex - m_backIndex;
-		}
-		
-		bool empty () const
-		{
-			return size () == 0;
-		}
-		
-		T pop_back ()
-		{
-			return m_elements [m_backIndex++ & m_mask];
-		}
-
-		
-		void push_front (T & value)
-		{
-			m_elements [m_frontIndex++ & m_mask] = value;
-		}
-
-		
-		size_t			m_frontIndex;
-		size_t			m_backIndex;
-		size_t			m_mask;
-		std::vector <T>	m_elements;
-	};
-	
-//	deque <T>									m_queue;
-	
-	queue										m_queue;
-	
-	mutex										m_mutex;
-	condition_variable							m_queueNotEmpty;
-	condition_variable							m_queueNotFull;
-	u32											m_maxNumElements		= std::numeric_limits <u32>::max ();
-};
-
-#endif
 
 
 #endif /* JdMessageQueue_hpp */
