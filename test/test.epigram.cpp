@@ -306,6 +306,16 @@ struct ObjX
 		return m_value;
 	}
 	
+	string  GetString  ()
+	{
+		return "fjkwjfowjv";
+	}
+	
+	tuple <string, std::shared <ObjX>>  ReplyWithTwoReturns ()
+	{
+		return { "whadya know?", m_this.lock () };
+	}
+	
 	~ObjX ()
 	{
 		jd::out ("an x is dead: @", Get ());
@@ -319,6 +329,8 @@ struct ObjX
 	}
 	
 	f64   	m_value		= -666;
+	
+	weak_ptr <ObjX>		m_this;
 };
 
 
@@ -397,7 +409,18 @@ struct ObjY
 	{
 		jd::out ("replied: @", i_value);
 	}
+	
+	void  ConstReply (stringRef_t i_string)
+	{
+		jd::out ("replied string: @", i_string);
+	}
+	
+	void  TwoReplyArgs (stringRef_t i_string, std::shared <ObjX> & i_objX)
+	{
+		jd::out ("two replies: @ @", i_string, i_objX.get());
+	}
 };
+
 
 
 doctest ("epigram.tasks")
@@ -408,9 +431,16 @@ doctest ("epigram.tasks")
 	
 	auto x = make_shared <ObjX> ();
 	auto y = make_shared <ObjY> ();
+	
+	x->m_this = x;
 
-	task.replyTo (y, & ObjY::GetReply).call (x, &ObjX::Simple, 123);
+	task.replyTo (y, & ObjY::GetReply).call (x, & ObjX::Simple, 123);
 
+	task.replyTo (y, & ObjY::ConstReply).call (x, & ObjX::GetString);
+	
+	task.callWithReply (y, & ObjY::TwoReplyArgs, /* <-- */ x, & ObjX::ReplyWithTwoReturns);
+
+	
 	std::this_thread::sleep_for (1ms);
 
 	task.ProcessReplies ();
