@@ -135,7 +135,7 @@ doctest ("epigram.delivery")
 }
 
 
-
+#if 0
 
 
 template <typename ... types_t>
@@ -283,8 +283,143 @@ doctest ("epigram.objpool")
 	
 	pool.New <TypeB> ("type B");
 	
+}
+
+#endif
+
+
+# include "JdMarshall.hpp"
+
+
+
+struct ObjX
+{
+	f64    Simple   (f64 i_value)
+	{
+		jd::out ("@ simple: @", this, i_value);
+		
+		return i_value + 1.5;
+	}
+	
+	f64 	Get		()
+	{
+		return m_value;
+	}
+	
+	~ObjX ()
+	{
+		jd::out ("an x is dead: @", Get ());
+	}
+	
+	void   Shared		(shared_ptr <ObjX> & shared)
+	{
+		
+		jd::out ("shared: @ @", shared.use_count (), shared->Get ());
+		shared->m_value = 333;
+	}
+	
+	f64   	m_value		= -666;
+};
+
+
+
+#if 0
+
+doctest ("epigram.marshall.raw")
+{
+	JdMarshallQueueT <128> queue;
+
+	ObjX x;
+	MarshallerT <> call (& queue);
+	
+	auto y = make_shared <ObjX> ();
+	y->m_value = 999;
+	
+	ObjX z;
+
+	call (&x, & ObjX::Simple, 123456.789);
+	call (&x, & ObjX::Shared, y);
+	call (&z, & ObjX::Simple, 9876);
+	
+	y.reset ();
+	
+	jd::out (queue.debug_get_num_messages_in_queue ());
+
+	MarshallerT <> handler (& queue);
+	handler.ProcessQueue ();
+
+ 	jd::out ("---------> x= @", x.Get ());
 	
 }
 
 
+doctest ("epigram.marshall.shared")
+{
+	JdMarshallQueueT <> queue;
 
+	auto x = make_shared <ObjX> ();
+	
+	MarshallerT <> call (& queue);
+
+	call (x, & ObjX::Simple, 77476);
+	x = nullptr;
+	
+	MarshallerT <> handler (& queue);
+	handler.ProcessQueue ();
+	
+	jd::out ("end -----------------------");
+}
+
+#endif
+
+
+doctest ("epigram.marshall.reply")
+{
+	JdMarshallQueueT <> send;
+	JdMarshallQueueT <> reply;
+
+//	auto x = make_shared <ObjX> ();
+	
+//	MarshallerT <> call (& send, & reply);
+
+	
+	
+//	call.withReply (receiver, & ObjY::GetResult, &
+	
+}
+
+
+# include <unistd.h>
+
+struct ObjY
+{
+	void  GetReply  (f64 i_value)
+	{
+		jd::out ("replied: @", i_value);
+	}
+};
+
+
+doctest ("epigram.tasks")
+{
+	JdTasks <> task;
+	
+	task.Start ();
+	
+	auto x = make_shared <ObjX> ();
+	auto y = make_shared <ObjY> ();
+	
+//	shared_ptr <ObjY> y;
+
+	task.getReply (y, &ObjY::GetReply, x, &ObjX::Simple, 123);
+//	task.wtf (y, &ObjY::GetReply);
+//	task.wtf (y);
+
+	std::this_thread::sleep_for (1ms);
+
+	task.ProcessReplies ();
+	
+	jd::out ("--------------------");
+	
+	std::this_thread::sleep_for (2000ms);
+}

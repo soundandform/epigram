@@ -114,6 +114,8 @@ class JdMessageQueue
 	// The Pop () and PopWait () functions add a mutex so that it can be multi-consumer safe/
 
 	public:
+
+	typedef T 			type;
 	
 	JdMessageQueue								(u32 i_numMessagesInQueue = 512)
 	{
@@ -382,9 +384,6 @@ class JdMessageQueue
 	}
 	
 	
-	protected:
-	
-	
 	inline T * AcquireMessageSlot (seq_t & o_sequence, u32 i_waitMilliseconds = std::numeric_limits <u32>::max ())
 	{
 		o_sequence = m_pathway.insertSequence.Acquire ();
@@ -419,6 +418,7 @@ class JdMessageQueue
 	}
 
 
+	protected:
 	
 	void  FlushQueueOverflows ()
 	{

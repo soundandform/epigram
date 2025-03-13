@@ -41,6 +41,7 @@
 		B52A13362490165200B8F3F6 /* JdConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12CD2490143400B8F3F6 /* JdConfig.cpp */; };
 		B52A13372490165B00B8F3F6 /* JdCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B52A12D32490143400B8F3F6 /* JdCore.cpp */; };
 		B530F95C2490212B009AB853 /* test.modules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B530F95B2490212B009AB853 /* test.modules.cpp */; };
+		B5356EAC2D82220A00EFFE6D /* JdMarshall.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5356EAA2D82220A00EFFE6D /* JdMarshall.cpp */; };
 		B5379F412542537B009A8047 /* libboost_program_options.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5379F3A2542537B009A8047 /* libboost_program_options.a */; };
 		B5379F422542537B009A8047 /* libboost_context.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5379F3B2542537B009A8047 /* libboost_context.a */; };
 		B5379F432542537B009A8047 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5379F3C2542537B009A8047 /* libboost_system.a */; };
@@ -163,6 +164,8 @@
 		B52A13102490143400B8F3F6 /* JdSemaphore.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdSemaphore.hpp; sourceTree = "<group>"; };
 		B52A13122490143400B8F3F6 /* JdTable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdTable.hpp; sourceTree = "<group>"; };
 		B530F95B2490212B009AB853 /* test.modules.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = test.modules.cpp; path = ../../test/test.modules.cpp; sourceTree = "<group>"; };
+		B5356EAA2D82220A00EFFE6D /* JdMarshall.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JdMarshall.cpp; sourceTree = "<group>"; };
+		B5356EAB2D82220A00EFFE6D /* JdMarshall.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JdMarshall.hpp; sourceTree = "<group>"; };
 		B5379F3A2542537B009A8047 /* libboost_program_options.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_program_options.a; path = ../../lib/libboost_program_options.a; sourceTree = "<group>"; };
 		B5379F3B2542537B009A8047 /* libboost_context.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_context.a; path = ../../lib/libboost_context.a; sourceTree = "<group>"; };
 		B5379F3C2542537B009A8047 /* libboost_system.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_system.a; path = ../../lib/libboost_system.a; sourceTree = "<group>"; };
@@ -377,6 +380,8 @@
 		B52A13062490143400B8F3F6 /* concurrent */ = {
 			isa = PBXGroup;
 			children = (
+				B5356EAA2D82220A00EFFE6D /* JdMarshall.cpp */,
+				B5356EAB2D82220A00EFFE6D /* JdMarshall.hpp */,
 				B52A13072490143400B8F3F6 /* JdThreadPort.cpp */,
 				B52A13082490143400B8F3F6 /* JdFiber.hpp */,
 				B52A13092490143400B8F3F6 /* JdAtomicBankSwitch.hpp */,
@@ -570,6 +575,7 @@
 				B52A131A2490143400B8F3F6 /* JdUUID.cpp in Sources */,
 				B52A13162490143400B8F3F6 /* JdConfig.cpp in Sources */,
 				B52A131E2490143400B8F3F6 /* JdUtils.cpp in Sources */,
+				B5356EAC2D82220A00EFFE6D /* JdMarshall.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
