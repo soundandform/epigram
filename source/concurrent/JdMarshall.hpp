@@ -32,7 +32,6 @@ template <u32 t_size = c_defaultMarshallSize>
 using JdMarshallQueueT = JdMessageQueue <JdMarshallOpaque <t_size>>;
 
 
-
 namespace JdMarshallObj
 {
 	template <typename Obj, typename Cast, typename T, typename R, typename... Args>
@@ -85,8 +84,6 @@ auto wrap_in_a_tuple_if_not_a_tuple(T * i_value) {
 	else
 		return std::make_tuple (std::forward<T> (* i_value));
 }
-
-
 
 
 namespace JdMarshallObj
@@ -160,6 +157,7 @@ namespace JdMarshallObj
 	};
 
 
+
 	template <typename RQ, typename RO, typename RF, typename T, typename R, typename... Args>
 	struct StaticToRawT
 	{
@@ -176,17 +174,24 @@ namespace JdMarshallObj
 
 		T												tuple;		// tuple's gotta go last
 		
+		
+		template <typename Tuple>
+		static void Reply (RQ & i_queue, RO * i_object, RF i_replyFunction, Tuple && i_tuple)
+		{
+			typedef JdMarshallObj::Raw <RO, Tuple, RF> marshall_t;								 d_jdAssert (sizeof (marshall_t) <= i_queue->getMessageSize ());
+
+			seq_t sequence; auto slot = i_queue->AcquireMessageSlot (sequence);
+			
+			new (slot) marshall_t { .object= i_object, .function= i_replyFunction, .tuple= i_tuple };
+			
+			i_queue->CommitMessage (sequence);
+		}
+		
 		static void Call (StaticToRawT * _this)
 		{
 			R result = std::apply (_this->function, _this->tuple);
 
-			typedef JdMarshallObj::Raw <RO, R, RF> marshall_t;
-			
-			seq_t sequence; auto slot = _this->queue->AcquireMessageSlot (sequence);
-			
-			new (slot) marshall_t { .object= _this->expectant, .function= _this->replyFunction, .tuple= result };
-			
-			_this->queue->CommitMessage (sequence);
+			Reply (_this->queue, _this->expectant, _this->replyFunction, wrap_in_a_tuple_if_not_a_tuple (& result));
 			
 			_this->~StaticToRawT ();
 		}
@@ -442,7 +447,6 @@ struct JdTasks
 	:
 	m_thread (i_threadName.data ()) 
 	{
-		jd::out ("task: @", this);
 	}
 	
 	
@@ -461,7 +465,6 @@ struct JdTasks
 			while (not m_quit)
 			{
 				Marshall::ProcessQueue (* m_taskQueue);
-
 				++m_numTasksRan;
 			}
 			
@@ -470,15 +473,12 @@ struct JdTasks
 		
 		void					Quit			() 
 		{
-			jd::out ("quiting @", this);
 			m_quit = true;
 		}
 
-		JdResult                Break           () override
+		void	                Break           () override
 		{
 			Marshall::call (* m_taskQueue, this, & Thread::Quit);
-			
-			return c_jdNoErr;
 		}
 
 		shared <JdMarshallQueueT <t_marshallSize>>			m_taskQueue;
@@ -499,6 +499,13 @@ struct JdTasks
 		m_thread->m_replyQueue	= m_replyQueue;
 
 		m_thread.Start ();
+	}
+
+	
+	template <typename R, typename... Args, typename ... Ins>
+	void call (R (* i_function)(Args...), Ins && ... i_args)
+	{
+		Marshall::Static (* m_taskQueue, i_function, i_args...);
 	}
 
 	

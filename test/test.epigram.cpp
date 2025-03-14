@@ -477,6 +477,7 @@ doctest ("epigram.tasks")
 	task.replyTo (y.get (), & ObjY::TwoReplies).call (& ObjY::StaticFunc2, 777);
 
 	
+	
 	std::this_thread::sleep_for (5ms);
 
 	jd::out ("--------------------");

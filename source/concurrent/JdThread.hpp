@@ -75,7 +75,7 @@ struct IJdThread
     virtual ~                       IJdThread       () { };
     virtual JdResult                Setup           () 												{ return c_jdNoErr; }		// Setup happens in creator thread (which is probably main)
     virtual JdResult                Run             (EpigramRef i_args, IJdThread::Info & i_info)	= 0;
-    virtual JdResult                Break           () 												{ return c_jdNoErr; }
+    virtual void	                Break           () 												{ }
 	virtual JdResult                Finalize        (const JdResult &i_runResult) 					{ return i_runResult; }		// Finalize happens in-thread
     virtual JdResult                Teardown        (const JdResult &i_runResult)					{ return i_runResult; }		// Teardown happens in creator thread (which is probably main)
 };
@@ -307,7 +307,7 @@ class JdThreadT
         m_state = c_jdThreadState::quiting;
 
 		auto p = static_cast <IJdThread *> (m_implementation);
-		result = p->Break ();
+		p->Break ();
 
 		u32 sleepTime = i_waitToExitMicroseconds / 1000;
 		
