@@ -419,12 +419,33 @@ struct ObjY
 	{
 		jd::out ("two replies: @ @", i_string, i_objX.get());
 	}
+	
+	static int StaticFunc (f64 i_static)
+	{
+		jd::out ("static: @", i_static);
+		
+		return -1;
+	}
+	
+	void  TwoReplies (f64 i_value, string_view i_string)
+	{
+		jd::out ("two replies: @ @", i_value, i_string.data ());
+	}
+
+	static tuple <int, string> StaticFunc2 (f64 i_static)
+	{
+		jd::out ("static: @", i_static);
+		
+		return { -1, "poioiuyuty" };
+	}
+
 };
 
 
 
 doctest ("epigram.tasks")
 {
+	jd::out ("---------------------------------------------------------------------------------");
 	JdTasks <> task;
 	
 	task.Start ();
@@ -434,18 +455,34 @@ doctest ("epigram.tasks")
 	
 	x->m_this = x;
 
-	task.replyTo (y, & ObjY::GetReply).call (x, & ObjX::Simple, 123);
+//	task.replyTo (y, & ObjY::GetReply).call (x, & ObjX::Simple, 123);
+//
+//	task.replyTo (y, & ObjY::ConstReply).call (x, & ObjX::GetString);
+//
+//	task.replyTo (y, & ObjY::TwoReplyArgs).call (x, & ObjX::ReplyWithTwoReturns);
+//
+//	Marshall::call (* task.m_taskQueue, x.get (), & ObjX::Simple, 777);
 
-	task.replyTo (y, & ObjY::ConstReply).call (x, & ObjX::GetString);
+//	Marshall::call (* task.m_taskQueue, & ObjY::StaticFunc, 777);
+
+//	Marshall::call (* task.m_taskQueue, & ObjY::StaticFunc, 777);
 	
-	task.callWithReply (y, & ObjY::TwoReplyArgs, /* <-- */ x, & ObjX::ReplyWithTwoReturns);
+//	Marshall::callWithReply (task.m_replyQueue, y, & ObjY::TwoReplies,
+//							 * task.m_taskQueue, & ObjY::StaticFunc2, 777);
+
+//	Marshall::callWithReply (task.m_replyQueue, y.get (), & ObjY::TwoReplies,
+//							 * task.m_taskQueue, & ObjY::StaticFunc2, 777);
 
 	
-	std::this_thread::sleep_for (1ms);
+	task.replyTo (y.get (), & ObjY::TwoReplies).call (& ObjY::StaticFunc2, 777);
 
+	
+	std::this_thread::sleep_for (5ms);
+
+	jd::out ("--------------------");
 	task.ProcessReplies ();
 	
 	jd::out ("--------------------");
 	
-	std::this_thread::sleep_for (2000ms);
+	std::this_thread::sleep_for (200ms);
 }

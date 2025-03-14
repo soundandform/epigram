@@ -13,13 +13,14 @@ const u32 c_defaultMarshallSize = 256;
 
 namespace std
 {
-	template <typename T> using shared = shared_ptr <T>;
+	template <typename T> using shared 	= shared_ptr <T>;
+	template <typename T> using weak 	= weak_ptr <T>;
 }
 
 template <u32 t_size>
-struct JdMarshalled
+struct JdMarshallOpaque
 {
-	typedef void (* invoke_t) (JdMarshalled *);
+	typedef void (* invoke_t) (JdMarshallOpaque *);
 
 	invoke_t		invoke;
 
@@ -28,11 +29,11 @@ struct JdMarshalled
 
 
 template <u32 t_size = c_defaultMarshallSize>
-using JdMarshallQueueT = JdMessageQueue <JdMarshalled <t_size>>;
+using JdMarshallQueueT = JdMessageQueue <JdMarshallOpaque <t_size>>;
 
 
 
-namespace JdMarshall
+namespace JdMarshallObj
 {
 	template <typename Obj, typename Cast, typename T, typename R, typename... Args>
 	struct Shared
@@ -54,6 +55,24 @@ namespace JdMarshall
 		}
 	};
 
+	template <typename RO, typename T, typename RF>
+	struct Raw
+	{
+		typedef void (* invoke_t) (Raw *);
+		
+		invoke_t				invoke = & Call;
+		
+		RO *					object;
+		RF						function;
+		T						tuple;			// tuple's gotta go last
+		
+		static void Call (Raw * _this)
+		{
+			std::apply (std::bind_front (_this->function, _this->object), _this->tuple);
+			_this->~Raw ();
+		}
+	};
+
 }
 
 template <typename> struct is_tuple: std::false_type {};
@@ -67,36 +86,37 @@ auto wrap_in_a_tuple_if_not_a_tuple(T * i_value) {
 		return std::make_tuple (std::forward<T> (* i_value));
 }
 
-template <typename Q, typename D, typename R, typename Tuple, typename... Args>
-static void JdMarshallReply (Q & i_queue, std::shared <D> & i_object, R (D::* i_function)(Args...), Tuple && i_tuple)
-{																															using namespace std;
-	typedef tuple <typename decay <Args>::type...>  tuple_t;
-	typedef JdMarshall::Shared <D, D, tuple_t, R, Args...> marshall_t;				d_jdAssert (sizeof (marshall_t) <= sizeof (typename Q::type));
-
-	seq_t sequence;
-	auto slot = i_queue.AcquireMessageSlot (sequence);
-	
-	new ((void *) slot) marshall_t { .object= i_object, .function= i_function, .tuple= i_tuple};
-	
-	i_queue.CommitMessage (sequence);
-}
 
 
 
-namespace JdMarshall
+namespace JdMarshallObj
 {
-	template <typename RQ, typename RO, typename RF, typename Obj, typename T, typename R, typename... Args>
-	struct SharedWithReplyT
-	{
-		typedef void (* invoke_t) (SharedWithReplyT *);
-		
-		typedef R 		(Obj::* function_t) 	(Args...);
-//		typedef void 	(RO::* reply_t) 		(RA...);
 
+	template <typename Q, typename D, typename R, typename Tuple, typename... Args>
+	static void Reply (Q & i_queue, std::shared <D> & i_object, R (D::* i_function)(Args...), Tuple && i_tuple)
+	{																															using namespace std;
+	//	typedef tuple <typename decay <Args>::type...>  tuple_t;
+		typedef Tuple  tuple_t;		// don't mutate the return tuple.  keep a string a string so it can cast to a string_view, for example
+		typedef JdMarshallObj::Shared <D, D, tuple_t, R, Args...> marshall_t;				d_jdAssert (sizeof (marshall_t) <= sizeof (typename Q::type));
+
+		seq_t sequence;
+		auto slot = i_queue.AcquireMessageSlot (sequence);
+		
+		new ((void *) slot) marshall_t { .object= i_object, .function= i_function, .tuple= i_tuple};
+		
+		i_queue.CommitMessage (sequence);
+	}
+
+
+	template <typename RQ, typename RO, typename RF, typename TO, typename T, typename R, typename... Args>
+	struct SharedToSharedT
+	{
+		typedef void	(* invoke_t)			(SharedToSharedT *);
+		typedef R 		(TO::* function_t) 	(Args...);
 		
 		invoke_t										invoke = & Call;
 		
-		std::shared	<Obj>								object;
+		std::shared	<TO>								object;
 		function_t										function;
 			
 		RQ												queue;
@@ -105,30 +125,82 @@ namespace JdMarshall
 
 		T												tuple;		// tuple's gotta go last
 		
-		static void Call (SharedWithReplyT * _this)
+		static void Call (SharedToSharedT * _this)
 		{
 			R result = std::apply (std::bind_front (_this->function, _this->object.get ()), _this->tuple);
 			
-			JdMarshallReply (* _this->queue, _this->expectant, _this->replyFunction, wrap_in_a_tuple_if_not_a_tuple (& result));
+			Reply (* _this->queue, _this->expectant, _this->replyFunction, wrap_in_a_tuple_if_not_a_tuple (& result));
 			
-			_this->~SharedWithReplyT ();
+			_this->~SharedToSharedT ();
+		}
+	};
+
+	template <typename RQ, typename RO, typename RF, typename T, typename R, typename... Args>
+	struct StaticToSharedT
+	{
+		typedef void	(* invoke_t)			(StaticToSharedT *);
+		typedef R 		(* function_t) 			(Args...);
+		
+		invoke_t										invoke = & Call;
+		
+		function_t										function;
+			
+		RQ												queue;
+		std::shared <RO>								expectant;
+		RF												replyFunction;
+
+		T												tuple;		// tuple's gotta go last
+		
+		static void Call (StaticToSharedT * _this)
+		{
+			R result = std::apply (_this->function, _this->tuple);
+			Reply (* _this->queue, _this->expectant, _this->replyFunction, wrap_in_a_tuple_if_not_a_tuple (& result));
+			_this->~StaticToSharedT ();
 		}
 	};
 
 
+	template <typename RQ, typename RO, typename RF, typename T, typename R, typename... Args>
+	struct StaticToRawT
+	{
+		typedef void	(* invoke_t)			(StaticToRawT *);
+		typedef R 		(* function_t) 			(Args...);
+		
+		invoke_t										invoke = & Call;
+		
+		function_t										function;
+			
+		RQ												queue;
+		RO *											expectant;
+		RF												replyFunction;
+
+		T												tuple;		// tuple's gotta go last
+		
+		static void Call (StaticToRawT * _this)
+		{
+			R result = std::apply (_this->function, _this->tuple);
+
+			typedef JdMarshallObj::Raw <RO, R, RF> marshall_t;
+			
+			seq_t sequence; auto slot = _this->queue->AcquireMessageSlot (sequence);
+			
+			new (slot) marshall_t { .object= _this->expectant, .function= _this->replyFunction, .tuple= result };
+			
+			_this->queue->CommitMessage (sequence);
+			
+			_this->~StaticToRawT ();
+		}
+	};
 	
-	template <typename Obj, typename T, typename R, typename... Args>
+	template <typename Obj, typename T, typename R, typename Fun, typename... Args>
 	struct Unsafe
 	{
 		typedef void (* invoke_t) (void *);
 
-		typedef R (Obj::* function_t) (Args...);
-
-		invoke_t				invoke = & Call;
-		
-		Obj *					object;
-		function_t				function;
-		T						tuple;	// tuple's gotta go last
+		invoke_t				invoke;
+		Obj *					object;			// unused for Static case
+		Fun						function;
+		T						tuple;			// tuple's gotta go last
 		
 		static void Call (void * i_marshall)
 		{
@@ -136,107 +208,184 @@ namespace JdMarshall
 			std::apply (std::bind_front (_this->function, _this->object), _this->tuple);
 			_this->~Unsafe ();
 		}
+		
+		static void CallStatic (void * i_marshall)
+		{
+			auto _this = (Unsafe *) i_marshall;
+			std::apply (_this->function, _this->tuple);
+			_this->~Unsafe ();
+		}
 	};
 }
 
 
+// TOQUE: should the marshalled tuple be the decayed args of the target function (cast at start) or the input args (cast in thread)
 
-struct Marshaller
+
+struct Marshall
 {
-	template <typename Q, typename D, typename DCast, typename R, typename... Args, typename ... Ins>
-	static void MarshallShared (Q & i_queue, std::shared <D> & i_object, R (DCast::* i_function)(Args...), Ins && ... i_args)
-	{																			using namespace std;
-		typedef tuple <typename decay <Args>::type...>  tuple_t;
-		typedef JdMarshall::Shared <D, DCast, tuple_t, R, Args...> marshall_t;							 d_jdAssert (sizeof (marshall_t) <= i_queue.getMessageSize ());
+	// RQ: ReplyQueue
+	// RO: ReplyObject
+	// RA: ReplyArgs
+	// TO: TargetObject
 	
-		seq_t sequence;
-		auto slot = i_queue.AcquireMessageSlot (sequence);
-		
-		new ((void *) slot) marshall_t { .object= i_object, .function= i_function, .tuple= { i_args... }};
-		
-		i_queue.CommitMessage (sequence);
-	}
-
-	// ReplyQueue
-	// ReplyObject
-	// ReplyArg
-	
-	template <typename RQ, typename RO, typename Q, typename D, typename R, typename... RA, typename... Args, typename ... Ins>
-	static void  SharedWithReply  (RQ & i_replyQueue, std::shared <RO> & i_expectantObj, void (RO::* i_replyFunction) (RA...), Q & i_queue, std::shared <D> & i_object, R (D::* i_function)(Args...), Ins && ... i_args)
+	template <typename RQ, typename RO, typename Q, typename TO, typename R, typename... RA, typename... Args, typename ... Ins>
+	static void  SharedToShared   (RQ & i_replyQueue, std::shared <RO> & i_expectantObj, void (RO::* i_replyFunction) (RA...),
+								   Q & i_queue, std::shared <TO> & i_object, R (TO::* i_function)(Args...), Ins && ... i_args)
 	{																				using namespace std;
 		typedef tuple <typename decay <Args>::type...>  tuple_t;
 		
 		typedef void (RO::* replyFunction_t) (RA...);
 		
-		
-		typedef JdMarshall::SharedWithReplyT <RQ, RO, replyFunction_t, D, tuple_t, R, Args...> marshall_t;				d_jdAssert (sizeof (marshall_t) <= i_queue.getMessageSize ());
+		typedef JdMarshallObj::SharedToSharedT <RQ, RO, replyFunction_t, TO, tuple_t, R, Args...> marshall_t;				d_jdAssert (sizeof (marshall_t) <= i_queue.getMessageSize ());
 	
 		seq_t sequence;
 		auto slot = i_queue.AcquireMessageSlot (sequence);
 		
-		new ((void *) slot) marshall_t { .object= i_object, .function= i_function, 
+		new (slot) marshall_t { .object= i_object, .function= i_function,
 										 .queue = i_replyQueue, .expectant= i_expectantObj, .replyFunction = i_replyFunction, .tuple= { i_args... }};
 		
 		i_queue.CommitMessage (sequence);
 	}
 
 	
-	template <typename Q, typename D, typename R, typename... Args, typename ... Ins>
-	static void MarshallRaw (Q & i_queue, D * i_object, R (D::* i_function)(Args...), Ins && ... i_args)
-	{																			using namespace std;
+	template <typename RQ, typename RO, typename Q, typename R, typename... RA, typename... Args, typename ... Ins>
+	static void  StaticToShared   (RQ & i_replyQueue, std::shared <RO> & i_expectantObj, void (RO::* i_replyFunction) (RA...),
+								   Q & i_queue, R (* i_staticFunction)(Args...), Ins && ... i_args)
+	{																				using namespace std;
 		typedef tuple <typename decay <Args>::type...>  tuple_t;
-		typedef JdMarshall::Unsafe <D, tuple_t, R, Args...> marshall_t;									d_jdAssert (sizeof (marshall_t) <= i_queue.getMessageSize ());
-	
-		seq_t sequence;
-		auto slot = i_queue.AcquireMessageSlot (sequence);
 		
-		new ((void *) slot) marshall_t { .object= i_object, .function= i_function, .tuple= { i_args... }};
+		typedef void (RO::* replyFunction_t) (RA...);
+		
+		typedef JdMarshallObj::StaticToSharedT <RQ, RO, replyFunction_t, tuple_t, R, Args...> marshall_t;				d_jdAssert (sizeof (marshall_t) <= i_queue.getMessageSize ());
+
+		seq_t sequence; auto slot = i_queue.AcquireMessageSlot (sequence);
+
+		new (slot) marshall_t { .function= i_staticFunction,
+										 .queue = i_replyQueue, .expectant= i_expectantObj, .replyFunction = i_replyFunction, .tuple= { i_args... }};
 		
 		i_queue.CommitMessage (sequence);
 	}
 
-	//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	
+	template <typename RQ, typename RO, typename Q, typename R, typename... RA, typename... Args, typename ... Ins>
+	static void  StaticToRaw	  (RQ & i_replyQueue, RO * i_expectantObj, void (RO::* i_replyFunction) (RA...),
+								   Q & i_queue, R (* i_staticFunction)(Args...), Ins && ... i_args)
+	{																				using namespace std;
+		typedef tuple <typename decay <Args>::type...>  tuple_t;
+		
+		typedef void (RO::* replyFunction_t) (RA...);
+		
+		typedef JdMarshallObj::StaticToRawT <RQ, RO, replyFunction_t, tuple_t, R, Args...> marshall_t;				d_jdAssert (sizeof (marshall_t) <= i_queue.getMessageSize ());
+
+		seq_t sequence; auto slot = i_queue.AcquireMessageSlot (sequence);
+
+		new ((void *) slot) marshall_t { .function= i_staticFunction,
+										 .queue = i_replyQueue, .expectant= i_expectantObj, .replyFunction = i_replyFunction, .tuple= { i_args... }};
+		
+		i_queue.CommitMessage (sequence);
+	}
+	
+	
+	template <typename Q, typename TO, typename TOCast, typename R, typename... Args, typename ... Ins>
+	static void  Shared  (Q & i_queue, std::shared <TO> & i_object, R (TOCast::* i_function)(Args...), Ins && ... i_args)
+	{																			using namespace std;
+		typedef tuple <typename decay <Args>::type...>  tuple_t;
+		typedef JdMarshallObj::Shared <TO, TOCast, tuple_t, R, Args...> marshall_t;										 d_jdAssert (sizeof (marshall_t) <= i_queue.getMessageSize ());
+	
+		seq_t sequence;
+		auto slot = i_queue.AcquireMessageSlot (sequence);
+		
+		new (slot) marshall_t { .object= i_object, .function= i_function, .tuple= { i_args... }};
+		
+		i_queue.CommitMessage (sequence);
+	}
+	
+	
+	template <typename Q, typename TO, typename R, typename... Args, typename ... Ins>
+	static void  Raw  (Q & i_queue, TO * i_object, R (TO::* i_function)(Args...), Ins && ... i_args)
+	{																											using namespace std;
+		typedef R (TO::* function_t) (Args...);
+		typedef tuple <typename decay <Args>::type...>  tuple_t;
+		typedef JdMarshallObj::Unsafe <TO, tuple_t, R, function_t, Args...> marshall_t;							d_jdAssert (sizeof (marshall_t) <= i_queue.getMessageSize ());
+	
+		seq_t sequence; auto slot = i_queue.AcquireMessageSlot (sequence);
+		
+		new (slot) marshall_t { .invoke = & marshall_t::Call, .object= i_object, .function= i_function, .tuple= { i_args... }};
+		
+		i_queue.CommitMessage (sequence);
+	}
+
+	template <typename Q, typename R, typename... Args, typename ... Ins>
+	static void  Static  (Q & i_queue, R (* i_function) (Args...), Ins && ... i_args)
+	{																														using namespace std;
+		typedef R (* function_t) (Args...);
+		typedef tuple <typename decay <Args>::type...>  tuple_t;
+		typedef JdMarshallObj::Unsafe <void, tuple_t, R, function_t, Args...> marshall_t;									d_jdAssert (sizeof (marshall_t) <= i_queue.getMessageSize ());
+	
+		seq_t sequence; auto slot = i_queue.AcquireMessageSlot (sequence);
+		
+		new (slot) marshall_t { .invoke = & marshall_t::CallStatic, .function= i_function, .tuple= { i_args... }};
+		
+		i_queue.CommitMessage (sequence);
+	}
+
+	
+	// Shared --------------------------------------------------------------------------------------------------------------------------------------------
 	template <u32 t_size, typename D, typename R, typename... Args, typename ... Ins>
 	static void call (JdMarshallQueueT <t_size> & i_queue, std::shared <D> & i_dest, R (D::* i_function)(Args...), Ins && ... i_args)
 	{
-		MarshallShared (i_queue, i_dest, i_function, i_args...);
+		Shared (i_queue, i_dest, i_function, i_args...);
 	}
 	
-	// these all could be static but a warning here about static operator () is in C++Whatever
-	template <u32 t_size, typename D, typename R, typename... Args, typename ... Ins>
-	void operator () (JdMarshallQueueT <t_size> & i_queue, std::shared <D> & i_dest, R (D::* i_function)(Args...), Ins && ... i_args)
-	{
-		MarshallShared (i_queue, i_dest, i_function, i_args...);
-	}
 	
-	//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	// Raw -----------------------------------------------------------------------------------------------------------------------------------------------
 	
-	template <u32 t_size, typename D, typename R, typename... Args, typename ... Ins>
-	void operator () (JdMarshallQueueT <t_size> & i_queue, D * i_raw, R (D::* i_function)(Args...), Ins && ... i_args)
-	{
-		MarshallRaw (i_queue, i_raw, i_function, i_args...);
-	}
-
 	template <u32 t_size, typename D, typename R, typename... Args, typename ... Ins>
 	static void call (JdMarshallQueueT <t_size> & i_queue, D * i_raw, R (D::* i_function)(Args...), Ins && ... i_args)
 	{
-		MarshallRaw (i_queue, i_raw, i_function, i_args...);
+		Raw (i_queue, i_raw, i_function, i_args...);
 	}
 
-	//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	template <u32 t_size, typename R, typename... Args, typename ... Ins>
+	static void call (JdMarshallQueueT <t_size> & i_queue, R (* i_function)(Args...), Ins && ... i_args)
+	{
+		Static (i_queue, i_function, i_args...);
+	}
+
+	
+	//----------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 	template <u32 t_sizeReply, u32 t_size, typename RO, typename DO, typename R, typename... Args, typename ... Ins>
-	void withReply (std::shared <JdMarshallQueueT <t_sizeReply>> & i_replyQueue, std::shared <RO> & i_expectant, void (RO::* i_replyFunction) (R),
-					JdMarshallQueueT <t_size> & i_queue, std::shared <DO> & i_dest, R (DO::* i_function)(Args...), Ins && ... i_args)
+	static void callWithReply (std::shared <JdMarshallQueueT <t_sizeReply>> & i_replyQueue, std::shared <RO> & i_expectant, void (RO::* i_replyFunction) (R),
+						JdMarshallQueueT <t_size> & i_queue, std::shared <DO> & i_dest, R (DO::* i_function)(Args...), Ins && ... i_args)
 	{
-		 Marshaller::SharedWithReply  (i_replyQueue, i_expectant, i_replyFunction,
+		Marshall::SharedToShared  (i_replyQueue, i_expectant, i_replyFunction,
 									   i_queue, i_dest, i_function, i_args...);
+	}
+
+
+	template <u32 t_sizeReply, u32 t_sizeCall, typename RO,  typename R, typename... RA, typename... Args, typename ... Ins>
+	static void callWithReply (std::shared <JdMarshallQueueT <t_sizeReply>> & i_replyQueue, std::shared <RO> & i_expectant, void (RO::* i_replyFunction) (RA...),
+							   JdMarshallQueueT <t_sizeCall> & i_queue, R (* i_staticFunction)(Args...), Ins && ... i_args)
+	{
+		Marshall::StaticToShared  (i_replyQueue, i_expectant, i_replyFunction,
+									i_queue, i_staticFunction, i_args...);
+	}
+
+	
+	template <u32 t_sizeReply, u32 t_sizeCall, typename RO,  typename R, typename... RA, typename... Args, typename ... Ins>
+	static void callWithReply (std::shared <JdMarshallQueueT <t_sizeReply>> & i_replyQueue, RO * i_rawExpectant, void (RO::* i_replyFunction) (RA...),
+							   JdMarshallQueueT <t_sizeCall> & i_queue, R (* i_staticFunction)(Args...), Ins && ... i_args)
+	{
+		Marshall::StaticToRaw  (i_replyQueue, i_rawExpectant, i_replyFunction,
+									i_queue, i_staticFunction, i_args...);
 	}
 
 	
 	template <u32 t_size>
-	static void  ProcessQueue  (JdMarshallQueueT <t_size> & i_queue, u32 const i_numMessages = std::numeric_limits <u32>::max ())
+	static u32  ProcessQueue  (JdMarshallQueueT <t_size> & i_queue, u32 const i_numMessages = std::numeric_limits <u32>::max ())
 	{
 		u32 numMessages = i_queue.ClaimMessages (i_numMessages);
 		
@@ -247,6 +396,8 @@ struct Marshaller
 		}
 		
 		i_queue.ReleaseMessages (numMessages);
+		
+		return numMessages;
 	}
 };
 
@@ -271,7 +422,7 @@ struct JdObjMarshallerT
 	template <typename D, typename R, typename... Args, typename ... Ins>
 	void operator () (R (D::* i_function)(Args...), Ins && ... i_args)
 	{
-		Marshaller::MarshallShared (* m_queue, m_dest, i_function, i_args...);
+		Marshall::Shared (* m_queue, m_dest, i_function, i_args...);
 	}
 
 	JdMarshallQueueT <t_size> *		m_queue			= nullptr;
@@ -287,10 +438,12 @@ using namespace std;
 template <u32 t_marshallSize = c_defaultMarshallSize, u32 t_replyMarshallSize = c_defaultMarshallSize>
 struct JdTasks
 {
-	JdTasks (string_view i_threadName = "unnamed")
+	JdTasks (u32 i_numThreads = 1, string_view i_threadName = "unnamed")
 	:
-	m_thread (i_threadName.data ())
-	{ }
+	m_thread (i_threadName.data ()) 
+	{
+		jd::out ("task: @", this);
+	}
 	
 	
 	~ JdTasks ()
@@ -307,7 +460,7 @@ struct JdTasks
 			
 			while (not m_quit)
 			{
-				Marshaller::ProcessQueue (* m_taskQueue);
+				Marshall::ProcessQueue (* m_taskQueue);
 
 				++m_numTasksRan;
 			}
@@ -315,11 +468,15 @@ struct JdTasks
 			return result;
 		}
 		
-		void					Quit			() { m_quit = true; }
+		void					Quit			() 
+		{
+			jd::out ("quiting @", this);
+			m_quit = true;
+		}
 
 		JdResult                Break           () override
 		{
-			Marshaller::call (* m_taskQueue, this, & Thread::Quit);
+			Marshall::call (* m_taskQueue, this, & Thread::Quit);
 			
 			return c_jdNoErr;
 		}
@@ -344,50 +501,60 @@ struct JdTasks
 		m_thread.Start ();
 	}
 
-//	template <typename RO, typename DO, typename R, typename... Args, typename ... Ins>
-//	void callWithReply (std::shared <RO> & i_expectant, void (RO::* i_replyFunction) (R), /* <-- */ std::shared <DO> & i_dest, R (DO::* i_function)(Args...), Ins && ... i_args)
-//	{
-//		Marshaller::SharedWithReply  (m_replyQueue, i_expectant, i_replyFunction,
-//									  * m_taskQueue, i_dest, i_function, i_args...);
-//	}
-
-	template <typename RO, typename DO, typename R, typename... RA, typename... Args, typename ... Ins>
-	void callWithReply (std::shared <RO> & i_expectant, void (RO::* i_replyFunction) (RA...), /* <-- */ std::shared <DO> & i_dest, R (DO::* i_function)(Args...), Ins && ... i_args)
-	{
-		Marshaller::SharedWithReply  (m_replyQueue, i_expectant, i_replyFunction,
-									  * m_taskQueue, i_dest, i_function, i_args...);
-	}
-
 	
-	template <typename RO, typename Arg>
+	template <typename WRO, typename RO, typename...  Replies>
 	struct ReplyInfo
 	{
 		template <typename DO, typename R, typename... Args, typename ... Ins>
 		void call (std::shared <DO> & i_dest, R (DO::* i_function)(Args...), Ins && ... i_args)
 		{
-			Marshaller::SharedWithReply  (tasks.m_replyQueue, expectant, replyFunction,
+			Marshall::SharedToShared  (tasks.m_replyQueue, expectant, replyFunction,
 										  * tasks.m_taskQueue, i_dest, i_function, i_args...);
 		}
 
-		typedef void (RO::* replyFunction_t) (Arg);
+		template <typename R, typename... Args, typename ... Ins>
+		void call (R (* i_staticFunction)(Args...), Ins && ... i_args)
+		{
+			Marshall::StaticToRaw  (tasks.m_replyQueue, expectant, replyFunction,
+									* tasks.m_taskQueue, i_staticFunction, i_args...);
+		}
+
+		
+		typedef void (RO::* replyFunction_t) (Replies...);
 
 		JdTasks	&				tasks;
-		std::shared <RO>		expectant;
+		WRO						expectant;
 		replyFunction_t			replyFunction;
 	};
-	
-	
+
+
+	// Shared
 	template <typename RO, typename... Args>
-	ReplyInfo <RO, Args...>  replyTo  (std::shared <RO> & i_expectant, void (RO::* i_replyFunction) (Args...))
+	ReplyInfo <std::shared <RO>, RO, Args...>  replyTo  (std::shared <RO> & i_expectant, void (RO::* i_replyFunction) (Args...))
 	{
-		return { *this, i_expectant, i_replyFunction };
+		return { * this, i_expectant, i_replyFunction };
 	}
-	
+
+	// Weak
+	template <typename RO, typename... Args>
+	ReplyInfo <std::shared <RO>, RO, Args...>  replyTo  (std::weak <RO> & i_expectant, void (RO::* i_replyFunction) (Args...))
+	{
+		return { * this, i_expectant.lock (), i_replyFunction };
+	}
+
+	// Raw
+	template <typename RO, typename... Args>
+	ReplyInfo <RO *, RO, Args...>  replyTo  (RO * i_expectant, void (RO::* i_replyFunction) (Args...))
+	{
+		return { * this, i_expectant, i_replyFunction };
+	}
+
 
 	//----------------------------------------------------------------------------------------------------------------
 	void  ProcessReplies  (u32 const i_numMessages = std::numeric_limits <u32>::max ())
 	{
-		Marshaller::ProcessQueue (* m_replyQueue, i_numMessages);
+		if (m_replyQueue)
+			Marshall::ProcessQueue (* m_replyQueue, i_numMessages);
 	}
 	
 	//----------------------------------------------------------------------------------------------------------------
