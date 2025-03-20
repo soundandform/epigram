@@ -1864,6 +1864,7 @@ class EpigramT : public interface_t
 		size_t					Count					() const					{ return this->count; }
 
 		bool					IsSet					() const					{ return this->valueType != c_jdTypeId::unknown; }
+		bool					isSet					() const					{ return IsSet (); }
 		bool					IsNull					() const					{ return not IsSet (); }
 		
 		u8						GetKeyTypeId			() const					{ return this->keyType; }

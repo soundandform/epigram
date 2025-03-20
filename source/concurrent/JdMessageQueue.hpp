@@ -30,7 +30,7 @@ struct /* alignas (c_jdCacheLineBytes) */ JdCacheLinePadded
 };
 
 
-class JdPortSequence : protected JdCacheLinePadded <atomic <seq_t>>
+class JdPortSequence : public JdCacheLinePadded <atomic <seq_t>>
 {
 	public:
 					JdPortSequence		(seq_t i_initTo)
@@ -60,21 +60,17 @@ class JdPortSequence : protected JdCacheLinePadded <atomic <seq_t>>
 };
 
 
-const u32 c_jdThreadPort_startIndex = 0xffffffffffffff71;	// to prove these mechanisms are integer wrap-around safe
+const u64 c_jdThreadPort_startIndex = 0xffffffffffffff71;	// to prove these mechanisms are integer wrap-around safe
 
 
 template <typename MessageRecord>
 struct JdThreadPortPathway
 {
-	JdThreadPortPathway	() { }
-	
-//	JdThreadPortPathway	(u32 i_pathwaySizeInNumMessages)
-//	{
-//		u32 roundSize = Jd::Pow2CeilLog2 (i_pathwaySizeInNumMessages);
-//		m_queue.Resize (roundSize);
-//		m_sequenceMask = --roundSize;
-//	}
-	
+	JdThreadPortPathway	()
+	{
+		insertSequence.value = commitSequence.value = claimSequence.value = 1;//  std::rand () % 100000;
+	}
+		
 	void SetPathwaySize (u32 i_pathwaySizeInNumMessages)
 	{
 		u32 roundSize = Jd::Pow2CeilLog2 (i_pathwaySizeInNumMessages);
@@ -205,7 +201,7 @@ class JdMessageQueue
 	inline u32 ClaimMessages (u32 i_maxMessagesToClaim = std::numeric_limits <u32>::max ())
 	{
 		i64 available = m_signalCount.value;	// available always monotonically increases from this perspective as the consumer
-
+		
 		available = std::min (available, (i64) i_maxMessagesToClaim);
 		
 		m_signalCount.value -= available;
@@ -214,35 +210,14 @@ class JdMessageQueue
 	}
 	
 	
-	inline u32 WaitForMessages (i32 i_maxMessagesToGrab)
-	{
-		i64 available = m_signalCount.value;	// available always monotonically increases from this perspective as the consumer
-		
-		available = std::max (available, (i64) 1); // wait for at least one
-		available = std::min (available, (i64) i_maxMessagesToGrab);
-		
-		i64 previous = m_signalCount.value.fetch_sub (available);
-		
-		if (previous < available)
-			m_signal.Wait ();
-		
-		return available;
-	}
-	
-	
-	inline u32 WaitForMessages (bool i_wait = true, i32 i_maxMessagesToGrab = std::numeric_limits <i32>::max ())
+	inline u32 WaitForMessages (u32 i_maxMessagesToGrab = std::numeric_limits <u32>::max ())
 	{
 		d_jdAssert (m_acquiredPending == 0, "implement");
 		
 		i64 available = m_signalCount.value;	// available always monotonically increases from this perspective as the consumer
 		
 		if (available == 0)
-		{
-			if (not i_wait)
-				return 0;
-			else
-				available = 1; // try to grab at least one, probably triggering a wait below
-		}
+			available = 1; // try to grab at least one, probably triggering a wait below
 		
 		available = std::min (available, (i64) i_maxMessagesToGrab);
 		
@@ -255,7 +230,7 @@ class JdMessageQueue
 	}
 
 	
-	inline u32 TimedWaitForMessages (u32 i_timeoutInMicroseconds, i32 i_maxMessagesToGrab = std::numeric_limits <i32>::max ())
+	inline u32 TimedWaitForMessages (u32 i_timeoutInMicroseconds, u32 i_maxMessagesToGrab = std::numeric_limits <u32>::max ())
 	{
 		i64 available;
 		

@@ -21,7 +21,6 @@ template <u32 t_size>
 struct JdMarshallOpaque
 {
 	typedef void (* invoke_t) (JdMarshallOpaque *);
-
 	invoke_t		invoke;
 
 	u8 				opaque		[t_size - sizeof (invoke_t)];
@@ -99,7 +98,7 @@ namespace JdMarshallObj
 		seq_t sequence;
 		auto slot = i_queue.AcquireMessageSlot (sequence);
 		
-		new ((void *) slot) marshall_t { .object= i_object, .function= i_function, .tuple= i_tuple};
+		new (slot) marshall_t { .object= i_object, .function= i_function, .tuple= i_tuple};
 		
 		i_queue.CommitMessage (sequence);
 	}
@@ -244,8 +243,7 @@ struct Marshall
 		
 		typedef JdMarshallObj::SharedToSharedT <RQ, RO, replyFunction_t, TO, tuple_t, R, Args...> marshall_t;				d_jdAssert (sizeof (marshall_t) <= i_queue.getMessageSize ());
 	
-		seq_t sequence;
-		auto slot = i_queue.AcquireMessageSlot (sequence);
+		seq_t sequence; auto slot = i_queue.AcquireMessageSlot (sequence);
 		
 		new (slot) marshall_t { .object= i_object, .function= i_function,
 										 .queue = i_replyQueue, .expectant= i_expectantObj, .replyFunction = i_replyFunction, .tuple= { i_args... }};
@@ -285,7 +283,7 @@ struct Marshall
 
 		seq_t sequence; auto slot = i_queue.AcquireMessageSlot (sequence);
 
-		new ((void *) slot) marshall_t { .function= i_staticFunction,
+		new (slot) marshall_t { .function= i_staticFunction,
 										 .queue = i_replyQueue, .expectant= i_expectantObj, .replyFunction = i_replyFunction, .tuple= { i_args... }};
 		
 		i_queue.CommitMessage (sequence);
@@ -297,15 +295,28 @@ struct Marshall
 	{																			using namespace std;
 		typedef tuple <typename decay <Args>::type...>  tuple_t;
 		typedef JdMarshallObj::Shared <TO, TOCast, tuple_t, R, Args...> marshall_t;										 d_jdAssert (sizeof (marshall_t) <= i_queue.getMessageSize ());
-	
-		seq_t sequence;
-		auto slot = i_queue.AcquireMessageSlot (sequence);
+																											
+		seq_t sequence; auto slot = i_queue.AcquireMessageSlot (sequence);
 		
 		new (slot) marshall_t { .object= i_object, .function= i_function, .tuple= { i_args... }};
 		
 		i_queue.CommitMessage (sequence);
 	}
+
 	
+	template <typename Q, typename TO, typename TOCast, typename R, typename Tuple, typename... Args>
+	static void  SharedPreCast  (Q & i_queue, std::shared <TO> & i_object, R (TOCast::* i_function)(Args...), Tuple && i_tuple)
+	{																			using namespace std;
+		typedef tuple <typename decay <Args>::type...>  tuple_t;
+		typedef JdMarshallObj::Shared <TO, TOCast, tuple_t, R, Args...> marshall_t;										 d_jdAssert (sizeof (marshall_t) <= i_queue.getMessageSize ());
+																											
+		seq_t sequence; auto slot = i_queue.AcquireMessageSlot (sequence);
+		
+		new (slot) marshall_t { .object= i_object, .function= i_function, .tuple= i_tuple };
+		
+		i_queue.CommitMessage (sequence);
+	}
+
 	
 	template <typename Q, typename TO, typename R, typename... Args, typename ... Ins>
 	static void  Raw  (Q & i_queue, TO * i_object, R (TO::* i_function)(Args...), Ins && ... i_args)
@@ -390,9 +401,9 @@ struct Marshall
 
 	
 	template <u32 t_size>
-	static u32  ProcessQueue  (JdMarshallQueueT <t_size> & i_queue, u32 const i_numMessages = std::numeric_limits <u32>::max ())
+	static u32  ProcessQueue  (JdMarshallQueueT <t_size> & i_queue, bool i_wait, u32 const i_numMessages = std::numeric_limits <u32>::max ())
 	{
-		u32 numMessages = i_queue.ClaimMessages (i_numMessages);
+		u32 numMessages = i_wait ? i_queue.WaitForMessages (i_numMessages) : i_queue.ClaimMessages (i_numMessages);
 		
 		for (u32 i = 0; i < numMessages; ++i)
 		{
@@ -416,18 +427,20 @@ struct JdObjMarshallerT
 	m_dest		(i_other.m_dest)
 	{ }
 
-	
-	
 	JdObjMarshallerT  (JdMarshallQueueT <t_size> * i_queue, std::shared <Obj> && i_destination)
 	:
 	m_queue		(i_queue),
 	m_dest		(i_destination)
 	{ }
 	
-	template <typename D, typename R, typename... Args, typename ... Ins>
-	void operator () (R (D::* i_function)(Args...), Ins && ... i_args)
+	template <typename R, typename... Args, typename ... Ins>
+	void operator () (R (Cast::* i_function)(Args...), Ins && ... i_args)
 	{
-		Marshall::Shared (* m_queue, m_dest, i_function, i_args...);
+		typedef tuple <typename std::decay <Args>::type...>  tuple_t;
+	
+		// args get casted here. so, in the case of Lua arg-testing, things blow up here instead of 
+		// mid message commit, which left the sequence # dangling
+		Marshall::SharedPreCast (* m_queue, m_dest, i_function, tuple_t { i_args... });
 	}
 
 	JdMarshallQueueT <t_size> *		m_queue			= nullptr;
@@ -446,8 +459,7 @@ struct JdTasks
 	JdTasks (u32 i_numThreads = 1, string_view i_threadName = "unnamed")
 	:
 	m_thread (i_threadName.data ()) 
-	{
-	}
+	{}
 	
 	
 	~ JdTasks ()
@@ -464,7 +476,7 @@ struct JdTasks
 			
 			while (not m_quit)
 			{
-				Marshall::ProcessQueue (* m_taskQueue);
+				Marshall::ProcessQueue (* m_taskQueue, true);
 				++m_numTasksRan;
 			}
 			
@@ -561,7 +573,7 @@ struct JdTasks
 	void  ProcessReplies  (u32 const i_numMessages = std::numeric_limits <u32>::max ())
 	{
 		if (m_replyQueue)
-			Marshall::ProcessQueue (* m_replyQueue, i_numMessages);
+			Marshall::ProcessQueue (* m_replyQueue, false, i_numMessages);
 	}
 	
 	//----------------------------------------------------------------------------------------------------------------
