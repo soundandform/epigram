@@ -80,7 +80,7 @@ namespace Jd
 	}
 	
 	template <typename T, u32 t_length>
-	u32 SizeOfArray (const T (&) [t_length])
+	constexpr u32 SizeOfArray (const T (&) [t_length])
 	{
 		return t_length;
 	}

@@ -464,6 +464,12 @@ struct JdTasks
 	
 	~ JdTasks ()
 	{
+		Stop ();
+	}
+	
+	
+	void  Stop  ()
+	{
 		m_thread.Stop ();
 		ProcessReplies ();
 	}

@@ -279,17 +279,19 @@ class JdLua
 	}
 	
 
-	Result				HashScript							(string_view i_functionName, JdMD5::MD5 & o_hash, string_view i_script, string_view i_scriptName, vector <u8> * o_bytecode = nullptr);
+	// i_mainName is simply an identifier that's pushed into the Result struct in the case of an error.
+	Result				HashScript							(string_view i_mainName, JdMD5::MD5 & o_hash, string_view i_script, string_view i_scriptName, vector <u8> * o_bytecode = nullptr);
 
-	Result				LoadAndCallScript					(stringRef_t i_functionName, stringRef_t i_script, vector <u8> * o_bytecode = nullptr)
+	// if i_script [0] = '@', then i_script is a filename
+	Result				LoadAndCallScript					(stringRef_t i_mainName, stringRef_t i_script, vector <u8> * o_bytecode = nullptr)
 	{
-		return LoadAndCallScript (i_functionName, i_script.c_str (), nullptr, o_bytecode);
+		return LoadAndCallScript (i_mainName, i_script.c_str (), nullptr, o_bytecode);
 	}
 
-	Result				CompileScript						(stringRef_t i_functionName, cstr_t i_script, JdMD5::MD5 * io_hashCheck, vector <u8> * o_bytecode = nullptr);
+	Result				CompileScript						(stringRef_t i_mainName, cstr_t i_script, JdMD5::MD5 * io_hashCheck, vector <u8> * o_bytecode = nullptr);
 	
 	// If io_hashCheck is set, only loads script if hash differs. returns new hash
-	Result				LoadAndCallScript					(stringRef_t i_functionName, cstr_t i_script, JdMD5::MD5 * io_hashCheck, vector <u8> * o_bytecode = nullptr);
+	Result				LoadAndCallScript					(stringRef_t i_mainName, cstr_t i_script, JdMD5::MD5 * io_hashCheck, vector <u8> * o_bytecode = nullptr);
 
 	
 
@@ -970,7 +972,12 @@ class JdLua
 		lua_setglobal			(L, i_functionName);
 	}
 
-	
+	void				BindFunction						(cstr_t i_functionName, lua_CFunction i_cFunction)
+	{
+		lua_pushcfunction		(L, i_cFunction);
+		lua_setglobal			(L, i_functionName);
+	}
+
 	Epigram						ConvertTableToEpigram (i32 i_tableIndex)
 	{
 		Epigram e;

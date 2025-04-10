@@ -111,7 +111,7 @@ int JdLua::HandleLuaError (lua_State * L)
 {
 //	jd::out (lua_gettop (L));
 	
-//	string s = lua_tostring (L, -1);			jd::out ("@\n-------------------", s);
+	string s = lua_tostring (L, -1);			jd::out ("@\n-------------------", s);
 	
 	u32 level = 1;
 	lua_Debug ar = {};
@@ -148,7 +148,7 @@ int JdLua::HandleLuaError (lua_State * L)
 
 
 
-JdLua::Result  JdLua::HashScript  (string_view i_functionName, JdMD5::MD5 & o_hash, string_view i_script, string_view i_scriptName, vector <u8> * o_bytecode)
+JdLua::Result  JdLua::HashScript  (string_view i_mainName, JdMD5::MD5 & o_hash, string_view i_script, string_view i_scriptName, vector <u8> * o_bytecode)
 {
 	Result result;
 	
@@ -165,14 +165,14 @@ JdLua::Result  JdLua::HashScript  (string_view i_functionName, JdMD5::MD5 & o_ha
 			
 			o_hash = bcw.Get ();
 		}
-		else result = ParseErrorMessage (luaResult, i_functionName);
+		else result = ParseErrorMessage (luaResult, i_mainName);
 	}
 	
 	return result;
 }
 
 
-JdLua::Result  JdLua::CompileScript  (stringRef_t i_functionName, cstr_t i_script, JdMD5::MD5 * io_hashCheck, vector <u8> * o_bytecode)
+JdLua::Result  JdLua::CompileScript  (stringRef_t i_mainName, cstr_t i_script, JdMD5::MD5 * io_hashCheck, vector <u8> * o_bytecode)
 {
 	Result result;
 	
@@ -180,11 +180,16 @@ JdLua::Result  JdLua::CompileScript  (stringRef_t i_functionName, cstr_t i_scrip
 
 	if (L)
 	{
-		int r = luaL_loadstring (L, i_script);
+		int r;
+		
+		if (i_script [0] == '@')
+			r = luaL_loadfile (L, i_script + 1);
+		else
+			r = luaL_loadstring (L, i_script);
 		
 		if (r)
 		{
-			result = ParseErrorMessage (r, i_functionName);
+			result = ParseErrorMessage (r, i_mainName);
 			if (io_hashCheck)
 				io_hashCheck->Clear ();
 		}
@@ -213,16 +218,16 @@ JdLua::Result  JdLua::CompileScript  (stringRef_t i_functionName, cstr_t i_scrip
 }
 
 
-JdLua::Result  JdLua::LoadAndCallScript  (stringRef_t i_functionName, cstr_t i_script, JdMD5::MD5 * io_hashCheck, vector <u8> * o_bytecode)
+JdLua::Result  JdLua::LoadAndCallScript  (stringRef_t i_mainName, cstr_t i_script, JdMD5::MD5 * io_hashCheck, vector <u8> * o_bytecode)
 {
-	Result result = CompileScript (i_functionName, i_script, io_hashCheck, o_bytecode);
+	Result result = CompileScript (i_mainName, i_script, io_hashCheck, o_bytecode);
 	
 	if (not result)
 	{
 		int r = lua_pcall (L, 0, 0, 0);
 		if (r)
 		{
-			result = ParseErrorMessage (r, i_functionName);
+			result = ParseErrorMessage (r, i_mainName);
 			if (io_hashCheck)
 				io_hashCheck->Clear ();
 		}
