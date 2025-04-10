@@ -1090,9 +1090,12 @@ class JdLua
 		return table;
 	}
 	
-	static void					TableToEpigram				(lua_State * L, i32 i_tableIndex, Epigram & o_msg, u32 depth = 0)
+	static void					TableToEpigram				(lua_State * L, i32 i_tableIndex, Epigram & o_msg, u32 i_maxDepth = 10000, u32 i_depth = 0)
 	{
 		if (not L)	return;
+		
+		if (i_depth > i_maxDepth)
+			return;
 		
 		if (i_tableIndex < 0)
 		{
@@ -1129,7 +1132,7 @@ class JdLua
 					else if (valueType == LUA_TTABLE)
 					{
 						Epigram archive;
-						TableToEpigram (L, lua_gettop (L), archive, depth+1);
+						TableToEpigram (L, lua_gettop (L), archive, i_maxDepth, i_depth + 1);
 						o_msg (archive);
 					}
 				}
@@ -1144,7 +1147,7 @@ class JdLua
 						else if (valueType == LUA_TTABLE)
 						{
 							Epigram msg;
-							TableToEpigram (L, lua_gettop (L), msg, depth+1);
+							TableToEpigram (L, lua_gettop (L), msg, i_maxDepth, i_depth + 1);
 							
 							bool isArray = false;
 							if (msg.Count() == 1)
