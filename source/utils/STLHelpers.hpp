@@ -127,6 +127,20 @@ void sort (Container & i_container, const Compare & i_compare)
 	std::sort (i_container.begin (), i_container.end (), i_compare);
 }
 
+
+
+template <typename T>
+bool update (T & io_value, T const & i_newValue)
+{
+	if (io_value != i_newValue)
+	{
+		io_value = i_newValue;
+		return true;
+	}
+	else return false;
+}
+
+
 }
 
 
