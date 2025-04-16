@@ -329,18 +329,6 @@ namespace Jd
 		return (i_typeId & c_jdTypeId::isPointer);
 	}
 
-	bool IsFloatingPointType (u8 i_typeId)		{ return (i_typeId == c_jdTypeId::f64 or i_typeId == c_jdTypeId::f32); }
-	
-	bool IsIntegerType (u8 i_typeId)			{ return (i_typeId >= c_jdTypeId::i8 and i_typeId <= c_jdTypeId::u64); }
-
-	bool IsSignedIntegerType (u8 i_typeId)		{ return (i_typeId >= c_jdTypeId::i8 and i_typeId <= c_jdTypeId::i64); }
-
-	bool IsUnsignedIntegerType (u8 i_typeId)	{ return (i_typeId >= c_jdTypeId::u8 and i_typeId <= c_jdTypeId::u64); }
-
-	bool IsNumberType (u8 i_typeId)
-	{
-		return IsFloatingPointType (i_typeId) or IsIntegerType (i_typeId);
-	}
 	
 
 	bool IsTypeSet (u8 i_typeId)

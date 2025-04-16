@@ -166,11 +166,16 @@ namespace Jd
 	u8 TypeCharToId (char i_typeChar);
 	
 	bool IsPointer (u8 i_typeId);
-	bool IsIntegerType (u8 i_typeId);
-	bool IsFloatingPointType (u8 i_typeId);
-	bool IsSignedIntegerType (u8 i_typeId);
-	bool IsUnsignedIntegerType (u8 i_typeId);
-	bool IsNumberType (u8 i_typeId);
+	
+	constexpr bool IsFloatingPointType (u8 i_typeId)		{ return (i_typeId == c_jdTypeId::f64 or i_typeId == c_jdTypeId::f32); }
+	
+	constexpr bool IsIntegerType (u8 i_typeId)				{ return (i_typeId >= c_jdTypeId::i8 and i_typeId <= c_jdTypeId::u64); }
+
+	constexpr bool IsSignedIntegerType (u8 i_typeId)		{ return (i_typeId >= c_jdTypeId::i8 and i_typeId <= c_jdTypeId::i64); }
+
+	constexpr bool IsUnsignedIntegerType (u8 i_typeId)		{ return (i_typeId >= c_jdTypeId::u8 and i_typeId <= c_jdTypeId::u64); }
+
+	constexpr bool IsNumberType (u8 i_typeId)				{ return IsFloatingPointType (i_typeId) or IsIntegerType (i_typeId); }
 	
 	bool IsTypeSet (u8 i_typeId);
 
@@ -298,7 +303,9 @@ namespace Jd
 
 			type_if <std::is_same <Jd::NoType, T>::value,		NoTypeId,						typeIdF>::type						typeIdG;
 
-			type_if <std::is_base_of <Typed, T>::value,			T,								typeIdG>::type						type;
+			type_if <std::is_same <std::string_view, T>::value,	EpigramStringTypeId,			typeIdG>::type						typeIdH;
+
+			type_if <std::is_base_of <Typed, T>::value,			T,								typeIdH>::type						type;
 		};
 	}
 
