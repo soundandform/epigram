@@ -281,6 +281,45 @@ JdLua::Result  JdLua::LoadAndCallScript  (stringRef_t i_mainName, cstr_t i_scrip
 }
 
 
+
+Epigram  JdLua::CallObject  (string_view i_functionName, Epigram && i_args, Result * o_result)
+{
+	Epigram returns;
+	
+	Result result;
+	
+	m_errorLocation.clear ();
+	
+	if (i_functionName.find (".") != string_view::npos or i_functionName.find (":") != string_view::npos)
+	{
+		string path (i_functionName);
+		
+		auto pos = path.find (":");
+		if (pos != string::npos)
+			path [pos] = '.';
+
+		auto top = lua_gettop (L);
+
+		if (FindFunctionInTable (0, path.c_str ()))
+		{
+			m_functionName = i_functionName;
+			result = ExecuteFunction (nullptr, returns, i_args, -1);
+			m_functionName.clear ();
+		}
+
+		lua_settop (L, top);
+	}
+//		else return ExecuteFunction (i_functionName, i_args, 0, o_result);
+	
+	if (o_result)
+		* o_result = result;
+	
+	return returns;
+}
+
+
+
+
 vector <string>  JdLua::GetGlobalsOfType  (JdLua::Result & o_result, i32 i_luaType)
 {
 	vector <string> names;

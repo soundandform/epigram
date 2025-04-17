@@ -370,110 +370,62 @@ class JdLua
 //	{
 //		lua_getglobal (L, i_functionName);
 //	}
+
+	
+	Epigram					CallObject				(string_view i_functionName, Epigram && i_args = Epigram (), Result * o_result = nullptr);
+	// i_functionName can have the form: "someTable.someNestedTable:function"
+
+//	Epigram					CallObject				(int i_luaTableRef, string_view i_functionName, Epigram && i_args = Epigram (), Result * o_result = nullptr);
 	
 	
-//	f64				Call					(f64 i_arg)
-//	{
-//		f64 r = 0.;
-//
-//		if (L)
-//		{
-//			lua_pushvalue (L, -1);			// copy the function to be called
-//			lua_pushnumber (L, i_arg);
-//			lua_call (L, 1, 1);
-//			r = lua_tonumber (L, -1);
-//			lua_pop (L, 1);					// pop the result
-//		}
-//
-//		return r;
-//	}
-	
-#if 0
-	Epigram               Call1 			           (stringRef_t i_functionName, Epigram i_args = Epigram ())
+	template <typename T>
+	void  PushArg  (T const & i_arg)
 	{
-		Epigram result;
+		constexpr u8 typeId = Jd::TypeId <T> ();
 		
-		cstr_t functionName = i_functionName.c_str ();
-		
-		if (strstr (functionName, ".") or strstr (functionName, ":"))
+		if constexpr (Jd::IsNumberType (typeId))
 		{
-			string path = i_functionName;
-			
-			bool isObjectCall = false;
-			
-			auto pos = path.find (":");
-			if (pos != string::npos)
-			{
-				path [pos] = '.';
-				isObjectCall = true;
-			}
-			
-			FindFunctionInTable (0, path.c_str (), i_args, result, isObjectCall);
-			
-			return result;
+			lua_pushnumber (L, i_arg);
 		}
-		else return ExecuteFunction (i_functionName.c_str (), i_args, 0);
+		else if constexpr (std::is_same <T, string>::value)
+		{
+			lua_pushstring (L, i_arg.cstr ());
+		}
 	}
-#endif
-
 	
-	Epigram               CallObject		           (string_view i_functionName, Epigram && i_args = Epigram (), Result * o_result = nullptr)
-	{
-		Epigram returns;
-		
-		Result result;
-		
-		m_errorLocation.clear ();
-		
-		if (i_functionName.find (".") != string_view::npos or i_functionName.find (":") != string_view::npos)
-		{
-			string path (i_functionName);
-			
-			bool isObjectCall = false;
-			
-			auto pos = path.find (":");
-			if (pos != string::npos)
-			{
-				path [pos] = '.';
-				isObjectCall = true;
-			}
-
-			auto top = lua_gettop (L);
-
-			if (FindFunctionInTable (0, path.c_str ()))
-			{
-				m_functionName = i_functionName;
-				result = ExecuteFunction (nullptr, returns, i_args, -1);
-				m_functionName.clear ();
-			}
-
-			lua_settop (L, top);
-		}
-//		else return ExecuteFunction (i_functionName, i_args, 0, o_result);
-		
-		if (o_result)
-			* o_result = result;
-		
-		return returns;
-	}
-
-	/*
-	Result					Call					(cstr_t i_functionName, IEpigramIn i_args = nullptr, IEpigramOut o_args = nullptr)
+	template <typename... Args>
+	Result					CallObject				(int i_tableRef, string_view i_functionName, tuple <Args...> const & i_args)
 	{
 		Result result;
 		
-		Epigram out = Call (i_functionName, i_args, & result);
-		if (o_args)
-			o_args->Deliver (out);
+		int top = lua_gettop (L);
 		
+		lua_rawgeti (L, LUA_REGISTRYINDEX, i_tableRef);
+		
+		if (lua_istable (L, -1))
+		{
+			lua_getfield (L, -1, i_functionName.data ());
+			
+			if (lua_isfunction (L, -1))
+			{
+				lua_pushvalue (L, -2);		// need to copy the table to the self arg: [table][func][self=table]
+				
+				std::apply ([this] (auto && ... arg)
+				{
+					(PushArg (arg), ...);
+				},
+				i_args);
+				
+				int luaResult = lua_pcall (L, lua_gettop (L) - top - 2, 0, 1);
+
+				result = ParseErrorMessage (luaResult, i_functionName.data ());
+			}
+		}
+		
+		lua_settop (L, top);
+
 		return result;
 	}
-
-	Result					Call					(stringRef_t i_functionName, IEpigramIn i_args = nullptr, IEpigramOut o_args = nullptr)
-	{
-		return Call (i_functionName.c_str (), i_args, o_args);
-	}
-	*/
 	
 	Epigram					GetGlobalTable			(string_view i_tableName)
 	{
@@ -764,154 +716,6 @@ class JdLua
 		return false;
 	}
 
-#if 0
-	bool                        FindFunctionInTable         (i32 i_tableIndex, cstr_t i_path, EpDelivery i_args, IEpigramOut o_result,
-															 bool i_isObjectCall, i32 i_depth = 0)
-	{
-		bool found = false;
-		
-		if (not L) return found;
-		
-		cstr_t dot = strstr (i_path, ".");
-		
-		string searchFor;
-		string subPath;
-		
-		if (dot)
-		{
-			string path = i_path;
-			searchFor = path.substr (0, dot - i_path);
-			subPath = dot + 1;
-			
-			//			cout << "searchFor: " << searchFor << endl;
-			//			cout << "subPath: " << subPath << endl;
-			
-			if (i_depth == 0)
-				
-			{
-				i32 top = lua_gettop (L);
-				//                cout << "top: " << top << endl;
-				
-				//                cout << "root table: " << searchFor << endl;
-				lua_getglobal (L, searchFor.c_str());
-				
-				found = FindFunctionInTable (lua_gettop (L), subPath.c_str(), i_args, o_result, i_isObjectCall, i_depth + 1);
-				//                d_mpAssert (lua_gettop (m_lua) == top, "stack whacked");
-				
-				lua_pop (L, 1);
-				
-				top = lua_gettop (L);
-				//                cout << "end-top: " << top << endl;
-				
-				return found;
-			}
-		}
-		else searchFor = i_path;
-		
-		//        cout << "find: " << searchFor << " in " << i_tableIndex << endl;
-		//		cout << "tableindex: " << i_tableIndex << endl;
-		
-		if (lua_istable (L, i_tableIndex))
-		{
-			lua_pushnil (L);
-			
-			while (lua_next (L, i_tableIndex))
-			{
-				int keyType = lua_type (L, -2);
-				int valueType = lua_type (L, -1);
-				
-				if (keyType == LUA_TSTRING)
-				{
-					string key = lua_tostring (L, -2);
-					
-					//					cout << "searching for " << searchFor << " : " << key << "....\n";
-					
-					if (key == searchFor)
-					{
-						//                        cout << "found\n";
-						
-						if (valueType == LUA_TTABLE)
-						{
-							found = FindFunctionInTable (lua_gettop (L), subPath.c_str (), i_args, o_result, i_isObjectCall, i_depth + 1);
-						}
-						else if (valueType == LUA_TFUNCTION)
-						{
-							d_jdAssert (subPath.size() == 0, "found a function when looking for a table");
-							
-							i32 objectIndex = 0;
-							if (i_isObjectCall)
-								objectIndex = i_tableIndex;
-							
-							Epigram out = ExecuteFunction (nullptr, i_args, objectIndex);
-							
-							if (o_result)
-								o_result->Deliver (out);
-							
-							//                            cout << "function\n";
-							found = true;
-						}
-						
-						lua_pop (L, 2);
-						break;
-					}
-				}
-				
-				lua_pop (L, 1); // pop value
-			}
-			
-			if (! found)	// look through metatable
-			{
-				if (lua_getmetatable (L, i_tableIndex))
-				{
-					i32 metatable = lua_gettop (L);
-					
-					//					cout << "searching metatable...\n";
-					lua_pushnil (L);
-					
-					while (lua_next (L, metatable))
-					{
-						int keyType = lua_type (L, -2);
-						int valueType = lua_type (L, -1);
-						
-						if (keyType == LUA_TSTRING)
-						{
-							string key = lua_tostring (L, -2);
-							
-							//							cout << "searching  metatable for " << searchFor << " : " << key << "....\n";
-							
-							if (key == "__index")
-							{
-								if (valueType == LUA_TTABLE)
-								{
-									found = FindFunctionInTable (lua_gettop (L), searchFor.c_str(), i_args, o_result, i_isObjectCall, i_depth + 1);
-								}
-								
-								//								else if (valueType == LUA_TFUNCTION)
-								//								{
-								//									d_mpAssert (subPath.size() == 0, "found a function when looking for a table");
-								//
-								//									if (o_result) *o_result = ExecuteFunction (nullptr, i_args);
-								//
-								//									//                            cout << "function\n";
-								//									found = true;
-								//								}
-								//
-								lua_pop (L, 2);
-								break;
-							}
-						}
-						
-						lua_pop (L, 1); // pop value
-					}
-					
-					lua_pop (L, 1); // pop metatable
-				}
-			}
-		}
-		
-		return found;
-	}
-#endif
 	
 	template <typename EpigramType>
 	static void  PushEpigramToTable  (lua_State * L, EpigramType const & i_epigram, i32 i_tableIndex = 0)
