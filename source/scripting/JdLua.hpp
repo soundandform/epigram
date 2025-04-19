@@ -484,7 +484,7 @@ class JdLua
 				// TODO: reimplement require () to add error handler
 				// can just wrap require. with pcall!?
 				
-				std::string s = lua_tostring (L, -1);							// jd::out (s);
+				std::string s = lua_tostring (L, -1);					//		jd::out (s);
 				lua_pop (L, 1);
 				
 				// there's a specific error message from the package library / require (...). Example:
@@ -536,6 +536,9 @@ class JdLua
 					sscanf (m [1].str ().c_str (), "%d", & location.lineNum);
 				}
 				else error.errorMsg = s;
+				
+				while (error.errorMsg.c_str () [0] == ' ')
+					error.errorMsg = error.errorMsg.substr (1);
 				
 				error.location = m_errorLocation;
 				
