@@ -68,8 +68,8 @@ class JdLua
 	
 	static void Hook (lua_State * L, lua_Debug * ar)
 	{
-//		jd::out ("hook!");
-		luaL_error (L, "infinite loop");
+		jd::out ("hook!");
+//		luaL_error (L, "infinite loop");
 	}
 	
 	template <typename T>
@@ -1045,7 +1045,7 @@ class JdLua
 
 			lua_pushcfunction 		(L, HandleLuaError);
 
-	//			lua_sethook (L, Hook, LUA_MASKCOUNT, 0xA0000000);
+//				lua_sethook (L, Hook, LUA_MASKCOUNT, 0xA0000000);
 		}
 	}
 	

@@ -1,21 +1,19 @@
 //
 //  JdThread.hpp
-//  Jigidesign
 //
-//  Created b1y Steven Massey on 11/10/12.
+//  Created by Steven Massey on 11/10/12.
 //  Copyright (c) 2012 Jigidesign. All rights reserved.
 //
 
 #ifndef __Jigidesign__JdThread__
 #define __Jigidesign__JdThread__
 
-#include "Epilog.hpp"
-#include "Epigram.hpp"
-#include "JdSemaphore.hpp"
-#include "JdEnum.hpp"
-#include <thread>
-#include <pthread.h>
-
+# include "Epilog.hpp"
+# include "Epigram.hpp"
+# include "JdSemaphore.hpp"
+# include "JdEnum.hpp"
+# include <thread>
+# include <pthread.h>
 //#define d_epilogLibBuild 0
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------
@@ -123,6 +121,11 @@ class JdThreadT
 			}
 		}
 
+		// ASYNCHRONOUS cancellation does seem to be implemented on MacOS.
+//		int prev = 0;
+//		pthread_setcancelstate (PTHREAD_CANCEL_ENABLE, & prev);				jd::out (prev);
+//		pthread_setcanceltype (PTHREAD_CANCEL_ASYNCHRONOUS, & prev);		jd::out (prev);
+
 		if (false)
 		{
 //			cout << "min: " << sched_get_priority_min (SCHED_OTHER) << " max: " << sched_get_priority_max (SCHED_OTHER) << endl;
@@ -160,9 +163,14 @@ class JdThreadT
 		
 		JdResult runResult;
 
-		i_owner->m_threadReady.Signal();
+		i_owner->m_threadReady.Signal ();
+
+		//		pthread_cleanup_push (cleanup, i_owner);
 
 		runResult = i_implementation->Run (i_owner->m_args, info);
+		
+		//		pthread_cleanup_pop ()
+		
 		runResult = i_implementation->Finalize (runResult);
 		i_owner->Exited (runResult);
     }
@@ -190,7 +198,8 @@ class JdThreadT
         
         delete m_implementation;
 	}
-	
+
+
 	JdResult				Reset		()
 	{
 		JdResult result;
@@ -237,7 +246,7 @@ class JdThreadT
 			m_state = c_jdThreadState::running;
 			
 			m_stdThread = std::thread (Runner, this, m_implementation, m_priority);
-			m_threadReady.Wait ();	// NOTE: don't remember why i needed this, exactly. i guess it doesn't hurt
+			m_threadReady.Wait ();	// NOTE: don't remember why i needed this exactly
 		}
 		else
 		{
@@ -273,18 +282,19 @@ class JdThreadT
 		return m_exited;
 	}
 	
-	
+	/* thread cancellation doesn't work on MacOS
 	JdResult				CancelAndRestart	()
 	{
 		JdResult result;
 		
 		m_state = c_jdThreadState::zombie;
-		pthread_cancel (m_stdThread.native_handle ());
+		int r = pthread_cancel (m_stdThread.native_handle ());
+		pthread_join (m_stdThread.native_handle (), nullptr);
 
 		result = m_implementation->Teardown (m_runResult);
 		delete m_implementation;
-		m_implementation = nullptr;
-		
+		m_implementation = new t_thread;
+
 		if (not result)
 		{
 			m_state = c_jdThreadState::pending;
@@ -295,6 +305,7 @@ class JdThreadT
 		
 		return result;
 	}
+	*/
 	
 
 	JdResult				Stop 				(u32 i_waitToExitMicroseconds = 5'000'000)

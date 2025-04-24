@@ -1,6 +1,5 @@
 //
 //  JdThread.cpp
-//  Jigidesign
 //
 //  Created by Steven Massey on 11/10/12.
 //  Copyright (c) 2012 Jigidesign. All rights reserved.
@@ -24,11 +23,5 @@ bool  IsMainThread  ()
 	void EnforceMainThread ()
 	{
 		d_jdAssert (IsMainThread (), "not in main thread");
-
-		#if __APPLE__
-//			d_jdAssert (pthread_main_np (), "not in main thread");
-		#else
-			// FIX
-		#endif
 	}
 }
