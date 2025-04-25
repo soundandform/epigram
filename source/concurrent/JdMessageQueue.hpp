@@ -354,9 +354,9 @@ class JdMessageQueue
 	}
 	
 	
-	i64 debug_get_num_messages_in_queue ()
+	i64 getNumMessagesInQueue ()
 	{
-		return m_signalCount.value;
+		return jd::limitMin (m_signalCount.value, 0LL);
 	}
 	
 	

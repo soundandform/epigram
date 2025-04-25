@@ -164,13 +164,7 @@ class JdThreadT
 		JdResult runResult;
 
 		i_owner->m_threadReady.Signal ();
-
-		//		pthread_cleanup_push (cleanup, i_owner);
-
 		runResult = i_implementation->Run (i_owner->m_args, info);
-		
-		//		pthread_cleanup_pop ()
-		
 		runResult = i_implementation->Finalize (runResult);
 		i_owner->Exited (runResult);
     }

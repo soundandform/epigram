@@ -474,6 +474,14 @@ struct JdTasks
 		ProcessReplies ();
 	}
 	
+	
+	u32  GetNumTasksInQueue ()
+	{
+		return (m_taskQueue) ? m_taskQueue->getNumMessagesInQueue () : 0;
+	}
+	
+	
+	
 	struct Thread : IJdThread
 	{
 		JdResult		Run						(EpigramRef i_args, IJdThread::Info & i_info) override
@@ -584,7 +592,7 @@ struct JdTasks
 	
 	//----------------------------------------------------------------------------------------------------------------
 	
-	JdThreadT <Thread>			m_thread;
+	JdThreadT <Thread>										m_thread;
 
 	std::shared <JdMarshallQueueT <t_marshallSize>>			m_taskQueue;
 	std::shared <JdMarshallQueueT <t_replyMarshallSize>>	m_replyQueue;
