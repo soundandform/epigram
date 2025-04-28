@@ -46,16 +46,18 @@ void  JdStopwatch::Finish ()
 	f64 time = m_timer.GetSeconds ();
 	cstr_t unit = "secs";
 	
-	
 	if (time < 1.)
 	{
-		time *= 1000.;
-		unit = "ms";
+		time *= 1000.; unit = "ms";
 		
 		if (time < 1.)
 		{
-			time *= 1000.;
-			unit = "µs";
+			time *= 1000.; unit = "µs";
+			
+			if (time < 1.)
+			{
+				time *= 1000.; unit = "ns";
+			}
 		}
 	}
 	
