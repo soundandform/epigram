@@ -10,6 +10,7 @@
 #include "JdLua.hpp"
 
 
+
 int jdlua_newMetatable (lua_State * L, cstr_t i_name)
 {
 	int created = luaL_newmetatable (L, i_name);
@@ -71,7 +72,7 @@ cstr_t  jdlua_getType (lua_State * L, int i_index)
 	
 	auto type = lua_type (L, i_index);
 	
-	if (type == LUA_TUSERDATA)
+	if (type == LUA_TUSERDATA or type == LUA_TTABLE)
 		name = jdlua_getUserdataName (L, i_index);
 
 	if (not name)
@@ -87,15 +88,11 @@ cstr_t  jdlua_getUserdataName  (lua_State * L, int i_index)
 	
 	auto t = lua_gettop (L);
 
-	lua_getmetatable (L, i_index);
-
-	bool isTable = lua_istable (L, -1);
-
-	if (isTable)
+	if (lua_getmetatable (L, i_index))	// (returns success code; doesn't push nil to stack)
 	{
 		lua_pushstring (L, "__name");
 		lua_rawget (L, -2);
-
+		
 		name = lua_tostring (L, -1);
 	}
 	
@@ -104,7 +101,17 @@ cstr_t  jdlua_getUserdataName  (lua_State * L, int i_index)
 	return name;
 }
 
-//std::atomic <u64> JdLua::s_instanceNum;
+
+
+f64  jdlua_popRealNumber  (lua_State * L, int i_argIndex)
+{
+	f64 v = lua_tonumber (L, -1);
+	lua_pop (L, 1);
+
+	jdlua_testForRealNumber (L, i_argIndex, v);
+	
+	return v;
+}
 
 
 int JdLua::HandleLuaError (lua_State * L)

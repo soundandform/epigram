@@ -43,9 +43,23 @@ f64 JdStopwatch::End ()
 
 void  JdStopwatch::Finish ()
 {
-	f64 secs = m_timer.GetSeconds ();
+	f64 time = m_timer.GetSeconds ();
+	cstr_t unit = "secs";
 	
-	cout << setw (20) << m_label << ": " << secs << "s" << endl;
+	
+	if (time < 1.)
+	{
+		time *= 1000.;
+		unit = "ms";
+		
+		if (time < 1.)
+		{
+			time *= 1000.;
+			unit = "µs";
+		}
+	}
+	
+	printf ("%20s: %f %s\n", m_label.cString (), time, unit);
 	
 	m_display = false;
 }

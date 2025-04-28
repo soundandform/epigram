@@ -116,8 +116,12 @@ namespace Jd
 };
 
 
+
 #define d_jdMeasureTime(LABEL) if (const JdStopwatch cycles = JdStopwatch (LABEL, true))
-#define d_jdStopwatch(LAYBUL) JdStopwatch _ (LAYBUL);
+
+# define d_jdStopwatchVar2(VAR,LINE) VAR ## LINE
+# define d_jdStopwatchVar(VAR,LINE) d_jdStopwatchVar2(VAR,LINE)
+# define d_jdStopwatch(LAYBUL) JdStopwatch d_jdStopwatchVar(stopwatch_, __LINE__) (LAYBUL);
 //#define d_jdMeasureTimeIf(COND, LABEL) if (const JdAbsoluteNanos cycles = JdAbsoluteNanos (COND, LABEL))
 
 //#define JdMeasureCycles(LABEL) if (const JdCycles cycles = JdCycles (LABEL))
