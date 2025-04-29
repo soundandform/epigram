@@ -51,7 +51,7 @@ using std::string, std::vector, std::unique_ptr, std::deque, std::string_view;
 int /* index */ 	jdlua_checkForSelf		(lua_State * L, cstr_t i_libName);	// returns 1 if no self obj provided in args stack; otherwise 2
 void				jdlua_removeSelf		(lua_State * L, cstr_t i_libName);	// deletes the stack entry if self obj is provided
 
-void				jdlua_ref				(lua_State * L, int & io_ref);
+void				jdlua_ref				(lua_State * L, int & io_ref);	// pops stack top
 void				jdlua_unRef				(lua_State * L, int & io_ref);
 
 cstr_t  			jdlua_getType			(lua_State * L, int i_index);
@@ -67,6 +67,25 @@ inline void			jdlua_testForRealNumber	(lua_State * L, int i_argIndex, f64 i_valu
 	if 		(isnan (i_value)) luaL_argerror (L, i_argIndex, "unexpected NaN value");
 	else if (isinf (i_value)) luaL_argerror (L, i_argIndex, "unexpected inf value");
 }
+
+
+struct  LuaFunctionId
+{
+	// std:string has 22 char small string ability: SoThisFunctionNameFits ()
+	
+	i32				objRef			= 0;
+	std::string		name;
+	
+	void			clear			() { objRef = 0; name.clear (); }
+};
+
+typedef LuaFunctionId const & 	LuaFunctionRef;
+
+bool operator == (LuaFunctionRef lhs, LuaFunctionRef rhs);
+bool operator  < (LuaFunctionRef lhs, LuaFunctionRef rhs);
+
+
+
 
 
 
@@ -406,7 +425,7 @@ class JdLua
 	}
 	
 	template <typename... Args>
-	Result					CallObject				(int i_tableRef, string_view i_functionName, tuple <Args...> const & i_args)
+	Result					CallObject				(int i_tableRef, string_view i_functionName, tuple <Args...> const & i_args = {})
 	{
 		Result result;
 		
