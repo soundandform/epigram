@@ -419,15 +419,15 @@ struct Marshall
 
 
 template <typename Obj, typename Cast, u32 t_size = c_defaultMarshallSize>
-struct JdObjMarshallerT
+struct JdSharedObjMarshallerT
 {
-	JdObjMarshallerT  (JdObjMarshallerT && i_other)
+	JdSharedObjMarshallerT  (JdSharedObjMarshallerT && i_other)
 	:
 	m_queue		(i_other.m_queue),
 	m_dest		(i_other.m_dest)
 	{ }
 
-	JdObjMarshallerT  (JdMarshallQueueT <t_size> * i_queue, std::shared <Obj> && i_destination)
+	JdSharedObjMarshallerT  (JdMarshallQueueT <t_size> * i_queue, std::shared <Obj> && i_destination)
 	:
 	m_queue		(i_queue),
 	m_dest		(i_destination)
@@ -446,6 +446,37 @@ struct JdObjMarshallerT
 	JdMarshallQueueT <t_size> *		m_queue			= nullptr;
 	std::shared <Obj>				m_dest;
 };
+
+
+template <typename Obj, typename Cast = Obj, u32 t_size = c_defaultMarshallSize>
+struct JdObjMarshallerT
+{
+	JdObjMarshallerT  (JdObjMarshallerT && i_other)
+	:
+	m_queue		(i_other.m_queue),
+	m_dest		(i_other.m_dest)
+	{ }
+
+	JdObjMarshallerT  (JdMarshallQueueT <t_size> * i_queue, Obj * i_destination)
+	:
+	m_queue		(i_queue),
+	m_dest		(i_destination)
+	{ }
+	
+	template <typename R, typename... Args, typename ... Ins>
+	void operator () (R (Cast::* i_function)(Args...), Ins && ... i_args)
+	{
+		typedef tuple <typename std::decay <Args>::type...>  tuple_t;
+	
+		// args get casted here. so, in the case of Lua arg-testing, things blow up here instead of
+		// mid message commit, which left the sequence # dangling
+		Marshall::call (* m_queue, m_dest, i_function, tuple_t { i_args... });
+	}
+
+	JdMarshallQueueT <t_size> *		m_queue			= nullptr;
+	Obj *							m_dest 			= nullptr;
+};
+
 
 
 using namespace std;

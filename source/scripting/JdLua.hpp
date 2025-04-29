@@ -69,7 +69,7 @@ inline void			jdlua_testForRealNumber	(lua_State * L, int i_argIndex, f64 i_valu
 }
 
 
-struct  LuaFunctionId
+struct  LuaFunction
 {
 	// std:string has 22 char small string ability: SoThisFunctionNameFits ()
 	
@@ -79,7 +79,9 @@ struct  LuaFunctionId
 	void			clear			() { objRef = 0; name.clear (); }
 };
 
-typedef LuaFunctionId const & 	LuaFunctionRef;
+typedef LuaFunction const * 	LuaFunctionId;
+
+typedef LuaFunction const & 	LuaFunctionRef;
 
 bool operator == (LuaFunctionRef lhs, LuaFunctionRef rhs);
 bool operator  < (LuaFunctionRef lhs, LuaFunctionRef rhs);
@@ -171,6 +173,8 @@ class JdLua
 	
 	virtual					~JdLua						()
 	{
+//		for (auto & id : m_functionIds) jd::out (id.name);
+		
 		if (L and m_luaStateOwned)
 			lua_close (L);
 	}
@@ -1080,6 +1084,13 @@ class JdLua
 		}
 	}
 	
+	LuaFunctionId					CreateFunctionId 	(i32 i_objRef, string_view i_name)
+	{
+		auto i = m_functionIds.insert ({ i_objRef, i_name.data () });
+		return & (* i.first);
+	}
+
+	
 	
 	lua_State *						L					= nullptr;
 	bool							m_luaStateOwned		= true;
@@ -1094,6 +1105,8 @@ class JdLua
 	JdString64						m_functionName;					// trying to limit mallocs in audio thread
 	
 	deque <Result::Location>		m_errorLocation;
+	
+	std::set <LuaFunction>			m_functionIds;
 };
 
 
