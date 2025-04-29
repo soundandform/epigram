@@ -19,14 +19,6 @@ m_display 	(i_doDisplay)
 }
 
 
-
-//JdStopwatch::operator bool () const
-//{
-//	auto self = const_cast <JdStopwatch *> (this);
-//	self->m_timer.start ();
-//	return true;
-//}
-
 void JdStopwatch::Start ()
 {
 	m_timer.Restart ();
@@ -35,10 +27,6 @@ void JdStopwatch::Start ()
 f64 JdStopwatch::End ()
 {
 	return m_timer.GetSeconds ();
-//	m_timer.stop ();
-//	f64 elapsed = m_timer.elapsed ().wall;
-//	elapsed /= 1e9;
-//	return elapsed;
 }
 
 void  JdStopwatch::Finish ()

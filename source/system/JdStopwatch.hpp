@@ -39,46 +39,6 @@ class JdStopwatch
 };
 
 
-//class JdTimeFormatter
-//{
-//	public:
-//	JdTimeFormatter (f64 i_seconds) : m_seconds (i_seconds)
-//	{
-//	}
-//	
-//	string			ToString () const
-//	{
-//		ostringstream oss;
-//		
-//		cstr_t postfix [4] = { "nsec", "usec", "msec", "secs" };
-//		
-//		for (u32 i = 0; i < 4; ++i)
-//		{
-//			f64 multiplier = pow (10., 9 - i * 3);
-//			
-//			f64 value = multiplier * m_seconds;
-//			if (i == 3 || value < 1000.)
-//			{
-//				if (i < 3) oss <<setprecision (4);
-//				oss << value << " " << postfix [i];
-//				break;
-//			}
-//		}
-//		
-//		return oss.str ();
-//	}
-//		
-//	protected:
-//	f64 m_seconds;
-//};
-//
-//inline
-//std::ostream & operator << (std::ostream &output, const JdTimeFormatter &i_time)
-//{
-//	output << i_time.ToString ();
-//	return output;
-//}
-
 
 
 namespace Jd
@@ -94,7 +54,7 @@ namespace Jd
 		return stopwatch.End ();
 	}
 
-	inline f64 MeasureTime (u64 i_numLoops, const std::function <void (u32)> &i_toBeMeasured)
+	inline f64 MeasureTime (u64 i_numLoops, const std::function <void (u64)> &i_toBeMeasured)
 	{
 		JdStopwatch stopwatch;
 		
@@ -122,6 +82,7 @@ namespace Jd
 # define d_jdStopwatchVar2(VAR,LINE) VAR ## LINE
 # define d_jdStopwatchVar(VAR,LINE) d_jdStopwatchVar2(VAR,LINE)
 # define d_jdStopwatch(LABEL) JdStopwatch d_jdStopwatchVar(stopwatch_, __LINE__) (LABEL);
+
 //#define d_jdMeasureTimeIf(COND, LABEL) if (const JdAbsoluteNanos cycles = JdAbsoluteNanos (COND, LABEL))
 
 //#define JdMeasureCycles(LABEL) if (const JdCycles cycles = JdCycles (LABEL))
