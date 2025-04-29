@@ -118,7 +118,7 @@ int JdLua::HandleLuaError (lua_State * L)
 {
 //	jd::out (lua_gettop (L));
 	
-	string s = lua_tostring (L, -1);			jd::out ("@\n-------------------", s);
+	string s = lua_tostring (L, -1);			// jd::out ("@\n-------------------", s);
 	
 	u32 level = 1;
 	lua_Debug ar = {};

@@ -453,7 +453,8 @@ class JdLua
 				
 				int luaResult = lua_pcall (L, lua_gettop (L) - top - 2, 0, 1);
 
-				result = ParseErrorMessage (luaResult, i_functionName.data ());
+				if (luaResult)
+					result = ParseErrorMessage (luaResult, i_functionName.data ());
 			}
 		}
 		
