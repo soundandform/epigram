@@ -86,6 +86,13 @@ cstr_t  jdlua_getType (lua_State * L, int i_index)
 	return name ? name : "";
 }
 
+namespace jdlua
+{
+bool  isType  (lua_State * L, int i_index, string_view i_typeName)
+{
+	return i_typeName == jdlua_getType (L, i_index);
+}
+}
 
 cstr_t  jdlua_getUserdataName  (lua_State * L, int i_index)
 {
@@ -108,12 +115,12 @@ cstr_t  jdlua_getUserdataName  (lua_State * L, int i_index)
 
 
 
-f64  jdlua_popRealNumber  (lua_State * L, int i_argIndex)
+f64  jdlua_popRealNumber  (lua_State * L, int i_tableIndex)
 {
 	f64 v = lua_tonumber (L, -1);
 	lua_pop (L, 1);
 
-	jdlua_testForRealNumber (L, i_argIndex, v);
+	jdlua::testForRealNumber (L, i_tableIndex, v);
 	
 	return v;
 }

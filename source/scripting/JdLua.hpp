@@ -62,12 +62,20 @@ cstr_t				jdlua_getUserdataName	(lua_State * L, int i_index);
 f64					jdlua_popRealNumber		(lua_State * L, int i_argIndex = -1);
 
 
-inline void			jdlua_testForRealNumber	(lua_State * L, int i_argIndex, f64 i_value)
+
+
+namespace jdlua
+{
+
+bool  isType (lua_State * L, int i_index, string_view i_typeName);
+
+inline void		testForRealNumber	(lua_State * L, int i_argIndex, f64 i_value)
 {
 	if 		(isnan (i_value)) luaL_argerror (L, i_argIndex, "unexpected NaN value");
 	else if (isinf (i_value)) luaL_argerror (L, i_argIndex, "unexpected inf value");
 }
 
+}
 
 struct  LuaFunction
 {
@@ -1119,6 +1127,68 @@ class JdLua
 
 
 std::ostream & operator << (std::ostream & output, JdLua::Result const & i_result);
+
+
+
+
+template <u32 t_size>
+struct JdLuaFlattenedTableT
+{
+	// pushes a table to a C-array and back to a table at destruction
+	
+	JdLuaFlattenedTableT (lua_State * L, int i_index)
+	:
+	L (L),
+	m_stackIndex (i_index)
+	{
+		luaL_argcheck (L, lua_istable (L, i_index), i_index, "expected table/Array");
+		
+		size_t size = m_size = lua_objlen (L, i_index);
+		
+		if (size > t_size)
+			m_data = new f64 [size];
+		
+		while (size)
+		{
+			lua_rawgeti (L, i_index, size);
+			m_data [--size] = lua_tonumber (L, -1);
+			lua_pop (L, 1);
+		}
+	}
+	
+	~ JdLuaFlattenedTableT ()
+	{
+		while (m_size)
+		{
+			lua_pushnumber	(L, m_data [--m_size]);
+			lua_rawseti		(L, m_stackIndex, m_size + 1);
+		}
+		
+		if (m_data != m_staticData)
+			delete m_data;
+	}
+	
+	f64 *		GetPtr		()
+	{
+		return m_data;
+	}
+	
+	size_t		GetSize		() const
+	{
+		return m_size;
+	}
+	
+	lua_State *		L;
+	int				m_stackIndex;
+	
+	f64				m_staticData	[t_size];
+	
+	f64 *			m_data			= m_staticData;
+	size_t			m_size			= 0;
+};
+
+typedef JdLuaFlattenedTableT <123>		JdLuaFlattenedTable;
+
 
 
 #endif
