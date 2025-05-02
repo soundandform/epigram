@@ -74,6 +74,7 @@ struct  LuaFunction
 	// std:string has 22 char small string ability: SoThisFunctionNameFits ()
 	
 	i32				objRef			= 0;
+	i32				funcRef			= 0;
 	std::string		name;
 	
 	void			clear			() { objRef = 0; name.clear (); }
@@ -249,6 +250,8 @@ class JdLua
 	
 	u64						IncrementExecSequence		()
 	{
+		m_errorLocation.clear ();
+
 		return m_exectionSequence++;
 	}
 	
@@ -368,7 +371,7 @@ class JdLua
 	{
 		Result result;
 
-		m_errorLocation.clear ();
+		IncrementExecSequence ();
 		
 		int r = lua_pcall (L, 0, i_numReturns, 1);
 		if (r)
@@ -380,6 +383,8 @@ class JdLua
 	Result			CallGlobalFunction		(string_view i_functionName)
 	{
 		Result result;
+		
+		IncrementExecSequence ();
 		
 		if (i_functionName.find (":") != string::npos)
 		{
@@ -433,6 +438,8 @@ class JdLua
 	{
 		Result result;
 		
+		IncrementExecSequence ();
+
 		int top = lua_gettop (L);
 		
 		lua_rawgeti (L, LUA_REGISTRYINDEX, i_tableRef);
@@ -1087,7 +1094,7 @@ class JdLua
 	
 	LuaFunctionId					CreateFunctionId 	(i32 i_objRef, string_view i_name)
 	{
-		auto i = m_functionIds.insert ({ i_objRef, i_name.data () });
+		auto i = m_functionIds.insert ({ i_objRef, 0, i_name.data () });
 		return & (* i.first);
 	}
 

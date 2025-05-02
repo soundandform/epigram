@@ -29,8 +29,13 @@ int  jdlua_checkForSelf  (lua_State * L, cstr_t i_libName)
 	if (lua_type (L, 1) == LUA_TTABLE)
 	{
 		lua_getfield (L, 1, "__name");
-		if (std::string_view (lua_tostring (L, -1)) == i_libName)
-			index = 2;
+		
+		if (lua_isstring (L, -1))
+		{
+			if (std::string_view (lua_tostring (L, -1)) == i_libName)
+				index = 2;
+		}
+		
 		lua_pop (L, 1);
 	}
 	
@@ -292,9 +297,10 @@ JdLua::Result  JdLua::LoadAndCallScript  (stringRef_t i_mainName, cstr_t i_scrip
 Epigram  JdLua::CallObject  (string_view i_functionName, Epigram && i_args, Result * o_result)
 {
 	Epigram returns;
-	
 	Result result;
 	
+	IncrementExecSequence ();
+
 	m_errorLocation.clear ();
 	
 	if (i_functionName.find (".") != string_view::npos or i_functionName.find (":") != string_view::npos)
@@ -391,7 +397,7 @@ void  JdLua::LuaArgsToEpigram  (Epigram & o_args, lua_State * L, i32 const i_sta
 
 std::ostream & operator << (std::ostream & out, JdLua::Result const & i_result)
 {
-	out << "(" << i_result.resultCode << ") " << i_result.errorMsg;
+	out << jd::sprintf ("(code: @; seq: @; exec: @) @", i_result.resultCode, i_result.sequence, i_result.execSequence, i_result.errorMsg);
 	
 	return out;
 }
