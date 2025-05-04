@@ -59,7 +59,6 @@ int					jdlua_newMetatable		(lua_State * L, cstr_t i_name);
 cstr_t				jdlua_getUserdataName	(lua_State * L, int i_index);
 
 
-f64					jdlua_popRealNumber		(lua_State * L, int i_argIndex = -1);
 
 
 
@@ -69,11 +68,13 @@ namespace jdlua
 
 bool  isType (lua_State * L, int i_index, string_view i_typeName);
 
-inline void		testForRealNumber	(lua_State * L, int i_argIndex, f64 i_value)
+inline void			testForRealNumber		(lua_State * L, int i_argIndex, f64 i_value)
 {
 	if 		(isnan (i_value)) luaL_argerror (L, i_argIndex, "unexpected NaN value");
 	else if (isinf (i_value)) luaL_argerror (L, i_argIndex, "unexpected inf value");
 }
+
+f64					popRealNumber			(lua_State * L, int i_argIndex = -1);
 
 }
 
