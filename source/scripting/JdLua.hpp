@@ -1137,11 +1137,16 @@ struct JdLuaFlattenedTableT
 {
 	// pushes a table to a C-array and back to a table at destruction
 	
-	JdLuaFlattenedTableT (lua_State * L, int i_index)
-	:
-	L (L),
-	m_stackIndex (i_index)
+	JdLuaFlattenedTableT (lua_State * L = nullptr, int i_index = 0)
 	{
+		if (L) operator () (L, i_index);
+	}
+	
+	f64 * operator () (lua_State * i_L, int i_index)
+	{
+		L = i_L;
+		m_stackIndex = i_index;
+
 		luaL_argcheck (L, lua_istable (L, i_index), i_index, "expected table/Array");
 		
 		size_t size = m_size = lua_objlen (L, i_index);
@@ -1155,18 +1160,23 @@ struct JdLuaFlattenedTableT
 			m_data [--size] = lua_tonumber (L, -1);
 			lua_pop (L, 1);
 		}
+		
+		return m_data;
 	}
 	
 	~ JdLuaFlattenedTableT ()
 	{
-		while (m_size)
+		if (L)
 		{
-			lua_pushnumber	(L, m_data [--m_size]);
-			lua_rawseti		(L, m_stackIndex, m_size + 1);
+			while (m_size)
+			{
+				lua_pushnumber	(L, m_data [--m_size]);
+				lua_rawseti		(L, m_stackIndex, m_size + 1);
+			}
+			
+			if (m_data != m_staticData)
+				delete m_data;
 		}
-		
-		if (m_data != m_staticData)
-			delete m_data;
 	}
 	
 	f64 *		GetPtr		()
@@ -1179,7 +1189,7 @@ struct JdLuaFlattenedTableT
 		return m_size;
 	}
 	
-	lua_State *		L;
+	lua_State *		L				= nullptr;
 	int				m_stackIndex;
 	
 	f64				m_staticData	[t_size];
