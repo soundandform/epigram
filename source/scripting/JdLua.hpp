@@ -46,7 +46,7 @@ using std::string, std::vector, std::unique_ptr, std::deque, std::string_view;
 
 
 // jdlua_checkForSelf requires __name be assigned to the library table; maybe should go in a metatable for consistency &
-// compatibility with jdlua_getType
+// compatibility with jdlua::getType
 
 int /* index */ 	jdlua_checkForSelf		(lua_State * L, cstr_t i_libName);	// returns 1 if no self obj provided in args stack; otherwise 2
 void				jdlua_removeSelf		(lua_State * L, cstr_t i_libName);	// deletes the stack entry if self obj is provided
@@ -54,7 +54,6 @@ void				jdlua_removeSelf		(lua_State * L, cstr_t i_libName);	// deletes the stac
 void				jdlua_ref				(lua_State * L, int & io_ref);	// pops stack top
 void				jdlua_unRef				(lua_State * L, int & io_ref);
 
-cstr_t  			jdlua_getType			(lua_State * L, int i_index);
 int					jdlua_newMetatable		(lua_State * L, cstr_t i_name);
 cstr_t				jdlua_getUserdataName	(lua_State * L, int i_index);
 
@@ -65,17 +64,16 @@ cstr_t				jdlua_getUserdataName	(lua_State * L, int i_index);
 
 namespace jdlua
 {
+	string_view  		getType					(lua_State * L, int i_index);
+	bool				isType					(lua_State * L, int i_index, string_view i_typeName);
 
-bool  isType (lua_State * L, int i_index, string_view i_typeName);
+	inline void			testForRealNumber		(lua_State * L, int i_argIndex, f64 i_value)
+	{
+		if 		(isnan (i_value)) luaL_argerror (L, i_argIndex, "unexpected NaN value");
+		else if (isinf (i_value)) luaL_argerror (L, i_argIndex, "unexpected inf value");
+	}
 
-inline void			testForRealNumber		(lua_State * L, int i_argIndex, f64 i_value)
-{
-	if 		(isnan (i_value)) luaL_argerror (L, i_argIndex, "unexpected NaN value");
-	else if (isinf (i_value)) luaL_argerror (L, i_argIndex, "unexpected inf value");
-}
-
-f64					popRealNumber			(lua_State * L, int i_argIndex = -1);
-
+	f64					popRealNumber			(lua_State * L, int i_argIndex = -1);
 }
 
 struct  LuaFunction

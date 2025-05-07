@@ -71,7 +71,10 @@ void  jdlua_unRef  (lua_State *L, int & io_ref)
 }
 
 
-cstr_t  jdlua_getType (lua_State * L, int i_index)
+
+namespace jdlua {
+
+string_view  getType (lua_State * L, int i_index)
 {
 	cstr_t name = nullptr;
 	
@@ -86,11 +89,10 @@ cstr_t  jdlua_getType (lua_State * L, int i_index)
 	return name ? name : "";
 }
 
-namespace jdlua {
 
 bool  isType  (lua_State * L, int i_index, string_view i_typeName)
 {
-	return i_typeName == jdlua_getType (L, i_index);
+	return i_typeName == jdlua::getType (L, i_index);
 }
 
 f64  popRealNumber  (lua_State * L, int i_tableIndex)
