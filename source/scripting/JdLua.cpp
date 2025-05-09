@@ -10,6 +10,10 @@
 #include "JdLua.hpp"
 
 
+bool operator == (LuaFunctionRef lhs, LuaFunctionRef rhs) { return std::tie (lhs.objRef, lhs.name) == std::tie (rhs.objRef, rhs.name); }
+bool operator  < (LuaFunctionRef lhs, LuaFunctionRef rhs) { return std::tie (lhs.objRef, lhs.name)  < std::tie (rhs.objRef, rhs.name); }
+
+
 
 int jdlua_newMetatable (lua_State * L, cstr_t i_name)
 {
