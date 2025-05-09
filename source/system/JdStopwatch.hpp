@@ -20,7 +20,13 @@ class JdStopwatch
 {
 	public:
 	
-	JdStopwatch	(std::string_view const i_label = "", bool i_doDisplay = true);
+	JdStopwatch	()
+	{
+		m_timer.Restart ();
+	}
+	
+//	JdStopwatch	(std::string_view const i_label, bool i_doDisplay = true);
+	JdStopwatch	(std::string_view const i_label, f64 i_thresholdForDisplayInSecs = 0.);
 
 //	operator bool () const;
 	
@@ -34,8 +40,9 @@ class JdStopwatch
 	protected:
 	
 	JdString256					m_label;
-    bool            			m_display;
+    bool            			m_display		= true;
 	JdTimer						m_timer;
+	f64							m_threshold		= 0.;
 };
 
 
@@ -81,7 +88,7 @@ namespace Jd
 
 # define d_jdStopwatchVar2(VAR,LINE) VAR ## LINE
 # define d_jdStopwatchVar(VAR,LINE) d_jdStopwatchVar2(VAR,LINE)
-# define d_jdStopwatch(LABEL) JdStopwatch d_jdStopwatchVar(stopwatch_, __LINE__) (LABEL);
+# define d_jdStopwatch(...) JdStopwatch d_jdStopwatchVar(stopwatch_, __LINE__) (__VA_ARGS__);
 
 //#define d_jdMeasureTimeIf(COND, LABEL) if (const JdAbsoluteNanos cycles = JdAbsoluteNanos (COND, LABEL))
 

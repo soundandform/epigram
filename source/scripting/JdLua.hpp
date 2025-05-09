@@ -1,11 +1,5 @@
-/*
- *  JdLua.hpp
- *  Jigidesign
- *
- *  Created by Steven Massey on 2/8/12.
- *  Copyright 2012 Jigidesign. All rights reserved.
- *
- */
+// Created by Steven Massey on 2/8/12.
+// Copyright 2012 Jigidesign. All rights reserved.
 
 #ifndef JdLua_hpp
 #define JdLua_hpp

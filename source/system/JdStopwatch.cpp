@@ -10,14 +10,23 @@
 
 using namespace std;
 
-JdStopwatch::JdStopwatch	(string_view const i_label, bool i_doDisplay)
+//JdStopwatch::JdStopwatch	(string_view const i_label, bool i_doDisplay)
+//:
+//m_label		(i_label),
+//m_display 	(i_doDisplay)
+//{
+//	m_timer.Restart ();
+//}
+
+
+JdStopwatch::JdStopwatch	(string_view const i_label, f64 i_thresholdForDisplayInSecs)
 :
 m_label		(i_label),
-m_display 	(i_doDisplay)
+m_display 	(true),
+m_threshold (i_thresholdForDisplayInSecs)
 {
 	m_timer.Restart ();
 }
-
 
 void JdStopwatch::Start ()
 {
@@ -32,24 +41,28 @@ f64 JdStopwatch::End ()
 void  JdStopwatch::Finish ()
 {
 	f64 time = m_timer.GetSeconds ();
-	cstr_t unit = "secs";
 	
-	if (time < 1.)
+	if (time >= m_threshold)
 	{
-		time *= 1000.; unit = "ms";
+		cstr_t unit = "secs";
 		
 		if (time < 1.)
 		{
-			time *= 1000.; unit = "µs";
+			time *= 1000.; unit = "ms";
 			
 			if (time < 1.)
 			{
-				time *= 1000.; unit = "ns";
+				time *= 1000.; unit = "µs";
+				
+				if (time < 1.)
+				{
+					time *= 1000.; unit = "ns";
+				}
 			}
 		}
+		
+		printf ("%20s: %f %s\n", m_label.cString (), time, unit);
 	}
-	
-	printf ("%20s: %f %s\n", m_label.cString (), time, unit);
 	
 	m_display = false;
 }
