@@ -160,7 +160,8 @@ class JdFlatString
 
 	size_t							Length					() const	{ return strlen (m_cstring); }
 	size_t							Size					() const	{ return Length (); }
-	
+	size_t							size					() const	{ return Length (); }
+
 	void							clear					()			{ m_cstring [0] = 0; }
 	
 	u32								Capacity				() const 	{ return t_length - 1; }
