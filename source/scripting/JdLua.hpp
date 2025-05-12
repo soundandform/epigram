@@ -204,6 +204,15 @@ class JdLua
 		return required;
 	}
 	
+	static JdLua * 			Get							(lua_State * L)
+	{
+		lua_getfield (L, LUA_REGISTRYINDEX, "JdLua");
+		auto jdlua = (JdLua *) lua_touserdata (L, -1);
+		lua_pop (L, 1);
+		
+		return jdlua;
+	}
+	
 	
 	void					SetAllocator				(lua_Alloc i_allocator, void * i_object)
 	{
@@ -1095,6 +1104,10 @@ class JdLua
 	
 	LuaFunctionId					CreateFunctionId 	(i32 i_objRef, string_view i_name)
 	{
+		static std::mutex lock;
+		
+		mutex_lock l (lock);
+	
 		auto i = m_functionIds.insert ({ i_objRef, 0, i_name.data () });
 		return & (* i.first);
 	}

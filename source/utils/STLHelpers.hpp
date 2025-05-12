@@ -47,6 +47,15 @@ bool  erase_back  (C & io_container, size_t i_count = 1)
 
 
 template <typename C>
+typename C::value_type  pop_back  (C & io_container)
+{
+	auto v = io_container.back ();
+	io_container.pop_back ();
+	return v;
+}
+
+
+template <typename C>
 void  prepend  (C & i_container, const C & i_prepend)
 {
 	i_container.insert (i_container.begin (), i_prepend.begin (), i_prepend.end ());
