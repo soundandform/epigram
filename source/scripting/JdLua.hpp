@@ -1104,7 +1104,7 @@ class JdLua
 	
 	LuaFunctionId					CreateFunctionId 	(i32 i_objRef, string_view i_name)
 	{
-		static std::mutex lock;
+		static std::mutex lock;									d_jdAssert (i_objRef > 0);
 		
 		mutex_lock l (lock);
 	
