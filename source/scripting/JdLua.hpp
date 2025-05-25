@@ -802,16 +802,19 @@ class JdLua
 				lua_pushstring (L, name);
 			}
 
-			if (i.template is <string> ())			lua_pushstring (L, i.template as <cstr_t> ());
+			if (i.template is <string> ())
+			{
+				lua_pushstring (L, i.template as <cstr_t> ());
+			}
 			else if (i.template is <Epigram> ())
 			{
-				d_jdThrow("implme");
+				Epigram e = i;
+				PushEpigramToTable (L, e);
 			}
-			else									lua_pushnumber (L, i);
+			else lua_pushnumber (L, i);
 			
 			lua_settable (L, -3);
 		}
-		
 	}
 	
 

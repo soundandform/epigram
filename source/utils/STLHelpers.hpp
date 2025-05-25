@@ -76,6 +76,16 @@ void  reverse  (C & i_container)
 
 
 template <typename C>
+typename C::value_type &  at  (C & i_container, size_t i_index)
+{
+	auto i = i_container.begin ();
+	std::advance (i, i_index);
+	return *i;
+}
+
+
+
+template <typename C>
 C  reversed  (C & i_container)
 {
 	auto c = i_container;
