@@ -182,10 +182,16 @@ JdLua::Result  JdLua::HashScript  (string_view i_mainName, JdMD5::MD5 & o_hash, 
 		
 		if (not luaResult)
 		{
-			ByteCodeWriter bcw (o_bytecode);
-			lua_dumpx (L, & ByteCodeWriter::Handler, & bcw, 0x80000002);//  BCDUMP_F_STRIP + BCDUMP_F_DETERMINISTIC
+			ByteCodeWriter hasher;
+			lua_dumpx (L, & ByteCodeWriter::Handler, & hasher, 0x80000002);//  BCDUMP_F_STRIP + BCDUMP_F_DETERMINISTIC
+			o_hash = hasher.Get ();
 			
-			o_hash = bcw.Get ();
+			if (o_bytecode)
+			{
+				// the stripped byte code ain't so useful without debug info for error messages, so redump
+				ByteCodeWriter bcw (o_bytecode);
+				lua_dump (L, & ByteCodeWriter::Handler, & bcw);
+			}
 		}
 		else result = ParseErrorMessage (luaResult, i_mainName);
 	}
