@@ -2203,6 +2203,7 @@ class EpigramT : public interface_t
 	}
 
 	bool						hasElements			() const { return not IsEmpty (); }
+	bool						hasItems			() const { return not IsEmpty (); }
 
 
 	bool						IsEmpty				() const
