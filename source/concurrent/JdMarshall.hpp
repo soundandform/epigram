@@ -616,12 +616,16 @@ struct JdTasks
 
 	//----------------------------------------------------------------------------------------------------------------
 	void  ProcessReplies  (u32 const i_numMessages = std::numeric_limits <u32>::max ())
-	{
+	{																							d_jdAssert (not m_processingReplies, "not reentrant");
+		m_processingReplies = true;
 		if (m_replyQueue)
 			Marshall::ProcessQueue (* m_replyQueue, false, i_numMessages);
+		m_processingReplies = false;
 	}
 	
 	//----------------------------------------------------------------------------------------------------------------
+	
+	bool													m_processingReplies;
 	
 	JdThreadT <Thread>										m_thread;
 
