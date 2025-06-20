@@ -9,7 +9,7 @@
 # include "JdMessageQueue.hpp"
 
 
-const u32 c_defaultMarshallSize = 256;
+const u32 c_defaultMarshallSize = 512;
 
 namespace std
 {
