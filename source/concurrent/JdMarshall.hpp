@@ -11,12 +11,6 @@
 
 const u32 c_defaultMarshallSize = 512;
 
-namespace std
-{
-	template <typename T> using shared 	= shared_ptr <T>;
-	template <typename T> using weak 	= weak_ptr <T>;
-}
-
 template <u32 t_size>
 struct JdMarshallOpaque
 {

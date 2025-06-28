@@ -46,6 +46,15 @@ using std::cout;
 using std::endl;
 using std::tuple;
 
+
+
+namespace std
+{
+	template <typename T> using shared 	= shared_ptr <T>;
+	template <typename T> using weak 	= weak_ptr <T>;
+}
+
+
 namespace Jd
 {
 	u32		Pow2CeilLog2		(u32 i_value);
