@@ -208,7 +208,7 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
         
         jd_lock (jd_sql)
         {
-            result = jd_sql->Prepare (m_f);
+            result = jd_sql->Prepare (m_f.CString ());
             
             if (result) return false;
             
@@ -268,7 +268,7 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
             
 			jd_lock (jd_sql)
             {
-                result = jd_sql->Prepare (m_query);
+                result = jd_sql->Prepare (m_query.CString ());
                 m_query.Reset();
                 
                 if (not result)
@@ -342,7 +342,7 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 		i64 rowId = 0;
         jd_lock (jd_sql)
         {
-            result = jd_sql->Prepare (m_f);
+            result = jd_sql->Prepare (m_f.CString ());
 			
             if (not result)
 			{
@@ -388,7 +388,7 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
         JdResult result;
         jd_lock (jd_sql)
         {
-            result = jd_sql->Prepare (m_f);
+            result = jd_sql->Prepare (m_f.CString ());
 		
 			if (not result)
 			{
@@ -418,7 +418,7 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 		JdResult result;
         jd_lock (jd_sql)
         {
-            result = jd_sql->Prepare (m_f);
+            result = jd_sql->Prepare (m_f.CString ());
             if (result) return result;
             
 			BindRowId (jd_sql, 0, i_uuid);
@@ -605,7 +605,7 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 		
 		jd_lock (jd_sql)
         {
-            JdResult result = jd_sql->Prepare (m_f);
+            JdResult result = jd_sql->Prepare (m_f.CString ());
             
 			BindRowId (jd_sql, 0, i_rowId);
             
@@ -785,7 +785,7 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 			
 			m_bindInfo.push_back ({ & m_blobStorage [blobEnd], '*' });
 			
-			return f;
+			return f.toString ();
 		}
 		
 		i32 /* o_nextBlobIndex */		BindBlobs					(IJdSql & i_sql, i32 i_blobStartIndex = 0)
@@ -904,7 +904,7 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 
 //				cout << m_f << endl;
 
-				result = jd_sql->Prepare (m_f);
+				result = jd_sql->Prepare (m_f.CString ());
 				if (result) return result;
 				
 				result = jd_sql->Step ();
@@ -921,7 +921,7 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 	
 //			cout << m_f << endl;
 	
-		result = jd_sql->Prepare (m_f);
+		result = jd_sql->Prepare (m_f.CString ());
 		if (not result)
 		{
 			i32 blobIndex = generator.BindBlobs (jd_sql);
@@ -985,7 +985,7 @@ class JdSqlTableT  //: JdModuleHelper <IJdModuleServer>
 		
 		m_f << "PRAGMA table_info (", m_databaseName, ")";		// this returns a table
 		
-		JdResult result = jd_sql->Prepare (m_f);
+		JdResult result = jd_sql->Prepare (m_f.CString ());
 		if (not result)
 		{
 			int columnIndex = 0;
@@ -1065,14 +1065,14 @@ protected: //-------------------------------------------------------------------
 
         jd_lock (jd_sql)
         {
-            result = jd_sql->Prepare (m_f);
+            result = jd_sql->Prepare (m_f.CString ());
             
             if (result == c_jdNoErr)
                 result = jd_sql->Step ();
             
             m_f << "SELECT * FROM ", m_databaseName, " ORDER BY seq DESC";
             
-            result = jd_sql->Prepare (m_f);
+            result = jd_sql->Prepare (m_f.CString ());
             if (result == c_jdNoErr)
                 result = jd_sql->Step ();
             

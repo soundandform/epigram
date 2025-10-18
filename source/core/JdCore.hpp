@@ -366,6 +366,12 @@ class JdFormatter
 		{
 			return CString ();
 		}
+		
+		std::string & toString () const
+		{
+			formatted = oss.str ();
+			return formatted;
+		}
 	
 //		operator cstr_t () const
 //		{
