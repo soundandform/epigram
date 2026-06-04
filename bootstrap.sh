@@ -29,7 +29,7 @@ BOOST_VERSION=1.$VERSION.0
 BOOST=boost_1_"$VERSION"_0
 BOOST_TAR=$BOOST.tar.gz
 
-curl -L -O https://boostorg.jfrog.io/artifactory/main/release/$BOOST_VERSION/source/$BOOST_TAR
+curl -L -O https://archives.boost.io/release/$BOOST_VERSION/source/$BOOST_TAR
 
 tar -zxf $BOOST_TAR
 rm $BOOST_TAR
