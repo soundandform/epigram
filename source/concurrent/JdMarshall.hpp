@@ -619,7 +619,7 @@ struct JdTasks
 	
 	//----------------------------------------------------------------------------------------------------------------
 	
-	bool													m_processingReplies;
+	bool													m_processingReplies			= false;
 	
 	JdThreadT <Thread>										m_thread;
 
