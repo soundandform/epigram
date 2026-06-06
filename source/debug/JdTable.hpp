@@ -13,6 +13,7 @@
 #include "JdStdStringUtils.hpp"
 #include <iomanip>
 
+
 struct JdTable
 {
 	#if 0
@@ -30,11 +31,11 @@ struct JdTable
 	
 	struct Column
 	{
-		size_t				width		= 2;
-		char				fill		= ' ';
-		bool				alignLeft	= false;
+		size_t						width		= 2;
+		char						fill		= ' ';
+		bool						alignLeft	= false;
 		
-		vector <string>		rows;
+		std::vector <std::string>	rows;
 	};
 	
 	~ JdTable ()
@@ -43,8 +44,10 @@ struct JdTable
 	}
 	
 	
-	JdTable (const initializer_list <string> & i_columnNames)
+	JdTable (const std::initializer_list <std::string> & i_columnNames)
 	{
+		using namespace std;
+		
 		for (auto & n : i_columnNames)
 		{
 			m_columns.push_back (Column ());
@@ -108,7 +111,7 @@ struct JdTable
 	template <typename T, typename... Args>
 	void AddRow (T && i_column, Args... i_columns)
 	{
-		string row [] = { Jd::ToString <T> (i_column), Jd::ToString <Args> (i_columns)... };
+		std::string row [] = { Jd::ToString <T> (i_column), Jd::ToString <Args> (i_columns)... };
 		
 		d_jdAssert (Jd::SizeOfArray (row) == m_columns.size (), "mismatched column count");
 		
@@ -127,9 +130,9 @@ struct JdTable
 	
 	protected:
 	
-	string GetDivider (size_t i_width, bool i_topBorder = false)
+	std::string GetDivider (size_t i_width, bool i_topBorder = false)
 	{
-		string div (i_width + 4, '-');
+		std::string div (i_width + 4, '-');
 		div = (i_topBorder ? "." : "+" ) + div + (i_topBorder ? "." : "+" );
 		div += "\n";
 		
@@ -145,7 +148,7 @@ struct JdTable
 			size_t & w = c.width;
 			
 			for (auto & r : c.rows)
-				w = max (r.size (), w);
+				w = std::max (r.size (), w);
 			
 			totalWidth += (c.width + padding);
 		}
@@ -160,7 +163,7 @@ struct JdTable
 		{
 			size_t padding = m_padding;
 			size_t totalWidth = CalculateWidth (padding);
-			string div = GetDivider (totalWidth);
+			std::string div = GetDivider (totalWidth);
 			
 			cout << GetDivider (totalWidth, true);
 			for (size_t r = 0; r < m_numRows + 1; ++r)
@@ -178,6 +181,8 @@ struct JdTable
 	
 	void OutputRow (size_t i_row, size_t i_padding)
 	{
+		using namespace std;
+		
 		auto r = i_row;
 		
 		string pad (i_padding, ' ');
@@ -198,7 +203,7 @@ struct JdTable
 	}
 	
 	
-	vector <Column>			 	m_columns;
+	std::vector <Column>		m_columns;
 	bool						m_printed			= false;
 	size_t 						m_numRows			= 0;
 	size_t						m_padding			= 3;

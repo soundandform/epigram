@@ -14,6 +14,8 @@
 #include "JdAssert.hpp"
 #include "JdTable.hpp"
 
+using std::string;
+
 
 d_jdForwardInterface (IJdFiber);
 
@@ -82,7 +84,7 @@ d_jdInterface (IJdFiber)
 		m_controller->Yield ();
 	}
 	
-	string						GetName				()
+	std::string					GetName				()
 	{
 		return m_controller->GetName ();
 	}
@@ -539,8 +541,8 @@ class JdFibers
 		size_t		size;
 	};
 	
-	list <StackRecord>				m_stacks;
-	vector <IJdFiber>				m_fibers;
+	std::list <StackRecord>			m_stacks;
+	std::vector <IJdFiber>			m_fibers;
 	
 };
 
