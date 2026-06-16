@@ -28,6 +28,14 @@ m_threshold (i_thresholdForDisplayInSecs)
 	m_timer.Restart ();
 }
 
+
+JdStopwatch::operator bool () const		// used in d_jdMeasureTime macro
+{
+	auto self = const_cast <JdStopwatch *> (this);
+	self->m_timer.Restart ();
+	return true;
+}
+
 void JdStopwatch::Start ()
 {
 	m_timer.Restart ();

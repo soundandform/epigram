@@ -28,7 +28,7 @@ class JdStopwatch
 //	JdStopwatch	(std::string_view const i_label, bool i_doDisplay = true);
 	JdStopwatch	(std::string_view const i_label, f64 i_thresholdForDisplayInSecs = 0.);
 
-//	operator bool () const;
+	operator bool () const;
 	
 	void 	Start ();
 	f64 	End ();
