@@ -75,8 +75,9 @@ namespace c_jdTypeId
 				object				=	22,
 				versionedObject		=	23,
 	
-				signature			=	24,
-	
+				tuple				=	24,
+				signature			=	tuple,
+
 				// unused			=	25,
 
 				hash				=	26,

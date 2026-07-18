@@ -1,5 +1,7 @@
 #ifndef __doctest_hpp
 
+//#	define DOCTEST_CONFIG_SUPER_FAST_ASSERTS
+
 #	include <doctest/doctest.h>
 #	define test_suite(NAME) TEST_SUITE(#NAME)
 #	define doctest(NAME) TEST_CASE(NAME)
@@ -10,6 +12,8 @@
 
 #	define subcase(...) SUBCASE(__VA_ARGS__)
 #	define expect(...) CHECK(__VA_ARGS__);
+
+#	define DOCTEST_BREAK_INTO_DEBUGGER() __builtin_debugtrap ()
 
 #include <iostream>
 using namespace std;

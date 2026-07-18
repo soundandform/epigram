@@ -105,7 +105,7 @@ TypeIdsMap::TypeIdsMap ()
 	
 	names ['x'] = "uuid";  //	TODO: ptr to enum just not allowed. dumb.
 	names ['N'] = "enum";  //	TODO: ptr to enum just not allowed. dumb.
-	names ['n'] = "sig";
+	names ['n'] = "tup";
 	names ['B'] = "bin";  //	TODO: ptr to binary not allowed
 	//		names ['a'] = "#32";
 	names ['h'] = "#64";
@@ -171,7 +171,7 @@ TypeIdsMap::TypeIdsMap ()
 	longNames ['E'] = "epigram";
 	
 	longNames ['m'] = "function";
-	longNames ['n'] = "signature";
+	longNames ['n'] = "tuple";
 	
 	longNames ['b'] = "bool";
 	longNames ['c'] = "bool *";
