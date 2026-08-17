@@ -73,7 +73,13 @@ namespace Jd
 	{
 		return (i_value + 7) & ~7;
 	}
-	
+
+	template <typename T>
+	T Align32 (T i_value)
+	{
+		return (i_value + 3) & ~3;
+	}
+
 	inline u32 WordAlign (u32 i_word)
 	{
 		return (i_word + 3) & ~3;
