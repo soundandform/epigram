@@ -361,6 +361,44 @@ namespace Jd
 	
 	
 	u8 TypeNameToId (stringRef_t i_typeName);
+
+
+	/*
+	 ** Only operates on numeric types + bool **
+	 
+	 could expand, but then the target template needs to handle things like a string,
+	 and it's probably going to fail mashing a string with a numeric operation.
+	 could have a template arg to specify types or classes of times.
+	 
+	 TypeIdToLambda example usage:
+	 
+	 auto lambda = [] <typename T> ()
+	 {
+		 jd::out ("typeId: @", Jd::TypeIdToName (Jd::TypeId <T> ()));
+	 };
+	 
+	 Jd::TypeIdToLambda (c_jdTypeId::boolean, lambda)	// prints "typeId: bool"
+	 
+	 */
+
+	template <typename F>
+	void TypeIdToLambda (u8 i_typeId, F && i_func)
+	{
+		auto tryType = [&] <typename T> ()
+		{
+			if (i_typeId == Jd::TypeId <T> ())
+				i_func.template operator () <T> ();
+		};
+		
+		using Types = std::tuple <f64, f32, i64, u64, i32, u32, i16, u16, i8, u8, bool>;
+		
+		std::apply ([&] (auto... args)
+		{
+			 (tryType.template operator () <decltype (args)> (), ...);
+		},
+		Types {});
+	}
+
 }
 
 
