@@ -9,8 +9,11 @@
 #ifndef JdGraph_hpp
 #define JdGraph_hpp
 
-#include <vector>
-#include "JdNucleus.hpp"
+# include <set>
+# include <vector>
+# include <iostream>
+# include <functional>
+# include "JdAssert.hpp"
 
 template <typename T>
 struct GraphT : T
@@ -21,7 +24,7 @@ struct GraphT : T
 	}
 	
 	
-	typedef vector <GraphT *>						nodes_t;
+	typedef std::vector <GraphT *>						nodes_t;
 	typedef typename nodes_t::iterator				iterator_t;
 	typedef typename nodes_t::reverse_iterator		riterator_t;
 
@@ -97,7 +100,7 @@ struct GraphT : T
 		return * m_down [i_index];
 	}
 	
-	vector <GraphT *> &	children			() { return m_down; }
+	std::vector <GraphT *> &	children			() { return m_down; }
 	
 	
 	iterator_t			begin				() { return m_down.begin (); }
@@ -107,7 +110,7 @@ struct GraphT : T
 	riterator_t			rend				() { return m_down.rend (); }
 
 
-	bool 				find 				(const function <bool (T & i_node)> & i_visitor)
+	bool 				find 				(const std::function <bool (T & i_node)> & i_visitor)
 	{
 		auto done = i_visitor (* this);
 		
@@ -123,13 +126,13 @@ struct GraphT : T
 		return done;
 	}
 	
-	void 				visit 				(const function <void (T * i_parent, T & i_node)> & i_visitor)
+	void 				visit 				(const std::function <void (T * i_parent, T & i_node)> & i_visitor)
 	{
 		VisitWithParent (nullptr, i_visitor);
 	}
 	
 	
-	void 				visit 				(const function <void (T & i_node)> & i_visitor)
+	void 				visit 				(const std::function <void (T & i_node)> & i_visitor)
 	{
 		i_visitor (* this);
 		
@@ -137,7 +140,7 @@ struct GraphT : T
 			n->visit (i_visitor);
 	}
 
-	void 				visitBottomUp		(const function <void (T & i_node)> & i_visitor)
+	void 				visitBottomUp		(const std::function <void (T & i_node)> & i_visitor)
 	{
 		for (auto & n : m_down)
 			n->visitBottomUp (i_visitor);
@@ -221,12 +224,12 @@ struct GraphT : T
 	void				dump				()
 	{
 		DumpR (this);
-		cout << endl;
+		std::cout << endl;
 	}
 	
 //	protected://--------------------------------------------------------------------------------
 
-	void 				VisitWithParent		(T * i_parent, const function <void (T * i_parent, T & i_node)> & i_visitor)
+	void 				VisitWithParent		(T * i_parent, const std::function <void (T * i_parent, T & i_node)> & i_visitor)
 	{
 		i_visitor (i_parent, * this);
 		
@@ -239,12 +242,12 @@ struct GraphT : T
 	{
 		T & obj = * i_node;
 		
-		cout << "\n";
+		std::cout << "\n";
 		auto d = i_depth;
 		while (d--)
 			cout << "  ";
 
-		cout << "[" << obj << " " << i_node;
+		std::cout << "[" << obj << " " << i_node;
 		
 		++i_depth;
 		
@@ -254,7 +257,7 @@ struct GraphT : T
 				DumpR (i, i_depth);
 		}
 		
-		cout << "]";
+		std::cout << "]";
 	}
 
 	
@@ -273,8 +276,8 @@ struct GraphT : T
 	
 	friend class GraphT;
 	
-	set <GraphT *>					m_up;
-	vector <GraphT *>				m_down;
+	std::set <GraphT *>					m_up;
+	std::vector <GraphT *>				m_down;
 };
 
 
