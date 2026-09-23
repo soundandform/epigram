@@ -20,7 +20,6 @@ using std::ostringstream;
 
 struct EpigramDumper
 {
-	//	EpigramDumper					(Epigram & i_epigram, std::ostream & i_stream);
 	EpigramDumper						(EpDelivery i_epigram, std::ostream & i_stream = std::cout);
 	EpigramDumper						(const u8 * i_payload, size_t i_size, std::ostream & i_stream = std::cout);
 	
@@ -182,5 +181,13 @@ struct EpigramDumper
 	std::ostream &				out;
 	mutable bool				m_argsMode			= false;
 };
+
+template <typename E>
+void InspectEpigram (E & i_epigram)
+{
+	EpigramDumper d (i_epigram.data (), i_epigram.size ());
+	d.Dump (i_epigram.GetSequence ());
+	d.Decompose ();
+}
 
 #endif /* EpigramDump_hpp */

@@ -28,7 +28,7 @@ namespace c_jdTypeId
 	o o o o o o o o
 	7 6 5 4 3 2 1 0
 	| | | | | | | |
-	 \ \ \_____________ unused: can be used for extended custom types.
+	 \ \ \_____________ isCustom
 	  \ \______________ isPointer
 	   \_______________ isArray
 	 
@@ -36,6 +36,7 @@ namespace c_jdTypeId
 	 
 	const u8	isPointer			=	1	<< 6,
 				isArray				=	1	<< 7,
+				isCustom			=	1	<< 5,
 	
 				voidNull			=	0,
 				nullVoid			=	voidNull,
@@ -372,12 +373,11 @@ namespace Jd
 	 
 	 TypeIdToLambda example usage:
 	 
-	 auto lambda = [] <typename T> ()
+	 // prints "typeId: bool"
+	 Jd::TypeIdToLambda (c_jdTypeId::boolean, [] <typename T> ()
 	 {
 		 jd::out ("typeId: @", Jd::TypeIdToName (Jd::TypeId <T> ()));
-	 };
-	 
-	 Jd::TypeIdToLambda (c_jdTypeId::boolean, lambda)	// prints "typeId: bool"
+	 })
 	 
 	 */
 

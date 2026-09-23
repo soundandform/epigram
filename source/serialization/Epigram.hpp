@@ -214,6 +214,7 @@
 #include <set>
 #include <map>
 #include <functional>
+#include <utility>
 
 #include "JdTypeId.hpp"
 #include "JdAssert.hpp"
@@ -285,7 +286,8 @@ class EpBinary : public Jd::TypedT <c_jdTypeId::binary>
 
 const u32 c_epigramStackSize = 512;
 
-void DumpEpigram (EpDelivery i_epigram, u32 i_sequence);
+//void DumpEpigram (EpDelivery i_epigram, u32 i_sequence);
+
 
 template <typename K, typename V> class EpAttribute;
 
@@ -473,7 +475,10 @@ class EpigramHybridAllocator
 	~ EpigramHybridAllocator ()
 	{
 		if (IsHeapAllocated ())
+		{
+//			jd::out ("heap alloc");
 			free (m_start);
+		}
 	}
 	
 	EpigramHybridAllocator ()
@@ -511,7 +516,7 @@ class EpigramHybridAllocator
 	
 	
 	protected://-------------------------------------------------------
-	size_t			CalculateGrowSize		(size_t i_extraRequiredBytes)
+	u32			CalculateGrowSize		(u32 i_extraRequiredBytes)
 	{
 		size_t newSize = std::max (((m_size * 207) >> 7) , m_size + i_extraRequiredBytes);
 		newSize = (newSize + 15) & ~15;
@@ -519,13 +524,15 @@ class EpigramHybridAllocator
 		return newSize;
 	}
 	
-	
-	u8 *			m_start			= m_data;
-	u8 *			m_end			= m_start;
+	//- establishes Epigram min size: 24 bytes / 3-words --------------
+	//- (with interface_t = std::monostate)
+	//-----------------------------------------------------------------
+	u8 *			m_start			= m_data;		// 1
+	u8 *			m_end			= m_start;		// 2
 
-	size_t			m_size			= t_size;
-	u32				m_sequence		= 0;
-
+	u32				m_sequence		= 0;			// 3
+	u32				m_size			= t_size;		// 3
+	//-----------------------------------------------------------------
 	u8				m_data			[t_size];
 };
 
@@ -1881,6 +1888,12 @@ class EpigramT : public interface_t
 		{
 			return (this->keyType == i_keyTypeId);
 		}
+		
+		template <typename T>
+		bool					HasKeyType						() const
+		{
+			return HasKeyType (Jd::TypeId <T> ());
+		}
 
 		template <typename T>
 		T						GetKey							() const
@@ -2352,8 +2365,9 @@ class EpigramT : public interface_t
 		return IIEpigramIn::Payload { m_allocator.GetBuffer (), m_allocator.GetNumUsedBytes () };
 	}
 	
-	
+
 	u8 const *			data				() { return m_allocator.GetBuffer (); }
+	u8 const *			data				() const { return m_allocator.GetBuffer (); }
 	size_t				size				() { return m_allocator.GetNumUsedBytes (); }
 
 	
@@ -2750,10 +2764,44 @@ class EpigramT : public interface_t
 	}
 
 
-	void Dump () const { DumpEpigram (this, m_allocator.GetSequence ()); }
-	void dump () const { DumpEpigram (this, m_allocator.GetSequence ()); }
+//	void dump () const { DumpEpigram (this, m_allocator.GetSequence ()); }
 
 	protected: //--------------------------------------------------------------------------------------------------------------------------------
+
+	// integer keys are matched by value across every integer type: e [0] is found by e [0u] or e [(i64) 0]; -1 never matches an unsigned key
+	template <typename K>
+	static bool					KeyMatches					(const K & i_key, u8 i_keyType, const u8 * i_keyData, size_t i_keySize)
+	{
+		type_def TypeT <K>::type key_t;
+
+		bool matches = false;
+
+		if constexpr (Jd::IsIntegerType (key_t::GetTypeId ()))
+		{
+			if (Jd::IsIntegerType (i_keyType))
+			{
+				Jd::TypeIdToLambda (i_keyType, [&] <typename T> ()
+				{
+					if constexpr (std::is_integral_v <T> and not std::is_same_v <T, bool>)
+					{
+						T itemKey;
+						FundamentalT <T>::Fetch (itemKey, i_keyData, { i_keyData, i_keyData + i_keySize });
+						matches = std::cmp_equal (itemKey, i_key);
+					}
+				});
+			}
+		}
+		else if (i_keyType == key_t::GetTypeId ())
+		{
+			typename key_t::compare_t itemKey;
+			key_t::Fetch (itemKey, i_keyData, { i_keyData, i_keyData + i_keySize });
+
+			matches = (itemKey == i_key);
+		}
+
+		return matches;
+	}
+
 
 	template <typename I, typename K>
 	KVT <I>						FindItem					(const K & i_key)
@@ -2779,39 +2827,33 @@ class EpigramT : public interface_t
 			u8 keyType = *decode--;
 			
 			keyType &= c_jdTypeId::typeMask;
-			
-			if (keyType == key_t::GetTypeId ())
+
+			bool isArray = valueType & c_jdTypeId::isArray;
+			valueType &= c_jdTypeId::typeMask;
+
+			auto keySize = Jd::ReverseDecode7bRE <size_t> (decode, end);
+
+			auto key = decode - keySize + 1;
+
+			if (KeyMatches (i_key, keyType, key, keySize))
 			{
-				bool isArray = valueType & c_jdTypeId::isArray;
-				valueType &= c_jdTypeId::typeMask;
+				++next;
+				element.start = next;
+
+				if (isArray)
+					element.count = Jd::Decode7bRE <size_t> (next, key);
+				else
+					element.count = 1;
+
+				element.sequence = m_allocator.GetSequence ();
+				element.keyType = keyType;
+				element.valueType = valueType;
+				element.payload = const_cast <u8 *> (next);
+				element.endPayload = key;
 				
-				auto keySize = Jd::ReverseDecode7bRE <size_t> (decode, end);
-				
-				auto key = decode - keySize + 1;
+				element.end = ptr + 1;
 
-				typename key_t::compare_t itemKey;
-				key_t::Fetch (itemKey, key, { key, key + keySize });
-				
-				if (itemKey == i_key)
-				{
-					++next;
-					element.start = next;
-
-					if (isArray)
-						element.count = Jd::Decode7bRE <size_t> (next, key);
-					else
-						element.count = 1;
-
-					element.sequence = m_allocator.GetSequence ();
-					element.keyType = keyType;
-					element.valueType = valueType;
-					element.payload = const_cast <u8 *> (next);
-					element.endPayload = key;
-					
-					element.end = ptr + 1;
-
-					break;
-				}
+				break;
 			}
 			
 			ptr = next;
@@ -2930,24 +2972,6 @@ typedef const Epigram & EpigramRef;
 typedef const Epigram256 & Epigram256Ref;
 
 #define msg_ Epigram()
-
-
-
-//
-//template <typename A>
-//std::ostream & operator << (std::ostream & output, const EpigramT <A> & i_epigram)
-//{
-//	ostringstream oss;
-//	
-//	EpigramDumper d (i_epigram, oss);
-//	
-//	d.PrintArgs ();
-//	
-//	output << "\nJdModule::PrintArgs (" << oss.str() << ")\n";
-//	
-////	output << "()";
-//	return output;
-//}
 
 
 //#undef type_def

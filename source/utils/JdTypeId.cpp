@@ -105,7 +105,7 @@ TypeIdsMap::TypeIdsMap ()
 	
 	names ['x'] = "uuid";  //	TODO: ptr to enum just not allowed. dumb.
 	names ['N'] = "enum";  //	TODO: ptr to enum just not allowed. dumb.
-	names ['n'] = "tup";
+	names ['n'] = "tpl";
 	names ['B'] = "bin";  //	TODO: ptr to binary not allowed
 	//		names ['a'] = "#32";
 	names ['h'] = "#64";
@@ -313,15 +313,19 @@ namespace Jd
 	
 	cstr_t TypeIdToFullName (u8 i_typeId)
 	{
-		auto & m = TypeIdsMap::Get();
-		
-		char typeChar = TypeIdToChar (i_typeId);
-		cstr_t name = m.longNames [typeChar];
-		
-		if (name == nullptr)
-			name = m.names [typeChar];
-		
-		return name;
+		if (not (i_typeId & c_jdTypeId::isCustom))
+		{
+			auto & m = TypeIdsMap::Get();
+			
+			char typeChar = TypeIdToChar (i_typeId);
+			cstr_t name = m.longNames [typeChar];
+			
+			if (name == nullptr)
+				name = m.names [typeChar];
+			
+			return name;
+		}
+		else return "custom";
 	}
 	
 	bool IsPointer (u8 i_typeId)
