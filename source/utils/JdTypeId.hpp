@@ -56,7 +56,7 @@ namespace c_jdTypeId
 //				u128				=	10,
 
 				boolean				=	11,
-				enumeration			=	12,
+				unused				=	12,
 
 				f32					=	13,
 				f64					=	14,
@@ -65,7 +65,7 @@ namespace c_jdTypeId
 //				string16			=	16,
 //				string32			=	17,
 	
-				// unused			=	18,
+				enumeration			=	18,
 	
 				binary				=	19,
 	
@@ -371,6 +371,8 @@ namespace Jd
 	 and it's probably going to fail mashing a string with a numeric operation.
 	 could have a template arg to specify types or classes of times.
 	 
+	 Returns true if i_typeId matched one of the types and i_func was executed.
+
 	 TypeIdToLambda example usage:
 	 
 	 // prints "typeId: bool"
@@ -382,21 +384,24 @@ namespace Jd
 	 */
 
 	template <typename F>
-	void TypeIdToLambda (u8 i_typeId, F && i_func)
+	bool TypeIdToLambda (u8 i_typeId, F && i_func)
 	{
-		auto tryType = [&] <typename T> ()
+		auto tryType = [&] <typename T> () -> bool
 		{
 			if (i_typeId == Jd::TypeId <T> ())
+			{
 				i_func.template operator () <T> ();
+				return true;
+			}
+			else return false;
 		};
-		
+
 		using Types = std::tuple <f64, f32, i64, u64, i32, u32, i16, u16, i8, u8, bool>;
-		
-		std::apply ([&] (auto... args)
+
+		return std::apply ([&] (auto... args)
 		{
-			 (tryType.template operator () <decltype (args)> (), ...);
-		},
-		Types {});
+			return (tryType.template operator () <decltype (args)> () || ...); }, Types {}
+		);
 	}
 
 }
